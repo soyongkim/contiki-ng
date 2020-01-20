@@ -65,7 +65,7 @@ PROCESS_THREAD(vt_process, ev, data)
 {
   static struct etimer timer;
   static struct simple_udp_connection udp_conn;
-  uint8_t payload[64] = {"VT"};
+  //uint8_t payload[64] = {"VT"};
 
   simple_udp_register(&udp_conn, UDP_PORT, NULL, UDP_PORT, udp_rx_callback);
 
