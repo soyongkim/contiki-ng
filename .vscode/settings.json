@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "contiki.h": "c",
+        "simple-udp.h": "c"
+    }
+}

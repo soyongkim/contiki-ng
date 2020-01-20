@@ -38,8 +38,25 @@
  */
 
 #include "contiki.h"
+#include "simple-udp.h"
 
 #include <stdio.h> /* For printf() */
+
+#define UDP_PORT 5564
+
+
+static void udp_rx_callback(struct simple_udp_connection *c,
+                           const uip_ipaddr_t *sender_addr,
+                           uint16_t sender_port,
+                           const uip_ipaddr_t *receiver_addr,
+                           uint16_t receiver_port,
+                           const uint8_t *data,
+                           uint16_t datalen)
+{
+  printf("receive Addr: %d Port: %d\n", receiver_addr, receiver_port);
+}
+
+
 /*---------------------------------------------------------------------------*/
 PROCESS(vt_process, "vt process");
 AUTOSTART_PROCESSES(&vt_process);
@@ -47,6 +64,10 @@ AUTOSTART_PROCESSES(&vt_process);
 PROCESS_THREAD(vt_process, ev, data)
 {
   static struct etimer timer;
+  static struct simple_udp_connection udp_conn;
+  uint8_t payload[64] = {"VT"};
+
+  simple_udp_register(&udp_conn, UDP_PORT, NULL, UDP_PORT, udp_rx_callback);
 
   PROCESS_BEGIN();
 
@@ -55,6 +76,8 @@ PROCESS_THREAD(vt_process, ev, data)
 
   while(1) {
     printf("I'm VT module\n");
+
+    // simple_udp_sendto_port(&udp_conn, payload, 2, )
 
     /* Wait for the periodic timer to expire and then restart the timer. */
     PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&timer));
