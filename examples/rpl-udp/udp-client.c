@@ -38,6 +38,11 @@ udp_rx_callback(struct simple_udp_connection *c,
   LOG_INFO_("\n");
 
 }
+
+bool is_vt() {
+  
+}
+
 /*---------------------------------------------------------------------------*/
 PROCESS_THREAD(udp_client_process, ev, data)
 {
