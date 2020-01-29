@@ -1,8 +1,9 @@
+#include "common.h"
 #include "net/ipv6/simple-udp.h"
 #include "net/ipv6/uip-ds6.h"
 #include "net/ipv6/uip-debug.h"
 
-static uip_ip6addr_t
+uip_ip6addr_t
 change_target(int node_id) {
     const uip_ipaddr_t *default_prefix = uip_ds6_default_prefix();
     uip_ipaddr_t dest_ipaddr;
