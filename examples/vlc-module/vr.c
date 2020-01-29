@@ -31,6 +31,7 @@
 #include "net/routing/routing.h"
 #include "net/netstack.h"
 #include "net/ipv6/simple-udp.h"
+#include "sdlib/common.h"
 
 #include "sys/log.h"
 #define LOG_MODULE "App"

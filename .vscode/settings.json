@@ -2,6 +2,7 @@
     "files.associations": {
         "contiki.h": "c",
         "simple-udp.h": "c",
-        "routing.h": "c"
+        "routing.h": "c",
+        "uip-ds6.h": "c"
     }
 }
