@@ -47,7 +47,7 @@ PROCESS_THREAD(udp_client_process, ev, data)
 {
   static struct etimer periodic_timer;
   static unsigned count;
-  static char str[32];
+  static char payload[32];
   uip_ipaddr_t dest_ipaddr;
 
   PROCESS_BEGIN();
@@ -67,8 +67,10 @@ PROCESS_THREAD(udp_client_process, ev, data)
       LOG_INFO("Sending request %u to ", count);
       LOG_INFO_6ADDR(&dest_ipaddr);
       LOG_INFO_("\n");
-      snprintf(str, sizeof(str), "hello %d", count);
-      simple_udp_sendto(&udp_conn, str, strlen(str), &dest_ipaddr);
+      
+      /* 페이로드 생성 */
+      snprintf(payload, sizeof(payload), "hello %d", count);
+      simple_udp_sendto(&udp_conn, payload, strlen(payload), &dest_ipaddr);
       count++;
     } else {
       LOG_INFO("Not reachable yet\n");
