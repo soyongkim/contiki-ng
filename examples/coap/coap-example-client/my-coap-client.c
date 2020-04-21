@@ -100,8 +100,6 @@ PROCESS_THREAD(er_example_client, ev, data)
 
 
   while(1) {
-    PROCESS_YIELD();
-
     /* send a request to notify the end of the process */
     coap_init_message(request, COAP_TYPE_CON, COAP_GET, 0);
     coap_set_header_uri_path(request, service_urls[uri_switch]);
