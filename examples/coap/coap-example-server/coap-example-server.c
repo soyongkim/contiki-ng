@@ -140,8 +140,13 @@ PROCESS_THREAD(er_example_server, ev, data)
 
       /* Also call the separate response example handler. */
       res_separate.resume();
+
+      /* Test */
+      printf("--- Test button ---\n");
     }
 #endif /* PLATFORM_HAS_BUTTON */
+  
+
   }                             /* while (1) */
 
   PROCESS_END();
