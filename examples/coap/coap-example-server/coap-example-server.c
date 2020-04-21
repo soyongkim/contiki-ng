@@ -145,8 +145,7 @@ PROCESS_THREAD(er_example_server, ev, data)
       printf("--- Test button ---\n");
     }
 #endif /* PLATFORM_HAS_BUTTON */
-  res_hello.get();  
-
+  res_hello.get_handler();
   }                             /* while (1) */
 
   PROCESS_END();
