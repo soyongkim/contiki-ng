@@ -118,7 +118,7 @@ PROCESS_THREAD(er_example_client, ev, data)
 
       /* prepare request, TID is set by COAP_BLOCKING_REQUEST() */
       coap_init_message(request, COAP_TYPE_CON, COAP_POST, 0);
-      coap_set_header_uri_path(request, service_urls[1]);
+      coap_set_header_uri_path(request, service_urls[4]);
 
       const char msg[] = "Toggle!";
 
