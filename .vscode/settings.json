@@ -5,6 +5,7 @@
         "routing.h": "c",
         "uip-ds6.h": "c",
         "random.h": "c",
-        "uip-debug.h": "c"
+        "uip-debug.h": "c",
+        "temperature-sensor.h": "c"
     }
 }

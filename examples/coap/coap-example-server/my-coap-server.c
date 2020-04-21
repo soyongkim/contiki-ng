@@ -61,7 +61,7 @@ extern coap_resource_t
   res_mirror,
   res_chunks,
   res_separate,
-  res_push,
+  res_push;
 
 PROCESS(er_example_server, "Erbium Example Server");
 AUTOSTART_PROCESSES(&er_example_server);
