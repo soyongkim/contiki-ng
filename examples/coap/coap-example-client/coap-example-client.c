@@ -142,6 +142,23 @@ PROCESS_THREAD(er_example_client, ev, data)
 
       /* send a request to notify the end of the process */
 
+      // coap_init_message(request, COAP_TYPE_CON, COAP_GET, 0);
+      // coap_set_header_uri_path(request, service_urls[uri_switch]);
+
+      // printf("--Requesting %s--\n", service_urls[uri_switch]);
+
+      // LOG_INFO_COAP_EP(&server_ep);
+      // LOG_INFO_("\n");
+
+      // COAP_BLOCKING_REQUEST(&server_ep, request,
+      //                       client_chunk_handler);
+
+      // printf("\n--Done--\n");
+
+      // uri_switch = (uri_switch + 1) % NUMBER_OF_URLS;
+#endif /* PLATFORM_HAS_BUTTON */
+    }
+
       coap_init_message(request, COAP_TYPE_CON, COAP_GET, 0);
       coap_set_header_uri_path(request, service_urls[uri_switch]);
 
@@ -156,8 +173,6 @@ PROCESS_THREAD(er_example_client, ev, data)
       printf("\n--Done--\n");
 
       uri_switch = (uri_switch + 1) % NUMBER_OF_URLS;
-#endif /* PLATFORM_HAS_BUTTON */
-    }
   }
 
   PROCESS_END();
