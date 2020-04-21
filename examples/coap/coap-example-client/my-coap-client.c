@@ -73,9 +73,7 @@ static struct etimer et;
 /* leading and ending slashes only for demo purposes, get cropped automatically when setting the Uri-Path */
 char *service_urls[NUMBER_OF_URLS] =
 { ".well-known/core", "/actuators/toggle", "battery/", "error/in//path", "/test/hello" };
-#if PLATFORM_HAS_BUTTON
 static int uri_switch = 0;
-#endif
 
 /* This function is will be passed to COAP_BLOCKING_REQUEST() to handle responses. */
 void
@@ -92,6 +90,7 @@ client_chunk_handler(coap_message_t *response)
 
   printf("|%.*s", len, (char *)chunk);
 }
+
 PROCESS_THREAD(er_example_client, ev, data)
 {
   static coap_endpoint_t server_ep;
@@ -101,64 +100,26 @@ PROCESS_THREAD(er_example_client, ev, data)
 
   coap_endpoint_parse(SERVER_EP, strlen(SERVER_EP), &server_ep);
 
-  etimer_set(&et, TOGGLE_INTERVAL * CLOCK_SECOND);
-
-#if PLATFORM_HAS_BUTTON
-#if !PLATFORM_SUPPORTS_BUTTON_HAL
-  SENSORS_ACTIVATE(button_sensor);
-#endif
-  printf("Press a button to request %s\n", service_urls[uri_switch]);
-#endif /* PLATFORM_HAS_BUTTON */
 
   while(1) {
     PROCESS_YIELD();
 
-    if(etimer_expired(&et)) {
-      printf("--Toggle timer--\n");
+    /* send a request to notify the end of the process */
+    coap_init_message(request, COAP_TYPE_CON, COAP_GET, 0);
+    coap_set_header_uri_path(request, service_urls[uri_switch]);
 
-      /* prepare request, TID is set by COAP_BLOCKING_REQUEST() */
-      coap_init_message(request, COAP_TYPE_CON, COAP_POST, 0);
-      coap_set_header_uri_path(request, service_urls[4]);
+    printf("--Requesting %s--\n", service_urls[uri_switch]);
 
-      const char msg[] = "Toggle!";
+    LOG_INFO_COAP_EP(&server_ep);
+    LOG_INFO_("\n");
 
-      coap_set_payload(request, (uint8_t *)msg, sizeof(msg) - 1);
+    COAP_BLOCKING_REQUEST(&server_ep, request,
+                        client_chunk_handler);
 
-      LOG_INFO_COAP_EP(&server_ep);
-      LOG_INFO_("\n");
+    printf("\n--Done--\n");
 
-      COAP_BLOCKING_REQUEST(&server_ep, request, client_chunk_handler);
-
-      printf("\n--Done--\n");
-
-      etimer_reset(&et);
-
-#if PLATFORM_HAS_BUTTON
-#if PLATFORM_SUPPORTS_BUTTON_HAL
-    } else if(ev == button_hal_release_event) {
-#else
-    } else if(ev == sensors_event && data == &button_sensor) {
-#endif
-
-      /* send a request to notify the end of the process */
-
-      coap_init_message(request, COAP_TYPE_CON, COAP_GET, 0);
-      coap_set_header_uri_path(request, service_urls[uri_switch]);
-
-      printf("--Requesting %s--\n", service_urls[uri_switch]);
-
-      LOG_INFO_COAP_EP(&server_ep);
-      LOG_INFO_("\n");
-
-      COAP_BLOCKING_REQUEST(&server_ep, request,
-                            client_chunk_handler);
-
-      printf("\n--Done--\n");
-
-      uri_switch = (uri_switch + 1) % NUMBER_OF_URLS;
-#endif /* PLATFORM_HAS_BUTTON */
+    uri_switch = (uri_switch + 1) % NUMBER_OF_URLS;
     }
-  }
 
   PROCESS_END();
 }
