@@ -6,6 +6,7 @@
         "uip-ds6.h": "c",
         "random.h": "c",
         "uip-debug.h": "c",
-        "temperature-sensor.h": "c"
+        "temperature-sensor.h": "c",
+        "node-id.h": "c"
     }
 }

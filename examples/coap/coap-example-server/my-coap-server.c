@@ -52,6 +52,12 @@
 #include "sys/log.h"
 #define LOG_MODULE "App"
 #define LOG_LEVEL LOG_LEVEL_APP
+
+
+/* Test Node ID */
+#include "sys/node-id.h"
+
+
 /*
  * Resources to be activated need to be imported through the extern keyword.
  * The build system automatically compiles the resources in the corresponding sub-directory.
@@ -69,11 +75,10 @@ AUTOSTART_PROCESSES(&er_example_server);
 PROCESS_THREAD(er_example_server, ev, data)
 {
   PROCESS_BEGIN();
-  printf("--Before pause--\n");
   PROCESS_PAUSE();
-  printf("--After pause--\n");
 
   LOG_INFO("Starting Erbium Example Server\n");
+  printf("[SD] Node ID is [%d]\n", node_id);
 
   /*
    * Bind the resources to their Uri-Path.
@@ -89,7 +94,6 @@ PROCESS_THREAD(er_example_server, ev, data)
   /* Define application-specific events here. */
   while(1) {
     PROCESS_WAIT_EVENT();
-    printf("--Server Test--\n");
   }
 
   PROCESS_END();
