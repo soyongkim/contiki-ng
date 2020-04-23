@@ -95,7 +95,6 @@ AUTOSTART_PROCESSES(&er_example_server);
 
 PROCESS_THREAD(er_example_server, ev, data)
 {
-  static struct etimer periodic_timer;
   static unsigned count = 0;
 
   PROCESS_BEGIN();
