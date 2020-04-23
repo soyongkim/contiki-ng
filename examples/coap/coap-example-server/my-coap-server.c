@@ -96,7 +96,7 @@ PROCESS_THREAD(er_example_server, ev, data)
 
   LOG_INFO("Starting Erbium Example Server\n");
   printf("[SD] Node ID is %d\n", node_id);
-
+  nullnet_set_input_callback(input_callback);
   /*
    * Bind the resources to their Uri-Path.
    * WARNING: Activating twice only means alternate path, not two instances!
