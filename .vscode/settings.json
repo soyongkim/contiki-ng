@@ -10,6 +10,15 @@
         "node-id.h": "c",
         "tsch.h": "c",
         "packetbuf.h": "c",
-        "nullnet.h": "c"
+        "nullnet.h": "c",
+        "*.tcc": "cpp",
+        "algorithm": "cpp",
+        "memory": "cpp",
+        "fstream": "cpp",
+        "iosfwd": "cpp",
+        "istream": "cpp",
+        "ostream": "cpp",
+        "sstream": "cpp",
+        "streambuf": "cpp"
     }
 }

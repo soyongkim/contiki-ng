@@ -36,15 +36,14 @@
  *      Matthias Kovatsch <kovatsch@inf.ethz.ch>
  */
 
-/* Nullnet */
-#include "net/netstack.h"
-#include "net/nullnet/nullnet.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "contiki.h"
 #include "coap-engine.h"
+#include "net/netstack.h"
+#include "net/nullnet/nullnet.h"
 
 #if PLATFORM_SUPPORTS_BUTTON_HAL
 #include "dev/button-hal.h"
@@ -74,29 +73,12 @@ extern coap_resource_t
   res_push;
 
 
-/* Nullnet handler */
-void input_callback(const void *data, uint16_t len,
-  const linkaddr_t *src, const linkaddr_t *dest)
-{
-  if(len == sizeof(unsigned)) {
-    unsigned count;
-    memcpy(&count, data, sizeof(count));
-    LOG_INFO("Received %u from ", count);
-    LOG_INFO_LLADDR(src);
-    LOG_INFO_("\n");
-  }
-}
-
-
-
 
 PROCESS(er_example_server, "Erbium Example Server");
 AUTOSTART_PROCESSES(&er_example_server);
 
 PROCESS_THREAD(er_example_server, ev, data)
 {
-  static unsigned count = 0;
-
   PROCESS_BEGIN();
   PROCESS_PAUSE();
 
@@ -114,21 +96,10 @@ PROCESS_THREAD(er_example_server, ev, data)
   coap_activate_resource(&res_separate, "test/separate");
   coap_activate_resource(&res_push, "test/push");
 
-  nullnet_buf = (uint8_t *)&count;
-  nullnet_len = sizeof(count);
-  nullnet_set_input_callback(input_callback);
   
   /* Define application-specific events here. */
   while(1) {
-    LOG_INFO("Sending %u to ", count);
-    LOG_INFO_LLADDR(NULL);
-    LOG_INFO_("\n");
-    
-    memcpy(nullnet_buf, &count, sizeof(count));
-    nullnet_len = sizeof(count);
-
-    NETSTACK_NETWORK.output(NULL);
-    count++;
+      PROCESS_WAIT_EVENT();
   }
 
   PROCESS_END();

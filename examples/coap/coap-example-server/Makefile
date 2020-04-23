@@ -12,7 +12,4 @@ CONTIKI=../../..
 # Include the CoAP implementation
 include $(CONTIKI)/Makefile.dir-variables
 MODULES += $(CONTIKI_NG_APP_LAYER_DIR)/coap
-
-MAKE_MAC ?= MAKE_MAC_CSMA
-MAKE_NET = MAKE_NET_NULLNET
 include $(CONTIKI)/Makefile.include
