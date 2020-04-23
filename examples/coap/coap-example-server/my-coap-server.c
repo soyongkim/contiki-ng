@@ -54,8 +54,12 @@
 #define LOG_LEVEL LOG_LEVEL_APP
 
 
-/* Test Node ID */
+/* Node ID */
 #include "sys/node-id.h"
+
+/* Nullnet */
+#include "net/netstack.h"
+#include "net/nullnet/nullnet.h"
 
 
 /*
@@ -69,16 +73,36 @@ extern coap_resource_t
   res_separate,
   res_push;
 
+
+/* Nullnet handler */
+void input_callback(const void *data, uint16_t len,
+  const linkaddr_t *src, const linkaddr_t *dest)
+{
+  if(len == sizeof(unsigned)) {
+    unsigned count;
+    memcpy(&count, data, sizeof(count));
+    LOG_INFO("Received %u from ", count);
+    LOG_INFO_LLADDR(src);
+    LOG_INFO_("\n");
+  }
+}
+
+
+
+
 PROCESS(er_example_server, "Erbium Example Server");
 AUTOSTART_PROCESSES(&er_example_server);
 
 PROCESS_THREAD(er_example_server, ev, data)
 {
+  static struct etimer periodic_timer;
+  static unsigned count = 0;
+
   PROCESS_BEGIN();
   PROCESS_PAUSE();
 
   LOG_INFO("Starting Erbium Example Server\n");
-  printf("[SD] Node ID is [%d]\n", node_id);
+  printf("[SD] Node ID is %d\n", node_id);
 
   /*
    * Bind the resources to their Uri-Path.
@@ -91,9 +115,21 @@ PROCESS_THREAD(er_example_server, ev, data)
   coap_activate_resource(&res_separate, "test/separate");
   coap_activate_resource(&res_push, "test/push");
 
+  nullnet_buf = (uint8_t *)&count;
+  nullnet_len = sizeof(count);
+  nullnet_set_input_callback(input_callback);
+  
   /* Define application-specific events here. */
   while(1) {
-    PROCESS_WAIT_EVENT();
+    LOG_INFO("Sending %u to ", count);
+    LOG_INFO_LLADDR(NULL);
+    LOG_INFO_("\n");
+    
+    memcpy(nullnet_buf, &count, sizeof(count));
+    nullnet_len = sizeof(count);
+
+    NETSTACK_NETWORK.output(NULL);
+    count++;
   }
 
   PROCESS_END();

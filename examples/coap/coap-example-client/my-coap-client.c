@@ -60,6 +60,9 @@
 /* test address */
 #define SERVER_EP "coap://[fe80::201:1:1:1]"
 
+/* Node ID */
+#include "sys/node-id.h"
+
 
 #define TOGGLE_INTERVAL 10
 
@@ -97,6 +100,7 @@ PROCESS_THREAD(er_example_client, ev, data)
   static coap_message_t request[1];      /* This way the packet can be treated as pointer as usual. */
 
   coap_endpoint_parse(SERVER_EP, strlen(SERVER_EP), &server_ep);
+
 
 
   while(1) {

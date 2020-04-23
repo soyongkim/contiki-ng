@@ -7,6 +7,7 @@
         "random.h": "c",
         "uip-debug.h": "c",
         "temperature-sensor.h": "c",
-        "node-id.h": "c"
+        "node-id.h": "c",
+        "tsch.h": "c"
     }
 }
