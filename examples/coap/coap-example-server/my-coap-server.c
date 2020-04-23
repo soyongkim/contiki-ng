@@ -36,6 +36,10 @@
  *      Matthias Kovatsch <kovatsch@inf.ethz.ch>
  */
 
+/* Nullnet */
+#include "net/netstack.h"
+#include "net/nullnet/nullnet.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -56,10 +60,6 @@
 
 /* Node ID */
 #include "sys/node-id.h"
-
-/* Nullnet */
-#include "net/netstack.h"
-#include "net/nullnet/nullnet.h"
 
 
 /*
