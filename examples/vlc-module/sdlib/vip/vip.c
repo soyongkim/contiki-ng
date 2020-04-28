@@ -277,7 +277,7 @@ int vip_parse_message(vip_message_t *vip_pkt, uint8_t *data, uint32_t data_len)
     memset(vip_pkt, 0, sizeof(vip_message_t));
 
     vip_pkt->buffer = data;
-    uint8_t *offset = vip_pkt->buffer;
+    uint8_t *offset = data;
 
     /* parse common header field */
     vip_pkt->type = (uint8_t)vip_parse_int_option(offset, 1);
