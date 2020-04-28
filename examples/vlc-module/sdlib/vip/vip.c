@@ -133,7 +133,7 @@ vip_serialize_VRA(vip_message_t *vip_pkt, uint8_t *buffer)
     unsigned int index = 0;
 
     uint16_t current_position;
-    for (current_position = 0; current_position < vip_pkt->service_num; current_position)
+    for (current_position = 0; current_position < vip_pkt->service_num; current_position++)
     {
         index = vip_int_serialize(index, VIP_SERVICE_NUM, offset, vip_pkt->service_id[current_position]);
         offset += index;
@@ -264,8 +264,9 @@ vip_parse_message(vip_message_t *vip_pkt, uint8_t *data, uint32_t data_len)
     memset(vip_pkt, 0, sizeof(vip_message_t));
 
     vip_pkt->buffer = data;
-    uint32_t index = -1;
+    uint32_t index;
 
+    index = -1;
     /* parse common header field */
     vip_pkt->type = vip_pkt->buffer[++index];
     vip_pkt->total_len = vip_pkt->buffer[++index] << 16 | vip_pkt->buffer[++index] << 8 | vip_pkt->buffer[++index];
