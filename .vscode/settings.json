@@ -23,6 +23,7 @@
         "coap-engine.h": "c",
         "coap-timer.h": "c",
         "stdlib.h": "c",
-        "common.h": "c"
+        "common.h": "c",
+        "vip.h": "c"
     }
 }

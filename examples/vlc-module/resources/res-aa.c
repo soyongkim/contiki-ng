@@ -59,18 +59,10 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
   printf("TEST\n");
   printf("LEN:%d\n", request->payload_len);
 
-  // static vip_message_t vip_pkt[1];
-  // vip_parse_message(vip_pkt, request->payload, request->payload_len);
-  // printf("TYPE:%d\n", vip_pkt->type);
-  // printf("AA-ID:%d\n", vip_pkt->aa_id);
-  // printf("VT-ID:%d\n", vip_pkt->vt_id);
-
-  for(int i=0; i<request->payload_len; i++) {
-    if(i < 8)
-      printf("%d ", request->payload[i]);
-    else
-      printf("%c", (char)(request->payload[i]));
-  }
-  puts("");
-
+  static vip_message_t vip_pkt[1];
+  vip_parse_message(vip_pkt, request->payload, request->payload_len);
+  printf("TYPE:%d\n", vip_pkt->type);
+  printf("AA-ID:%d\n", vip_pkt->aa_id);
+  printf("VT-ID:%d\n", vip_pkt->vt_id);
+  
 }
