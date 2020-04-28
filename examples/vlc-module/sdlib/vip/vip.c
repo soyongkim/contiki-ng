@@ -294,18 +294,12 @@ vip_parse_message(vip_message_t *vip_pkt, uint8_t *data, uint16_t data_len)
     vip_pkt->vt_id = vip_parse_int_option(offset, 2);
     offset += 2;
 
-    char temp[1000];
+
     /* parse type field and payload */
     switch (vip_pkt->type)
     {
     case VIP_TYPE_BEACON:
-        for(uint32_t index = 0; index < vip_pkt->total_len - VIP_COMMON_HEADER_LEN; index++) {
-            temp[index] = (char)(*offset);
-            offset++;
-        }
-        temp[vip_pkt->total_len - VIP_COMMON_HEADER_LEN] = '\0';
-        printf("TEST:%s\n", temp);
-        vip_pkt->uplink_id = temp;
+        memcpy(vip_pkt->uplink_id, offset, vip_pkt->total_len - VIP_COMMON_HEADER_LEN);
         break;
     case VIP_TYPE_VRR:
         /* code */

@@ -13,7 +13,7 @@ typedef struct {
     uint16_t vt_id;
 
     /* type specific header */
-    char *uplink_id;
+    char uplink_id[VIP_MAX_UPLINK_ID];
     uint32_t vr_id;
     uint16_t service_num;
     uint32_t service_id[VIP_MAX_SERVICE];
