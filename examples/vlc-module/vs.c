@@ -86,7 +86,7 @@ PROCESS_THREAD(er_example_client, ev, data)
   coap_endpoint_parse(SERVER_EP, strlen(SERVER_EP), &server_ep);
 
 
-  static vip_message_t *vip_pkt;
+  static vip_message_t vip_pkt[1];
   const char uplink_id[] = "ISL-5GHz";
   uint8_t buffer[30];
   vip_init_message(vip_init_message, VIP_TYPE_BEACON, 1, 1);

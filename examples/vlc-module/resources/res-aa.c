@@ -56,7 +56,7 @@ RESOURCE(res_aa,
 static void
 res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset)
 {
-  vip_message_t *vip_pkt;
+  vip_message_t vip_pkt[1];
 
   vip_parse_message(vip_pkt, request->payload, request->payload_len);
 

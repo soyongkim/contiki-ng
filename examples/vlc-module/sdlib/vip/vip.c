@@ -8,7 +8,7 @@
 void vip_init_message(vip_message_t *message, uint8_t type,
                       uint16_t aa_id, uint16_t vt_id)
 {
-    memset(message, 0, sizeof(vip_init_message));
+    memset(message, 0, sizeof(vip_message_t));
 
     message->type = type;
     message->aa_id = aa_id;
