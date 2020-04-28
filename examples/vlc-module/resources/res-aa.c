@@ -66,7 +66,10 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
   // printf("VT-ID:%d\n", vip_pkt->vt_id);
 
   for(int i=0; i<request->payload_len; i++) {
-    printf("%d ", request->payload[i]);
+    if(i < 8)
+      printf("%d ", request->payload[i]);
+    else
+      printf("%c", request->payload[i]);
   }
   puts("");
 
