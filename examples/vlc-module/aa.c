@@ -44,11 +44,6 @@
 #include "coap-engine.h"
 #include "net/netstack.h"
 
-/* Log configuration */
-#include "sys/log.h"
-#define LOG_MODULE "App"
-#define LOG_LEVEL LOG_LEVEL_APP
-
 
 /* Node ID */
 #include "sys/node-id.h"
@@ -75,7 +70,6 @@ PROCESS_THREAD(er_example_server, ev, data)
   PROCESS_BEGIN();
   PROCESS_PAUSE();
 
-  LOG_INFO("Starting Erbium Example Server\n");
   printf("Node ID is %d\n", node_id);
   /*
    * Bind the resources to their Uri-Path.

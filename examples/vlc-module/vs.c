@@ -46,10 +46,6 @@
 #include "sdlib/vip/vip.h"
 
 
-/* Log configuration */
-#include "coap-log.h"
-#define LOG_MODULE "App"
-#define LOG_LEVEL  LOG_LEVEL_APP
 
 /* FIXME: This server address is hard-coded for Cooja and link-local for unconnected border router. */
 /* default address */
@@ -107,9 +103,6 @@ PROCESS_THREAD(er_example_client, ev, data)
 
 
     printf("--Requesting vip/aa--\n");
-
-    LOG_INFO_COAP_EP(&server_ep);
-    LOG_INFO_("\n");
 
     COAP_BLOCKING_REQUEST(&server_ep, request,
                         client_chunk_handler);
