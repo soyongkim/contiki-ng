@@ -260,7 +260,7 @@ vip_serialize_VM(vip_message_t *vip_pkt, uint8_t *buffer)
     return offset + index;
 }
 
-vip_status_t
+int
 vip_parse_message(vip_message_t *vip_pkt, uint8_t *data, uint32_t data_len)
 {
     int index = -1;
@@ -344,5 +344,5 @@ vip_parse_message(vip_message_t *vip_pkt, uint8_t *data, uint32_t data_len)
         break;
     }
 
-    return NO_ERROR;
+    return 0;
 }

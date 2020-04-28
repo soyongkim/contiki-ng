@@ -27,10 +27,3 @@ typedef enum {
   VIP_TYPE_VU,                 /* VR Update */
   VIP_TYPE_VM                  /* VR Migration */
 } coap_message_type_t;
-
-/* VIP Response code */
-typedef enum {
-    NO_ERROR = 0,
-    ERROR = 1
-} vip_status_t;
-
