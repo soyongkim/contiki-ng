@@ -82,7 +82,7 @@ int vip_get_header_vt_id(vip_message_t *message, uint16_t *vt_id);
 int vip_set_header_vt_id(vip_message_t *message, uint16_t vt_id);
 
 int vip_get_type_header_uplink_id(vip_message_t *message, char **uplink_id);
-int vip_set_type_header_uplink_id(vip_message_t *message, char *uplink_id);
+int vip_set_type_header_uplink_id(vip_message_t *vip_pkt, char *uplink_id, uint16_t uplink_id_len); 
 
 int vip_get_type_header_vr_id(vip_message_t *message, uint32_t *vr_id);
 int vip_set_type_header_vr_id(vip_message_t *message, uint32_t vr_id);

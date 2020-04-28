@@ -93,8 +93,8 @@ PROCESS_THREAD(er_example_client, ev, data)
   while(1) {
     /* send a request to notify the end of the process */
     vip_init_message(vip_pkt, VIP_TYPE_BEACON, 1, 1);
-    vip_set_type_header_uplink_id(vip_pkt, uplink_id);
-    vip_set_header_total_len(vip_pkt, VIP_COMMON_HEADER_LEN + 9);
+    vip_set_type_header_uplink_id(vip_pkt, uplink_id, sizeof(uplink_id));
+    vip_set_header_total_len(vip_pkt, VIP_COMMON_HEADER_LEN + sizeof(uplink_id));
     vip_serialize_message(vip_pkt, buffer);
 
     coap_init_message(request, COAP_TYPE_CON, COAP_POST, 0);
