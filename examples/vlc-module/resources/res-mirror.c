@@ -41,11 +41,6 @@
 #include "coap-engine.h"
 #include "coap.h"
 
-/* Log configuration */
-#include "sys/log.h"
-#define LOG_MODULE "App"
-#define LOG_LEVEL LOG_LEVEL_APP
-
 static void res_any_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset);
 
 /* This resource mirrors the incoming request. It shows how to access the options and how to set them for the response. */
@@ -150,8 +145,6 @@ res_any_handler(coap_message_t *request, coap_message_t *response, uint8_t *buff
     buffer[REST_MAX_CHUNK_SIZE - 1] = 0xBB; /* '»' to indicate truncation */
   }
   coap_set_payload(response, buffer, strpos);
-
-  LOG_DBG("/mirror options received: %s\n", buffer);
 
   /* Set dummy header options for response. Like getters, some setters are not implemented for HTTP and have no effect. */
   coap_set_header_content_format(response, TEXT_PLAIN);
