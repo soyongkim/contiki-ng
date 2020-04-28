@@ -89,7 +89,7 @@ PROCESS_THREAD(er_example_client, ev, data)
   static vip_message_t vip_pkt[1];
   const char uplink_id[] = "ISL-5GHz";
   uint8_t buffer[30];
-  vip_init_message(vip_init_message, VIP_TYPE_BEACON, 1, 1);
+  vip_init_message(vip_pkt, VIP_TYPE_BEACON, 1, 1);
   vip_set_type_header_uplink_id(vip_pkt, uplink_id);
   vip_set_header_total_len(vip_pkt, VIP_COMMON_HEADER_LEN + 9);
   vip_serialize_beacon(vip_pkt, buffer);
