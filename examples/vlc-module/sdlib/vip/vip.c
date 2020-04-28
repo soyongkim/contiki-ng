@@ -38,8 +38,6 @@ int vip_serialize_message(vip_message_t *vip_pkt, uint8_t *buffer)
     /* Initialize */
     vip_pkt->buffer = buffer;
 
-    LOG_DBG("-Serializing VIP %u", vip_pkt->type);
-
     /* set common header fields */
     vip_pkt->buffer[0] = vip_pkt->type;
     vip_pkt->buffer[1] = (uint8_t)(vip_pkt->total_len >> 16);
@@ -263,10 +261,10 @@ vip_serialize_VM(vip_message_t *vip_pkt, uint8_t *buffer)
 int
 vip_parse_message(vip_message_t *vip_pkt, uint8_t *data, uint32_t data_len)
 {
-    int index = -1;
     memset(vip_pkt, 0, sizeof(vip_message_t));
 
     vip_pkt->buffer = data;
+    uint32_t index = -1;
 
     /* parse common header field */
     vip_pkt->type = vip_pkt->buffer[++index];
