@@ -1,11 +1,8 @@
 CONTIKI_PROJECT = vlc
 all: $(CONTIKI_PROJECT)
 
-# Do not try to build on Sky because of code size limitation
-PLATFORMS_EXCLUDE = sky z1
-
 # include sdlib
-MODULES_REL += sdlib
+MODULES_REL += ./sdlib/vip
 
 # Include CoAP resources
 MODULES_REL += ./resources

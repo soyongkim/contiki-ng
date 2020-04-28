@@ -1,9 +1,9 @@
+#include "vip.h"
+
 #include <string.h>
 #include <stdlib.h>
 #include <inttypes.h>
 #include "sys/cc.h"
-
-#include "vip.h"
 
 void vip_init_message(vip_message_t *message, uint8_t type,
                       uint16_t aa_id, uint16_t vt_id)
