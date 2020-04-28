@@ -274,7 +274,7 @@ vip_serialize_VM(vip_message_t *vip_pkt, uint8_t *buffer)
 
 int vip_parse_message(vip_message_t *vip_pkt, uint8_t *data, uint16_t data_len)
 {
-    //memset(vip_pkt, 0, sizeof(vip_message_t));
+    memset(vip_pkt, 0, sizeof(vip_message_t));
 
     vip_pkt->buffer = data;
     uint8_t *offset = data;
