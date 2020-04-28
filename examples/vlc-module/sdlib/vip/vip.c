@@ -58,7 +58,8 @@ int vip_serialize_message(vip_message_t *vip_pkt, uint8_t *buffer)
     /* set common header fields */
     vip_pkt->buffer[0] = vip_pkt->type;
     vip_pkt->buffer[1] = (uint8_t)(vip_pkt->total_len >> 16);
-    vip_pkt->buffer[2] = (uint8_t)(vip_pkt->total_len >> 8);
+    vip_pkt->buffer[2] = (uin
+    t8_t)(vip_pkt->total_len >> 8);
     vip_pkt->buffer[3] = (uint8_t)(vip_pkt->total_len);
 
     vip_pkt->buffer[4] = (uint8_t)(vip_pkt->aa_id >> 8);
@@ -283,15 +284,15 @@ vip_parse_message(vip_message_t *vip_pkt, uint8_t *data, uint16_t data_len)
     vip_pkt->buffer = data;
     uint8_t *offset = data;
 
-    // /* parse common header field */
-    // vip_pkt->type = vip_parse_int_option(offset, 1);
-    // offset += 1;
-    // vip_pkt->total_len = vip_parse_int_option(offset, 3);
-    // offset += 3;
-    // vip_pkt->aa_id = vip_parse_int_option(offset, 2);
-    // offset += 2;
-    // vip_pkt->vt_id = vip_parse_int_option(offset, 2);
-    // offset += 2;
+    /* parse common header field */
+    vip_pkt->type = vip_parse_int_option(offset, 1);
+    offset += 1;
+    vip_pkt->total_len = vip_parse_int_option(offset, 3);
+    offset += 3;
+    vip_pkt->aa_id = vip_parse_int_option(offset, 2);
+    offset += 2;
+    vip_pkt->vt_id = vip_parse_int_option(offset, 2);
+    offset += 2;
 
     // /* parse type field and payload */
     // switch (vip_pkt->type)
