@@ -302,6 +302,8 @@ vip_parse_message(vip_message_t *vip_pkt, uint8_t *data, uint16_t data_len)
             temp[index] = (char)(*offset);
             offset++;
         }
+        temp[vip_pkt->total_len - VIP_COMMON_HEADER_LEN] = '\0';
+        printf("TEST:%s\n", temp);
         vip_pkt->uplink_id = temp;
         break;
     case VIP_TYPE_VRR:
