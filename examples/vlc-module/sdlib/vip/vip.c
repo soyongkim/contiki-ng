@@ -6,7 +6,6 @@
 #include "sys/cc.h"
 
 #include "vip.h"
-#include "vip-constants.h"
 
 
 void vip_init_message(vip_message_t *message, uint8_t type,
