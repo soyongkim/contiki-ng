@@ -31,7 +31,7 @@ int vip_int_serialize(unsigned int cur_offset, unsigned int space, uint8_t *buff
     return cur_offset;
 }
 
-static uint32_t
+uint32_t
 vip_parse_int_option(uint8_t *bytes, size_t length)
 {
     uint32_t var = 0;
@@ -278,104 +278,100 @@ int vip_parse_message(vip_message_t *vip_pkt, uint8_t *data, uint32_t data_len)
 
     vip_pkt->buffer = data;
     size_t index = 0;
+    uint8_t *offset = vip_pkt->buffer;
 
     /* parse common header field */
-    vip_pkt->type = (uint8_t)vip_parse_int_option(vip_pkt->buffer[index], 1);
-    index += 1;
-    vip_pkt->total_len = vip_parse_int_option(vip_pkt->buffer[index], 3);
-    index += 3;
-    vip_pkt->aa_id = (uint16_t)vip_parse_int_option(vip_pkt->buffer[index], 2);
-    index += 2;
-    vip_pkt->vt_id = (uint16_t)vip_parse_int_option(vip_pkt->buffer[index], 2);
-    index += 2;
+    vip_pkt->type = (uint8_t)vip_parse_int_option(offset, 1);
+    offset += 1;
+    vip_pkt->total_len = vip_parse_int_option(offset, 3);
+    offset += 3;
+    vip_pkt->aa_id = (uint16_t)vip_parse_int_option(offset, 2);
+    offset += 2;
+    vip_pkt->vt_id = (uint16_t)vip_parse_int_option(offset, 2);
+    offset += 2;
 
     /* parse type field and payload */
     switch (vip_pkt->type)
     {
     case VIP_TYPE_BEACON:
-        memcpy(vip_pkt->uplink_id, (char *)(vip_pkt->buffer[VIP_COMMON_HEADER_LEN]), vip_pkt->total_len - VIP_COMMON_HEADER_LEN);
+        memcpy(vip_pkt->uplink_id, (char *)offset, vip_pkt->total_len - VIP_COMMON_HEADER_LEN);
         break;
     case VIP_TYPE_VRR:
         /* code */
-        vip_pkt->vr_id = vip_parse_int_option(vip_pkt->buffer[index], 4);
-        index += 4;
+        vip_pkt->vr_id = vip_parse_int_option(offset, 4);
         break;
     case VIP_TYPE_VRA:
         /* code */
-        vip_pkt->vr_id = vip_parse_int_option(vip_pkt->buffer[index], 4);
-        index += 4;
+        vip_pkt->vr_id = vip_parse_int_option(offset, 4);
+        offset += 4;
         uint32_t service_num = (vip_pkt->total_len - VIP_COMMON_HEADER_LEN) / 4 + 4;
         for (uint32_t current_position = 0; current_position < service_num; current_position++)
         {
-            vip_pkt->service_id[current_position] = vip_parse_int_option(vip_pkt->buffer[index], 4);
-            index += 4;
+            vip_pkt->service_id[current_position] = vip_parse_int_option(offset, 4);
+            offset += 4;
         }
         break;
     case VIP_TYPE_VRC:
         /* code */
-        vip_pkt->vr_id = vip_parse_int_option(vip_pkt->buffer[index], 4);
-        index += 4;
+        vip_pkt->vr_id = vip_parse_int_option(offset, 4);
+
         break;
     case VIP_TYPE_REL:
         /* code */
-        vip_pkt->vr_id = vip_parse_int_option(vip_pkt->buffer[index], 4);
-        index += 4;
+        vip_pkt->vr_id = vip_parse_int_option(offset, 4);
         break;
     case VIP_TYPE_SER:
         /* code */
-        vip_pkt->vr_id = vip_parse_int_option(vip_pkt->buffer[index], 4);
-        index += 4;
-        vip_pkt->service_id[0] = vip_parse_int_option(vip_pkt->buffer[index], 4);
-        index += 4;
-        vip_pkt->vr_seq_number = vip_parse_int_option(vip_pkt->buffer[index], 4);
-        index += 4;
+        vip_pkt->vr_id = vip_parse_int_option(offset, 4);
+        offset += 4;
+        vip_pkt->service_id[0] = vip_parse_int_option(offset, 4);
+        offset += 4;
+        vip_pkt->vr_seq_number = vip_parse_int_option(offset, 4);
         break;
     case VIP_TYPE_SEA:
         /* code */
-        vip_pkt->vr_id = vip_parse_int_option(vip_pkt->buffer[index], 4);
-        index += 4;
-        vip_pkt->service_id[0] = vip_parse_int_option(vip_pkt->buffer[index], 4);
-        index += 4;
-        vip_pkt->vg_seq_number = vip_parse_int_option(vip_pkt->buffer[index], 4);
-        index += 4;
+        vip_pkt->vr_id = vip_parse_int_option(offset, 4);
+        offset += 4;
+        vip_pkt->service_id[0] = vip_parse_int_option(offset, 4);
+        offset += 4;
+        vip_pkt->vg_seq_number = vip_parse_int_option(offset, 4);
         break;
     case VIP_TYPE_SEC:
         /* code */
         break;
     case VIP_TYPE_SD:
         /* code */
-        vip_pkt->vr_id = vip_parse_int_option(vip_pkt->buffer[index], 4);
-        index += 4;
-        vip_pkt->service_id[0] = vip_parse_int_option(vip_pkt->buffer[index], 4);
-        index += 4;
-        vip_pkt->vg_seq_number = vip_parse_int_option(vip_pkt->buffer[index], 4);
-        index += 4;
-        memcpy(vip_pkt->payload, vip_pkt->buffer[index], vip_pkt->total_len - (VIP_COMMON_HEADER_LEN + 12));
+        vip_pkt->vr_id = vip_parse_int_option(offset, 4);
+        offset += 4;
+        vip_pkt->service_id[0] = vip_parse_int_option(offset , 4);
+        offset += 4;
+        vip_pkt->vg_seq_number = vip_parse_int_option(offset, 4);
+        offset += 4;
+        memcpy(vip_pkt->payload, offset, vip_pkt->total_len - (VIP_COMMON_HEADER_LEN + 12));
         break;
     case VIP_TYPE_SDA:
         /* code */
-        vip_pkt->vr_id = vip_parse_int_option(vip_pkt->buffer[index], 4);
-        index += 4;
-        vip_pkt->service_id[0] = vip_parse_int_option(vip_pkt->buffer[index], 4);
-        index += 4;
-        vip_pkt->vr_seq_number = vip_parse_int_option(vip_pkt->buffer[index], 4);
-        index += 4;
-        memcpy(vip_pkt->payload, vip_pkt->buffer[++index], vip_pkt->total_len - (VIP_COMMON_HEADER_LEN + 12));
+        vip_pkt->vr_id = vip_parse_int_option(offset, 4);
+        offset += 4;
+        vip_pkt->service_id[0] = vip_parse_int_option(offset, 4);
+        offset += 4;
+        vip_pkt->vr_seq_number = vip_parse_int_option(offset, 4);
+        offset += 4;
+        memcpy(vip_pkt->payload, offset, vip_pkt->total_len - (VIP_COMMON_HEADER_LEN + 12));
         break;
     case VIP_TYPE_VU:
         /* code */
-        vip_pkt->vr_id = vip_parse_int_option(vip_pkt->buffer[index], 4);
-        index += 4;
+        vip_pkt->vr_id = vip_parse_int_option(offset, 4);
         break;
     case VIP_TYPE_VM:
         /* code */
-        vip_pkt->vr_id = vip_parse_int_option(vip_pkt->buffer[index], 4);
-        index += 4;
-        vip_pkt->service_id[0] = vip_parse_int_option(vip_pkt->buffer[index], 4);
-        index += 4;
-        vip_pkt->vg_seq_number = vip_parse_int_option(vip_pkt->buffer[index], 4);
-        index += 4;
-        memcpy(vip_pkt->payload, vip_pkt->buffer[++index], vip_pkt->total_len - (VIP_COMMON_HEADER_LEN + 12));
+        vip_pkt->vr_id = vip_parse_int_option(offset, 4);
+        offset += 4;
+        vip_pkt->service_id[0] = vip_parse_int_option(offset, 4);
+        offset += 4;
+        vip_pkt->vg_seq_number = vip_parse_int_option(offset, 4);
+        offset += 4;
+        memcpy(vip_pkt->payload, offset, vip_pkt->total_len - (VIP_COMMON_HEADER_LEN + 12));
         break;
     }
 
