@@ -31,18 +31,20 @@
 
 /**
  * \file
- *      Erbium (Er) CoAP client example.
+ *      Erbium (Er) CoAP Engine example.
  * \author
  *      Matthias Kovatsch <kovatsch@inf.ethz.ch>
  */
+
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "contiki.h"
-#include "contiki-net.h"
 #include "coap-engine.h"
-#include "coap-blocking-api.h"
+#include "net/netstack.h"
+#include "net/nullnet/nullnet.h"
+
 #if PLATFORM_SUPPORTS_BUTTON_HAL
 #include "dev/button-hal.h"
 #else
@@ -50,75 +52,67 @@
 #endif
 
 /* Log configuration */
-#include "coap-log.h"
+#include "sys/log.h"
 #define LOG_MODULE "App"
-#define LOG_LEVEL  LOG_LEVEL_APP
+#define LOG_LEVEL LOG_LEVEL_APP
 
-/* FIXME: This server address is hard-coded for Cooja and link-local for unconnected border router. */
-/* default address */
-// #define SERVER_EP "coap://[fe80::212:7402:0002:0202]"
-/* test address */
-#define SERVER_EP "coap://[fe80::201:1:1:1]"
 
 /* Node ID */
 #include "sys/node-id.h"
 
 
-#define TOGGLE_INTERVAL 10
+/*
+ * Resources to be activated need to be imported through the extern keyword.
+ * The build system automatically compiles the resources in the corresponding sub-directory.
+ */
+extern coap_resource_t
+  res_hello,
+  res_mirror,
+  res_chunks,
+  res_separate,
+  res_push;
 
-PROCESS(er_example_client, "Erbium Example Client");
-AUTOSTART_PROCESSES(&er_example_client);
 
-/* Example URIs that can be queried. */
-#define NUMBER_OF_URLS 5
-/* leading and ending slashes only for demo purposes, get cropped automatically when setting the Uri-Path */
-char *service_urls[NUMBER_OF_URLS] =
-{ ".well-known/core", "/actuators/toggle", "battery/", "error/in//path", "/test/hello" };
-static int uri_switch = 0;
-
-/* This function is will be passed to COAP_BLOCKING_REQUEST() to handle responses. */
-void
-client_chunk_handler(coap_message_t *response)
+void input_callback(const void *data, uint16_t len,
+  const linkaddr_t *src, const linkaddr_t *dest)
 {
-  const uint8_t *chunk;
-
-  if(response == NULL) {
-    puts("Request timed out");
-    return;
+  if(len == sizeof(unsigned)) {
+    unsigned count;
+    memcpy(&count, data, sizeof(count));
+    LOG_INFO("Received %u from ", count);
+    LOG_INFO_LLADDR(src);
+    LOG_INFO_("\n");
   }
-
-  int len = coap_get_payload(response, &chunk);
-
-  printf("|%.*s", len, (char *)chunk);
 }
 
-PROCESS_THREAD(er_example_client, ev, data)
+
+PROCESS(er_example_server, "Erbium Example Server");
+AUTOSTART_PROCESSES(&er_example_server);
+
+PROCESS_THREAD(er_example_server, ev, data)
 {
-  static coap_endpoint_t server_ep;
   PROCESS_BEGIN();
+  PROCESS_PAUSE();
 
-  static coap_message_t request[1];      /* This way the packet can be treated as pointer as usual. */
+  LOG_INFO("Starting Erbium Example Server\n");
+  printf("[SD] Node ID is %d\n", node_id);
+  nullnet_set_input_callback(input_callback);
+  /*
+   * Bind the resources to their Uri-Path.
+   * WARNING: Activating twice only means alternate path, not two instances!
+   * All static variables are the same for each URI path.
+   */
+  coap_activate_resource(&res_hello, "test/hello");
+  coap_activate_resource(&res_mirror, "debug/mirror");
+  coap_activate_resource(&res_chunks, "test/chunks");
+  coap_activate_resource(&res_separate, "test/separate");
+  coap_activate_resource(&res_push, "test/push");
 
-  coap_endpoint_parse(SERVER_EP, strlen(SERVER_EP), &server_ep);
-
-
+  
+  /* Define application-specific events here. */
   while(1) {
-    /* send a request to notify the end of the process */
-    coap_init_message(request, COAP_TYPE_CON, COAP_GET, 0);
-    coap_set_header_uri_path(request, service_urls[uri_switch]);
-
-    printf("--Requesting %s--\n", service_urls[uri_switch]);
-
-    LOG_INFO_COAP_EP(&server_ep);
-    LOG_INFO_("\n");
-
-    COAP_BLOCKING_REQUEST(&server_ep, request,
-                        client_chunk_handler);
-
-    printf("\n--Done--\n");
-
-    uri_switch = (uri_switch + 1) % NUMBER_OF_URLS;
-    }
+      PROCESS_WAIT_EVENT();
+  }
 
   PROCESS_END();
 }

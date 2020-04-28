@@ -19,6 +19,8 @@
         "istream": "cpp",
         "ostream": "cpp",
         "sstream": "cpp",
-        "streambuf": "cpp"
+        "streambuf": "cpp",
+        "coap-engine.h": "c",
+        "coap-timer.h": "c"
     }
 }
