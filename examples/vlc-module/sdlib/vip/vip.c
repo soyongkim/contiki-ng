@@ -297,7 +297,12 @@ vip_parse_message(vip_message_t *vip_pkt, uint8_t *data, uint16_t data_len)
     switch (vip_pkt->type)
     {
     case VIP_TYPE_BEACON:
-        memmove(vip_pkt->uplink_id, offset, vip_pkt->total_len - VIP_COMMON_HEADER_LEN);
+        int index = 0;
+        char temp[1000];
+        for(index = 0; index < vip_pkt->total_len - VIP_COMMON_HEADER_LEN; index++) {
+            temp[index] = (char)offset[index];
+        }
+        vip_pkt->uplink_id = temp;
         break;
     case VIP_TYPE_VRR:
         /* code */
