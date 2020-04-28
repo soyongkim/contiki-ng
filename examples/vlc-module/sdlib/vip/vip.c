@@ -299,7 +299,7 @@ vip_parse_message(vip_message_t *vip_pkt, uint8_t *data, uint16_t data_len)
     {
     case VIP_TYPE_BEACON:
         for(uint32_t index = 0; index < vip_pkt->total_len - VIP_COMMON_HEADER_LEN; index++) {
-            temp[index] = (char)offset[index];
+            temp[index] = (char)offset++;
         }
         vip_pkt->uplink_id = temp;
         break;
