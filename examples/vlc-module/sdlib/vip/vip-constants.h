@@ -14,7 +14,7 @@
 
 /* VIP message types */
 typedef enum {
-  VIP_TYPE_BEACON,             /* Beacon */
+  VIP_TYPE_BEACON = 0,             /* Beacon */
   VIP_TYPE_VRR,                /* VR Registration Request */
   VIP_TYPE_VRA,                /* VR Registration ACK */
   VIP_TYPE_VRC,                /* VR Registration Confirm */
