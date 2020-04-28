@@ -47,7 +47,7 @@
 
 /* Node ID */
 #include "sys/node-id.h"
-
+#include "sdlib/vip/vip.h"
 
 /*
  * Resources to be activated need to be imported through the extern keyword.
