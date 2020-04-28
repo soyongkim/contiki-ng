@@ -64,5 +64,6 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
   printf("TYPE:%d\n", vip_pkt->type);
   printf("AA-ID:%d\n", vip_pkt->aa_id);
   printf("VT-ID:%d\n", vip_pkt->vt_id);
-  
+  printf("Total-length:%d\n", vip_pkt->total_len);
+
 }
