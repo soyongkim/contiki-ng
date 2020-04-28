@@ -376,3 +376,17 @@ int vip_parse_message(vip_message_t *vip_pkt, uint8_t *data, uint32_t data_len)
 
     return 0;
 }
+
+
+/* Data Configure */
+int
+vip_set_header_total_len(vip_message_t *vip_pkt, uint32_t total_len) {
+    vip_pkt->total_len = total_len;
+    return 1;
+}
+
+int
+vip_set_type_header_uplink_id(vip_message_t *vip_pkt, char *uplink_id) {
+    vip_pkt->uplink_id = uplink_id;
+    return 1;
+}
