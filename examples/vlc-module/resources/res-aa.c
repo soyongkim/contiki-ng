@@ -58,10 +58,11 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
 {
   vip_message_t vip_pkt[1];
 
-  vip_parse_message(vip_pkt, request->payload, request->payload_len);
-
   printf("TEST\n");
-  printf("TYPE:%d\n", vip_pkt->type);
-  printf("AA-ID:%d\n", vip_pkt->aa_id);
-  printf("VT-ID:%d\n", vip_pkt->vt_id);
+  printf("LEN:%d\n", request->payload_len);
+
+  //vip_parse_message(vip_pkt, request->payload, request->payload_len);
+  //printf("TYPE:%d\n", vip_pkt->type);
+  //printf("AA-ID:%d\n", vip_pkt->aa_id);
+  //printf("VT-ID:%d\n", vip_pkt->vt_id);
 }
