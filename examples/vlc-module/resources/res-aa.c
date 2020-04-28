@@ -69,7 +69,7 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
     if(i < 8)
       printf("%d ", request->payload[i]);
     else
-      printf("%c", request->payload[i]);
+      printf("%c", (char)(request->payload[i]));
   }
   puts("");
 
