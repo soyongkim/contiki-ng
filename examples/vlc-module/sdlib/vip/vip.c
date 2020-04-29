@@ -137,7 +137,7 @@ uint8_t *
 vip_serialize_beacon(vip_message_t *vip_pkt, uint8_t *buffer)
 {
     uint8_t *offset = buffer + VIP_COMMON_HEADER_LEN;
-    vip_serialize_array(offset, vip_pkt->uplink_id, strlen(vip_pkt->uplink_id));
+    vip_serialize_array(offset, (uint8_t *)(vip_pkt->uplink_id), strlen(vip_pkt->uplink_id));
     return offset;
 }
 
