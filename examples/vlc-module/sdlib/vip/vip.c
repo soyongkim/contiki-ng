@@ -403,14 +403,14 @@ vip_set_header_total_len(vip_message_t *vip_pkt, uint32_t total_len) {
 
 
 int 
-vip_get_type_header_uplink_id(vip_message_t *vip_pkt, const char **uplink_id) {
+vip_get_type_header_uplink_id(vip_message_t *vip_pkt, char **uplink_id) {
     *uplink_id = vip_pkt->uplink_id;
     return 1;
 }
 
 
 int
-vip_set_type_header_uplink_id(vip_message_t *vip_pkt, const char *uplink_id) {
+vip_set_type_header_uplink_id(vip_message_t *vip_pkt, char *uplink_id) {
     vip_pkt->uplink_id = uplink_id;
     return 1;
 }
