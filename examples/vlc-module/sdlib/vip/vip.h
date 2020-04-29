@@ -13,7 +13,7 @@ typedef struct {
     uint16_t vt_id;
 
     /* type specific header */
-    char uplink_id[VIP_MAX_UPLINK_ID];
+    const char* uplink_id;
     uint32_t vr_id;
     uint16_t service_num;
     uint32_t service_id[VIP_MAX_SERVICE];
@@ -81,8 +81,8 @@ int vip_set_header_aa_id(vip_message_t *message, uint16_t aa_id);
 int vip_get_header_vt_id(vip_message_t *message, uint16_t *vt_id);
 int vip_set_header_vt_id(vip_message_t *message, uint16_t vt_id);
 
-int vip_get_type_header_uplink_id(vip_message_t *message, char **uplink_id);
-int vip_set_type_header_uplink_id(vip_message_t *vip_pkt, char *uplink_id, uint16_t uplink_id_len); 
+int vip_get_type_header_uplink_id(vip_message_t *message, const char **uplink_id);
+int vip_set_type_header_uplink_id(vip_message_t *message, const char *uplink_id); 
 
 int vip_get_type_header_vr_id(vip_message_t *message, uint32_t *vr_id);
 int vip_set_type_header_vr_id(vip_message_t *message, uint32_t vr_id);

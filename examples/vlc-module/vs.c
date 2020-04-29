@@ -54,8 +54,13 @@
 /* Node ID */
 #include "sys/node-id.h"
 
+
 PROCESS(er_example_client, "Erbium Example Client");
 AUTOSTART_PROCESSES(&er_example_client);
+
+char *uplink_id = {"ISL-5GHz"};
+
+
 
 /* This function is will be passed to COAP_BLOCKING_REQUEST() to handle responses. */
 void client_chunk_handler(coap_message_t *response)
@@ -83,20 +88,14 @@ PROCESS_THREAD(er_example_client, ev, data)
     coap_endpoint_parse(SERVER_EP, strlen(SERVER_EP), &server_ep);
 
     static vip_message_t vip_pkt[1];
-    char uplink_id[] = "ISL-5GHz";
     uint8_t buffer[50];
 
-    for (uint32_t i = 0; i < sizeof(uplink_id) - 1; i++)
-    {
-        printf("%c ", uplink_id[i]);
-    }
-    puts("");
 
     while (1)
     {
         /* send a request to notify the end of the process */
         vip_init_message(vip_pkt, VIP_TYPE_BEACON, 1, 1);
-        vip_set_type_header_uplink_id(vip_pkt, uplink_id, sizeof(uplink_id) - 1);
+        vip_set_type_header_uplink_id(vip_pkt, uplink_id);
         vip_set_header_total_len(vip_pkt, VIP_COMMON_HEADER_LEN + sizeof(uplink_id) - 1);
         vip_serialize_message(vip_pkt, buffer);
 
