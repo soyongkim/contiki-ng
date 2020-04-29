@@ -299,7 +299,6 @@ vip_parse_message(vip_message_t *vip_pkt, uint8_t *data, uint16_t data_len)
     switch (vip_pkt->type)
     {
     case VIP_TYPE_BEACON:
-        memcpy(vip_pkt->uplink_id, offset, vip_pkt->total_len - VIP_COMMON_HEADER_LEN);
         for(uint32_t i=0; i<vip_pkt->total_len - VIP_COMMON_HEADER_LEN; i++) {
             printf("%c:%d ", (char)(offset[i]), offset[i]);
         }
