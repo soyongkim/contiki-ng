@@ -45,8 +45,6 @@
 #include "coap-blocking-api.h"
 #include "sdlib/vip/vip.h"
 
-
-
 /* FIXME: This server address is hard-coded for Cooja and link-local for unconnected border router. */
 /* default address */
 // #define SERVER_EP "coap://[fe80::212:7402:0002:0202]"
@@ -59,65 +57,73 @@
 PROCESS(er_example_client, "Erbium Example Client");
 AUTOSTART_PROCESSES(&er_example_client);
 
-
 /* This function is will be passed to COAP_BLOCKING_REQUEST() to handle responses. */
-void
-client_chunk_handler(coap_message_t *response)
+void client_chunk_handler(coap_message_t *response)
 {
-  const uint8_t *chunk;
+    const uint8_t *chunk;
 
-  if(response == NULL) {
-    puts("Request timed out");
-    return;
-  }
+    if (response == NULL)
+    {
+        puts("Request timed out");
+        return;
+    }
 
-  int len = coap_get_payload(response, &chunk);
+    int len = coap_get_payload(response, &chunk);
 
-  printf("|%.*s", len, (char *)chunk);
+    printf("|%.*s", len, (char *)chunk);
 }
 
 PROCESS_THREAD(er_example_client, ev, data)
 {
-  static coap_endpoint_t server_ep;
-  PROCESS_BEGIN();
+    static coap_endpoint_t server_ep;
+    PROCESS_BEGIN();
 
-  static coap_message_t request[1];      /* This way the packet can be treated as pointer as usual. */
+    static coap_message_t request[1]; /* This way the packet can be treated as pointer as usual. */
 
-  coap_endpoint_parse(SERVER_EP, strlen(SERVER_EP), &server_ep);
+    coap_endpoint_parse(SERVER_EP, strlen(SERVER_EP), &server_ep);
 
+    static vip_message_t vip_pkt[1];
+    char uplink_id[] = "ISL-5GHz";
+    uint8_t buffer[50];
 
-  static vip_message_t vip_pkt[1];
-  char uplink_id[10] = "ISL-5GHz";
-  uint8_t buffer[50];
-
-  while(1) {
-    /* send a request to notify the end of the process */
-    vip_init_message(vip_pkt, VIP_TYPE_BEACON, 1, 1);
-    vip_set_type_header_uplink_id(vip_pkt, uplink_id, sizeof(uplink_id)-1);
-    vip_set_header_total_len(vip_pkt, VIP_COMMON_HEADER_LEN + sizeof(uplink_id)-1);
-    vip_serialize_message(vip_pkt, buffer);
-
-
-    printf("uplink-id:%s\n", uplink_id);
-
-    for(uint32_t i=8; i<16; i++) {
-        printf("%c:%d ", (char)vip_pkt->buffer[i], vip_pkt->buffer[i]);
+    for (uint32_t i = 0; i < sizeof(uplink_id) - 1; i++)
+    {
+        printf("%c ", uplink_id[i]);
     }
     puts("");
 
-    coap_init_message(request, COAP_TYPE_CON, COAP_POST, 0);
-    coap_set_header_uri_path(request, "vip/aa");
+    while (1)
+    {
+        /* send a request to notify the end of the process */
+        vip_init_message(vip_pkt, VIP_TYPE_BEACON, 1, 1);
+        vip_set_type_header_uplink_id(vip_pkt, uplink_id, sizeof(uplink_id) - 1);
+        vip_set_header_total_len(vip_pkt, VIP_COMMON_HEADER_LEN + sizeof(uplink_id) - 1);
+        vip_serialize_message(vip_pkt, buffer);
 
-    coap_set_payload(request, vip_pkt->buffer, vip_pkt->total_len);
+        for (uint32_t i = 0; i < sizeof(uplink_id) - 1; i++)
+        {
+            printf("%c ", uplink_id[i]);
+        }
+        puts("");
 
+        for (uint32_t i = 8; i < 16; i++)
+        {
+            printf("%c:%d ", (char)vip_pkt->buffer[i], vip_pkt->buffer[i]);
+        }
+        puts("");
 
-    printf("--Requesting vip/aa--\n");
+        coap_init_message(request, COAP_TYPE_CON, COAP_POST, 0);
+        coap_set_header_uri_path(request, "vip/aa");
 
-    COAP_BLOCKING_REQUEST(&server_ep, request,
-                        client_chunk_handler);
+        coap_set_payload(request, vip_pkt->buffer, vip_pkt->total_len);
 
-    printf("\n--Done--\n");
+        printf("--Requesting vip/aa--\n");
+
+        COAP_BLOCKING_REQUEST(&server_ep, request,
+                              client_chunk_handler);
+
+        printf("\n--Done--\n");
     }
 
-  PROCESS_END();
+    PROCESS_END();
 }
