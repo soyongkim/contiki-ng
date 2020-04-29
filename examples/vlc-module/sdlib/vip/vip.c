@@ -126,10 +126,18 @@ int vip_serialize_message(vip_message_t *vip_pkt, uint8_t *buffer)
     return 1;
 }
 
+
+static void
+vip_serialize_array(uint8_t *buffer, uint8_t *array, size_t length) {
+    memcpy(buffer, array, length);
+}
+
+
 uint8_t *
 vip_serialize_beacon(vip_message_t *vip_pkt, uint8_t *buffer)
 {
     uint8_t *offset = buffer + VIP_COMMON_HEADER_LEN;
+    vip_serialize_array(offset, vip_pkt->uplink_id, strlen(vip_pkt->uplink_id));
     return offset;
 }
 

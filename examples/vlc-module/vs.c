@@ -96,10 +96,10 @@ PROCESS_THREAD(er_example_client, ev, data)
         /* send a request to notify the end of the process */
         vip_init_message(vip_pkt, VIP_TYPE_BEACON, 1, 1);
         vip_set_type_header_uplink_id(vip_pkt, uplink_id);
-        vip_set_header_total_len(vip_pkt, VIP_COMMON_HEADER_LEN + sizeof(uplink_id) - 1);
+        vip_set_header_total_len(vip_pkt, VIP_COMMON_HEADER_LEN + 8);
         vip_serialize_message(vip_pkt, buffer);
 
-        for (uint32_t i = 0; i < sizeof(uplink_id) - 1; i++)
+        for (uint32_t i = 0; i < 8; i++)
         {
             printf("%c ", uplink_id[i]);
         }
