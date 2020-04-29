@@ -87,7 +87,7 @@ PROCESS_THREAD(er_example_client, ev, data)
 
 
   static vip_message_t vip_pkt[1];
-  char uplink_id[] = "ISL-5GHz";
+  char uplink_id[10] = "ISL-5GHz";
   uint8_t buffer[50];
 
   while(1) {
