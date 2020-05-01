@@ -93,3 +93,4 @@ res_event_handler(void)
     coap_notify_observers(&res_event);
   }
 }
+

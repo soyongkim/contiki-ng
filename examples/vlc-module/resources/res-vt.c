@@ -45,26 +45,19 @@
 
 static void res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset);
 
-/* test event process */
-process_event_t aa_event;
-
-
 /* A simple actuator example. Toggles the red led */
-EVENT_RESOURCE(res_aa,
+RESOURCE(res_aa,
          "title=\"AA\";rt=\"Control\"",
          NULL,
          res_post_handler,
          NULL,
-         NULL,
-         res_event_handler);
+         NULL);
 
 static void
 res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset)
 {
   printf("TEST\n");
   printf("LEN:%d\n", request->payload_len);
-
-  process_post(PROCESS_BROADCAST, aa_event, NULL);
 
   static vip_message_t vip_pkt[1];
   vip_parse_message(vip_pkt, request->payload, request->payload_len);
@@ -74,12 +67,4 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
   printf("Total-length:%d\n", vip_pkt->total_len);
   printf("UPLINK_ID:%s\n", vip_pkt->uplink_id);
 
-
-}
-
-
-static void
-res_event_handler(void)
-{
-  printf("This is AA event handler\n");
 }

@@ -44,7 +44,6 @@
 #include "coap-engine.h"
 #include "net/netstack.h"
 
-
 /* Node ID */
 #include "sys/node-id.h"
 #include "sdlib/vip/vip.h"
@@ -76,6 +75,9 @@ PROCESS_THREAD(er_example_server, ev, data)
   /* Define application-specific events here. */
   while(1) {
       PROCESS_WAIT_EVENT();
+      printf("Event!\n");
+      res_aa.trigger();
+      printf("Event END\n");
   }
 
   PROCESS_END();

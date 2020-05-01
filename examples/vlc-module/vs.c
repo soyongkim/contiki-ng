@@ -99,18 +99,6 @@ PROCESS_THREAD(er_example_client, ev, data)
         vip_set_header_total_len(vip_pkt, VIP_COMMON_HEADER_LEN + 8);
         vip_serialize_message(vip_pkt, buffer);
 
-        for (uint32_t i = 0; i < 8; i++)
-        {
-            printf("%c ", uplink_id[i]);
-        }
-        puts("");
-
-        for (uint32_t i = 8; i < 16; i++)
-        {
-            printf("%c:%d ", (char)vip_pkt->buffer[i], vip_pkt->buffer[i]);
-        }
-        puts("");
-
         coap_init_message(request, COAP_TYPE_CON, COAP_POST, 0);
         coap_set_header_uri_path(request, "vip/aa");
 

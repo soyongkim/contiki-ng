@@ -69,9 +69,6 @@ int vip_parse_VM(vip_message_t *message, uint8_t *buffer);
 
 
 /* Data configure */
-int vip_get_header_type(vip_message_t *message, uint8_t *type);
-int vip_set_header_type(vip_message_t *message, uint8_t type);
-
 int vip_get_header_total_len(vip_message_t *message, uint32_t *total_len);
 int vip_set_header_total_len(vip_message_t *message, uint32_t total_len);
 

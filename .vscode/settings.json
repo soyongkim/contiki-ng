@@ -24,6 +24,7 @@
         "coap-timer.h": "c",
         "stdlib.h": "c",
         "common.h": "c",
-        "vip.h": "c"
+        "vip.h": "c",
+        "light-sensor.h": "c"
     }
 }
