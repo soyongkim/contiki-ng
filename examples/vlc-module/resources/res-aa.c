@@ -68,9 +68,7 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
   aa_event = process_alloc_event();
 
   int res;
-  if((res = process_post(PROCESS_BROADCAST, aa_event, NULL)) == PROCESS_ERR_OK) {
-    printf("PROCESS ERROR OK\n");
-  }
+  res = process_post(PROCESS_BROADCAST, aa_event, NULL);
   printf("Print:%d\n", res);
 
   static vip_message_t vip_pkt[1];
