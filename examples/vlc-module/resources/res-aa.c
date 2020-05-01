@@ -65,8 +65,8 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
   printf("TEST\n");
   printf("LEN:%d\n", request->payload_len);
 
+  aa_event = process_alloc_event();
   process_post(PROCESS_BROADCAST, aa_event, NULL);
-
   static vip_message_t vip_pkt[1];
   vip_parse_message(vip_pkt, request->payload, request->payload_len);
   printf("TYPE:%d\n", vip_pkt->type);
