@@ -30,6 +30,7 @@
         "string.h": "c",
         "inttypes.h": "c",
         "list.h": "c",
-        "cc.h": "c"
+        "cc.h": "c",
+        "vip-engine.h": "c"
     }
 }

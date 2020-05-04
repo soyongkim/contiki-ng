@@ -46,7 +46,7 @@
 
 /* Node ID */
 #include "sys/node-id.h"
-#include "sdlib/vip/vip.h"
+#include "vip.h"
 #include "vip-engine.h"
 
 /*

@@ -1,5 +1,4 @@
 #include "vip-engine.h"
-#include "vip.h"
 
 #include "contiki.h"
 #include "sys/cc.h"
