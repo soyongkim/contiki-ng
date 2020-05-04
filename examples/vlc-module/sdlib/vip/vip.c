@@ -7,7 +7,7 @@
 #include "sys/cc.h"
 #include "coap-blocking-api.h"
 
-#include "common.h"
+#include "sdlib/common.h"
 #include "vip.h"
 
 #include "sys/node-id.h"
