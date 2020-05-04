@@ -77,50 +77,50 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
   }
 }
 
-static void
-handler_vrr() {
+// static void
+// handler_vrr() {
 
-}
+// }
 
-static void
-handler_vra() {
+// static void
+// handler_vra() {
 
-}
+// }
 
-static void
-handler_vrc() {
+// static void
+// handler_vrc() {
 
-}
+// }
 
-static void
-handler_rel() {
+// static void
+// handler_rel() {
 
-}
+// }
 
-static void
-handler_ser() {
+// static void
+// handler_ser() {
 
-}
+// }
 
-static void
-handler_sea() {
+// static void
+// handler_sea() {
 
-}
+// }
 
-static void
-handler_sec() {
+// static void
+// handler_sec() {
 
-}
+// }
 
-static void
-handler_sd() {
+// static void
+// handler_sd() {
 
-}
+// }
 
-static void
-handler_sda() {
+// static void
+// handler_sda() {
 
-}
+// }
 
 
 static void
