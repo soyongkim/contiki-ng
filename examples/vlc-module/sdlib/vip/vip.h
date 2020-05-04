@@ -1,6 +1,7 @@
 #include "contiki.h"
 #include "net/ipv6/uip.h"
 #include "vip-constants.h"
+#include "vip-engine.h"
 
 /* message struct */
 typedef struct {

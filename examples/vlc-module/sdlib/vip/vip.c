@@ -5,7 +5,6 @@
 #include <stdlib.h>
 #include <inttypes.h>
 #include "sys/cc.h"
-#include "coap-engine.h"
 #include "coap-blocking-api.h"
 
 #include "common.h"
