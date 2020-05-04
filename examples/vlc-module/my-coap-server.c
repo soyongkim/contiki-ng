@@ -79,9 +79,6 @@ void input_callback(const void *data, uint16_t len,
   if(len == sizeof(unsigned)) {
     unsigned count;
     memcpy(&count, data, sizeof(count));
-    LOG_INFO("Received %u from ", count);
-    LOG_INFO_LLADDR(src);
-    LOG_INFO_("\n");
   }
 }
 
@@ -94,7 +91,6 @@ PROCESS_THREAD(er_example_server, ev, data)
   PROCESS_BEGIN();
   PROCESS_PAUSE();
 
-  LOG_INFO("Starting Erbium Example Server\n");
   printf("[SD] Node ID is %d\n", node_id);
   nullnet_set_input_callback(input_callback);
   /*

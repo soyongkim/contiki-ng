@@ -42,12 +42,11 @@
 #include <string.h>
 #include "contiki.h"
 #include "coap-engine.h"
+#include "vip-engine.h"
 #include "net/netstack.h"
 
 /* Node ID */
 #include "sys/node-id.h"
-#include "vip.h"
-
 /*
  * Resources to be activated need to be imported through the extern keyword.
  * The build system automatically compiles the resources in the corresponding sub-directory.

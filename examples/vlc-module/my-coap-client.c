@@ -109,9 +109,6 @@ PROCESS_THREAD(er_example_client, ev, data)
 
     printf("--Requesting %s--\n", service_urls[uri_switch]);
 
-    LOG_INFO_COAP_EP(&server_ep);
-    LOG_INFO_("\n");
-
     COAP_BLOCKING_REQUEST(&server_ep, request,
                         client_chunk_handler);
 
