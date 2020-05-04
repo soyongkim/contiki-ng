@@ -47,7 +47,6 @@
 /* Node ID */
 #include "sys/node-id.h"
 #include "vip.h"
-#include "vip-engine.h"
 
 /*
  * Resources to be activated need to be imported through the extern keyword.
