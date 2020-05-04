@@ -47,6 +47,7 @@
 /* Node ID */
 #include "sys/node-id.h"
 #include "sdlib/vip/vip.h"
+#include "vip-engine.h"
 
 /*
  * Resources to be activated need to be imported through the extern keyword.
@@ -71,13 +72,11 @@ PROCESS_THREAD(er_example_server, ev, data)
    */
   coap_activate_resource(&res_aa, "vip/aa");
 
+  vip_engine_init();
   
   /* Define application-specific events here. */
   while(1) {
       PROCESS_WAIT_EVENT();
-      printf("Event!\n");
-      res_aa.trigger();
-      printf("Event END\n");
   }
 
   PROCESS_END();

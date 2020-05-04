@@ -14,6 +14,9 @@
 #define VIP_PAYLOAD_LEN_POSITION 8
 
 
+#define VIP_ERROR 0
+#define VIP_NO_ERROR 1
+
 /* VIP message types */
 typedef enum {
   VIP_TYPE_BEACON = 0,             /* Beacon */

@@ -65,21 +65,60 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
   printf("TEST\n");
   printf("LEN:%d\n", request->payload_len);
 
-  aa_event = process_alloc_event();
-
-  int res;
-  res = process_post(PROCESS_BROADCAST, aa_event, NULL);
-  printf("Print:%d\n", res);
-
   static vip_message_t vip_pkt[1];
-  vip_parse_message(vip_pkt, request->payload, request->payload_len);
+  if (vip_parse_message(vip_pkt, request->payload, request->payload_len) == VIP_NO_ERROR)
+  {
+    printf("VIP: No ERROR");
+    vip_route(vip_pkt);
+  }
+  else
+  {
+    printf("VIP: NoT VIP Packet");
+  }
+}
 
-  printf("TYPE:%d\n", vip_pkt->type);
-  printf("AA-ID:%d\n", vip_pkt->aa_id);
-  printf("VT-ID:%d\n", vip_pkt->vt_id);
-  printf("Total-length:%d\n", vip_pkt->total_len);
-  printf("UPLINK_ID:%s\n", vip_pkt->uplink_id);
+static void
+handler_vrr() {
 
+}
+
+static void
+handler_vra() {
+
+}
+
+static void
+handler_vrc() {
+
+}
+
+static void
+handler_rel() {
+
+}
+
+static void
+handler_ser() {
+
+}
+
+static void
+handler_sea() {
+
+}
+
+static void
+handler_sec() {
+
+}
+
+static void
+handler_sd() {
+
+}
+
+static void
+handler_sda() {
 
 }
 

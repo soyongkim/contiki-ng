@@ -25,6 +25,11 @@
         "stdlib.h": "c",
         "common.h": "c",
         "vip.h": "c",
-        "light-sensor.h": "c"
+        "light-sensor.h": "c",
+        "coap-log.h": "c",
+        "string.h": "c",
+        "inttypes.h": "c",
+        "list.h": "c",
+        "cc.h": "c"
     }
 }

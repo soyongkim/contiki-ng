@@ -5,8 +5,13 @@
 #include <stdlib.h>
 #include <inttypes.h>
 #include "sys/cc.h"
+#include "coap-engine.h"
+#include "coap-blocking-api.h"
 
+#include "common.h"
 #include "vip.h"
+
+#include "sys/node-id.h"
 
 
 void vip_init_message(vip_message_t *message, uint8_t type,
@@ -297,11 +302,24 @@ vip_parse_message(vip_message_t *vip_pkt, uint8_t *data, uint16_t data_len)
     offset += 1;
     vip_pkt->total_len = vip_parse_int_option(offset, 3);
     offset += 3;
+
+
+    if(vip_pkt->total_len != data_len)
+        return VIP_ERROR;
+
+
     vip_pkt->aa_id = vip_parse_int_option(offset, 2);
     offset += 2;
     vip_pkt->vt_id = vip_parse_int_option(offset, 2);
     offset += 2;
 
+    return VIP_NO_ERROR;
+}
+
+int
+vip_route(vip_message_t *vip_pkt) {
+    /* start from common header */
+    uint8_t *offset = vip_pkt->buffer + VIP_COMMON_HEADER_LEN;
 
     /* parse type field and payload */
     switch (vip_pkt->type)
@@ -310,6 +328,7 @@ vip_parse_message(vip_message_t *vip_pkt, uint8_t *data, uint16_t data_len)
         vip_pkt->uplink_id = (char *)malloc((vip_pkt->total_len) - VIP_COMMON_HEADER_LEN + 1);
         memcpy(vip_pkt->uplink_id, (char *)offset, (vip_pkt->total_len) - VIP_COMMON_HEADER_LEN + 1);
         vip_pkt->uplink_id[(vip_pkt->total_len) - VIP_COMMON_HEADER_LEN + 1] = '\0';
+        vip_coap_response(vip_pkt, "vip/aa");
         break;
     case VIP_TYPE_VRR:
         /* code */
@@ -394,6 +413,21 @@ vip_parse_message(vip_message_t *vip_pkt, uint8_t *data, uint16_t data_len)
 }
 
 
+void
+vip_coap_response(vip_message_t *vip_pkt, char *target_url) {
+    static coap_endpoint_t server_ep;
+    static coap_message_t request[1];
+    char coap_uri[25];
+    make_coap_uri(coap_uri, node_id);
+    coap_endpoint_parse(coap_uri, strlen(coap_uri), &server_ep);
+
+    coap_init_message(request, COAP_TYPE_CON, COAP_POST, 0);
+    coap_set_header_uri_path(request, target_url);
+    coap_set_payload(request, vip_pkt->buffer, vip_pkt->total_len);
+    coap_sendto(&server_ep, request, coap_serialize_message(request, vip_pkt->buffer));
+}
+
+
 /* Data Configure */
 int
 vip_set_header_total_len(vip_message_t *vip_pkt, uint32_t total_len) {
@@ -414,3 +448,5 @@ vip_set_type_header_uplink_id(vip_message_t *vip_pkt, char *uplink_id) {
     vip_pkt->uplink_id = uplink_id;
     return 1;
 }
+
+
