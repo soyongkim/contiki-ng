@@ -45,7 +45,7 @@ PROCESS_THREAD(vip_engine, ev, data)
   int count = 0;
 
   while(1) {
-    PROCESS_YIELD();
+    //PROCESS_YIELD();
     
     printf("VIP Engine Test Count %d\n", count++);
 
