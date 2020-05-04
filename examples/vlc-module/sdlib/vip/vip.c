@@ -413,16 +413,16 @@ vip_route(vip_message_t *vip_pkt) {
 
 void
 vip_coap_response(vip_message_t *vip_pkt, char *target_url) {
-    static coap_endpoint_t server_ep;
+    const coap_endpoint_t server_ep;
     static coap_message_t request[1];
     char coap_uri[25];
-    make_coap_uri(coap_uri, node_id);
+    //make_coap_uri(coap_uri, node_id);
     coap_endpoint_parse(coap_uri, strlen(coap_uri), &server_ep);
 
     coap_init_message(request, COAP_TYPE_CON, COAP_POST, 0);
     coap_set_header_uri_path(request, target_url);
     coap_set_payload(request, vip_pkt->buffer, vip_pkt->total_len);
-    coap_sendto(&server_ep, request, coap_serialize_message(request, vip_pkt->buffer));
+    //coap_sendto(&server_ep, request, coap_serialize_message(request, vip_pkt->buffer));
 }
 
 
