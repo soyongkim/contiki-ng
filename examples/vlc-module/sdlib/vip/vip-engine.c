@@ -2,7 +2,7 @@
 
 #include "contiki.h"
 #include "sys/cc.h"
-#include "aa.h"
+#include "../aa.h"
 #include "lib/list.h"
 #include <stdio.h>
 #include <stdlib.h>
