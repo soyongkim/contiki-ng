@@ -54,6 +54,10 @@
 extern coap_resource_t res_aa;
 
 
+/* test event process */
+process_event_t aa_event;
+
+
 PROCESS(aa_process, "AA");
 AUTOSTART_PROCESSES(&aa_process);
 
@@ -74,7 +78,11 @@ PROCESS_THREAD(aa_process, ev, data)
   
   /* Define application-specific events here. */
   while(1) {
-      PROCESS_YIELD();
+      PROCESS_WAIT_EVENT();
+
+      if(ev == aa_event) {
+        printf("GOOD!");
+      }
 
       printf("EVENT!\n");
   }
