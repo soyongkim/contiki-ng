@@ -51,12 +51,7 @@
  * Resources to be activated need to be imported through the extern keyword.
  * The build system automatically compiles the resources in the corresponding sub-directory.
  */
-extern coap_resource_t res_aa;
-
-
-/* test event process */
-process_event_t aa_event;
-
+extern coap_resource_t res_aaa;
 
 PROCESS(aa_process, "AA");
 AUTOSTART_PROCESSES(&aa_process);
@@ -72,7 +67,7 @@ PROCESS_THREAD(aa_process, ev, data)
    * WARNING: Activating twice only means alternate path, not two instances!
    * All static variables are the same for each URI path.
    */
-  coap_activate_resource(&res_aa, "vip/aa");
+  coap_activate_resource(&res_aaa, "vip/aa");
 
   vip_engine_init();
   

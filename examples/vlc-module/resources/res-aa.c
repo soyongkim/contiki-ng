@@ -49,7 +49,7 @@ static void res_event_handler(void);
 
 
 /* A simple actuator example. Toggles the red led */
-EVENT_RESOURCE(res_aa,
+EVENT_RESOURCE(res_aaa,
          "title=\"AA\";rt=\"Control\"",
          NULL,
          res_post_handler,
