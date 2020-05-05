@@ -39,6 +39,7 @@
 #include "contiki.h"
 #include "coap-engine.h"
 #include "sdlib/vip/vip.h"
+#include "aa.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -73,8 +74,8 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
     printf("VIP: NoT VIP Packet");
   }
 
-  //process_poll(PROCESS_BROADCAST);
-
+  //process_poll(&aa_process);
+  process_post(&aa_process, aa_event, NULL);
 }
 
 // static void

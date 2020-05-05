@@ -2,7 +2,6 @@
 
 #include "contiki.h"
 #include "sys/cc.h"
-#include "../aa.h"
 #include "lib/list.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -51,7 +50,7 @@ PROCESS_THREAD(vip_engine, ev, data)
     PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&et));
     printf("VIP Engine Test Count %d\n", count++);
     //process_poll(&aa_process);
-    process_post(&aa_process, aa_event, NULL);
+    //process_post(&aa_process, aa_event, NULL);
     etimer_reset(&et);
     }
 
