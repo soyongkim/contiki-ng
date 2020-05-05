@@ -52,6 +52,7 @@
  * The build system automatically compiles the resources in the corresponding sub-directory.
  */
 extern coap_resource_t res_aaa;
+process_event_t aa_event;
 
 PROCESS(aa_process, "AA");
 AUTOSTART_PROCESSES(&aa_process);
