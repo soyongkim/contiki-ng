@@ -75,6 +75,9 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
   {
     printf("VIP: NoT VIP Packet");
   }
+
+  process_poll(PROCESS_BROADCAST);
+
 }
 
 // static void

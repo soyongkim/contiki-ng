@@ -54,10 +54,10 @@
 extern coap_resource_t res_aa;
 
 
-PROCESS(er_example_server, "Erbium Example Server");
-AUTOSTART_PROCESSES(&er_example_server);
+PROCESS(aa_process, "AA");
+AUTOSTART_PROCESSES(&aa_process);
 
-PROCESS_THREAD(er_example_server, ev, data)
+PROCESS_THREAD(aa_process, ev, data)
 {
   PROCESS_BEGIN();
   PROCESS_PAUSE();
@@ -74,7 +74,7 @@ PROCESS_THREAD(er_example_server, ev, data)
   
   /* Define application-specific events here. */
   while(1) {
-      PROCESS_WAIT_EVENT();
+      PROCESS_YIELD();
 
       printf("EVENT!\n");
   }
