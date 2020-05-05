@@ -41,14 +41,15 @@ vip_engine_init(void)
 
 PROCESS_THREAD(vip_engine, ev, data)
 {
+  static int count = 0;
+  static struct etimer et;
   PROCESS_BEGIN();
-  int count = 0;
 
+  etimer_set(&et, CLOCK_SECOND);
   while(1) {
-    //PROCESS_YIELD();
-    
+    PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&et));
     printf("VIP Engine Test Count %d\n", count++);
-
+    etimer_reset(&et);
     }
 
   PROCESS_END();
