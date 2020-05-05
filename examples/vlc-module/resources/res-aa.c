@@ -60,19 +60,21 @@ EVENT_RESOURCE(res_aa,
 static void
 res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset)
 {
-  printf("TEST\n");
-  printf("LEN:%d\n", request->payload_len);
+  printf("Received\n");
+  // printf("LEN:%d\n", request->payload_len);
 
-  static vip_message_t vip_pkt[1];
-  if (vip_parse_message(vip_pkt, request->payload, request->payload_len) == VIP_NO_ERROR)
-  {
-    printf("VIP: NO ERROR");
-    vip_route(vip_pkt);
-  }
-  else
-  {
-    printf("VIP: NoT VIP Packet");
-  }
+  // static vip_message_t vip_pkt[1];
+  // if (vip_parse_message(vip_pkt, request->payload, request->payload_len) == VIP_NO_ERROR)
+  // {
+  //   printf("VIP: NO ERROR");
+  //   vip_route(vip_pkt);
+  // }
+  // else
+  // {
+  //   printf("VIP: NoT VIP Packet");
+  // }
+
+  process_post(&aa_process, aa_event, NULL);
 }
 
 // static void

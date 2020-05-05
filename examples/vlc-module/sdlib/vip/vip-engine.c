@@ -8,6 +8,8 @@
 #include <inttypes.h>
 #include <string.h>
 
+#include "aa.h"
+
 PROCESS(vip_engine, "VIP Engine");
 
 LIST(vip_type_handlers);
