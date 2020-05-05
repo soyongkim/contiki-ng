@@ -68,7 +68,7 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
   static vip_message_t vip_pkt[1];
   if (vip_parse_message(vip_pkt, request->payload, request->payload_len) == VIP_NO_ERROR)
   {
-    printf("VIP: No ERROR");
+    printf("VIP: NO ERROR");
     vip_route(vip_pkt);
   }
   else

@@ -75,6 +75,8 @@ PROCESS_THREAD(er_example_server, ev, data)
   /* Define application-specific events here. */
   while(1) {
       PROCESS_WAIT_EVENT();
+
+      printf("EVENT!\n");
   }
 
   PROCESS_END();

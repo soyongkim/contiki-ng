@@ -81,6 +81,7 @@ void client_chunk_handler(coap_message_t *response)
 PROCESS_THREAD(er_example_client, ev, data)
 {
     static coap_endpoint_t server_ep;
+    static struct etimer et;
     PROCESS_BEGIN();
 
     static coap_message_t request[1]; /* This way the packet can be treated as pointer as usual. */
@@ -90,9 +91,10 @@ PROCESS_THREAD(er_example_client, ev, data)
     static vip_message_t vip_pkt[1];
     uint8_t buffer[50];
 
-
+    etimer_set(&et, CLOCK_SECOND);
     while (1)
     {
+        PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&et));
         /* send a request to notify the end of the process */
         vip_init_message(vip_pkt, VIP_TYPE_BEACON, 1, 1);
         vip_set_type_header_uplink_id(vip_pkt, uplink_id);
@@ -110,6 +112,7 @@ PROCESS_THREAD(er_example_client, ev, data)
                               client_chunk_handler);
 
         printf("\n--Done--\n");
+        etimer_reset(&et);
     }
 
     PROCESS_END();
