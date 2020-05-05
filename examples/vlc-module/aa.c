@@ -53,6 +53,11 @@
  */
 extern coap_resource_t res_aaa;
 
+
+/* test event process */
+process_event_t aa_event;
+
+
 PROCESS(aa_process, "AA");
 AUTOSTART_PROCESSES(&aa_process);
 
