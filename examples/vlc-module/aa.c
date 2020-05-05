@@ -82,6 +82,7 @@ PROCESS_THREAD(aa_process, ev, data)
 
       if(ev == aa_event) {
         printf("GOOD!");
+        res_aa.trigger();
       }
 
       printf("EVENT!\n");
