@@ -49,6 +49,7 @@ PROCESS_THREAD(vip_engine, ev, data)
   while(1) {
     PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&et));
     printf("VIP Engine Test Count %d\n", count++);
+    process_poll(PROCESS_BROADCAST);
     etimer_reset(&et);
     }
 
