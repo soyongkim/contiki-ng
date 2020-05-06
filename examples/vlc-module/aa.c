@@ -52,6 +52,7 @@
  * The build system automatically compiles the resources in the corresponding sub-directory.
  */
 extern coap_resource_t res_aaa;
+extern vip_entity_t aa_type_handler;
 
 
 /* test event process */
@@ -76,13 +77,20 @@ PROCESS_THREAD(aa_process, ev, data)
 
   vip_engine_init();
   
+  vip_message_t *vip_pkt;
+
+
   /* Define application-specific events here. */
   while(1) {
       PROCESS_WAIT_EVENT();
 
       if(ev == aa_event) {
-        printf("GOOD!");
         res_aaa.trigger();
+
+        vip_pkt = (vip_message_t *)data;
+        printf("type is %d\n", vip_pkt->type);
+
+        aa_type_handler.beacon_handler();
       }
 
       printf("EVENT!\n");

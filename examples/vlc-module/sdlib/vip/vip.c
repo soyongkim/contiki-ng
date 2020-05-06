@@ -326,7 +326,6 @@ vip_route(vip_message_t *vip_pkt) {
         vip_pkt->uplink_id = (char *)malloc((vip_pkt->total_len) - VIP_COMMON_HEADER_LEN + 1);
         memcpy(vip_pkt->uplink_id, (char *)offset, (vip_pkt->total_len) - VIP_COMMON_HEADER_LEN + 1);
         vip_pkt->uplink_id[(vip_pkt->total_len) - VIP_COMMON_HEADER_LEN + 1] = '\0';
-        //vip_coap_response(vip_pkt, "vip/aa");
         break;
     case VIP_TYPE_VRR:
         /* code */

@@ -38,7 +38,7 @@
 
 #include "contiki.h"
 #include "coap-engine.h"
-#include "sdlib/vip/vip.h"
+#include "vip-engine.h"
 #include "aa.h"
 
 #include <stdio.h>
@@ -57,71 +57,92 @@ EVENT_RESOURCE(res_aaa,
          NULL, 
          res_event_handler);
 
+
+/* vip type handler */
+TYPE_HANDLER(aa_type_handler, handle_beacon, handler_vrr, handler_vra, 
+              handler_vrc, handler_rel, handler_ser, handler_sea, handler_sec,
+              handler_sd, handler_sda, handler_vu, handler_vm);
+
 static void
 res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset)
 {
   printf("Received\n");
   // printf("LEN:%d\n", request->payload_len);
 
-  // static vip_message_t vip_pkt[1];
-  // if (vip_parse_message(vip_pkt, request->payload, request->payload_len) == VIP_NO_ERROR)
-  // {
-  //   printf("VIP: NO ERROR");
-  //   vip_route(vip_pkt);
-  // }
-  // else
-  // {
-  //   printf("VIP: NoT VIP Packet");
-  // }
+  static vip_message_t vip_pkt[1];
+  if (vip_parse_message(vip_pkt, request->payload, request->payload_len) == VIP_NO_ERROR)
+  {
+    printf("VIP: NO ERROR");
+    vip_route(vip_pkt);
+  }
+  else
+  {
+    printf("VIP: NoT VIP Packet");
+  }
 
-  process_post(&aa_process, aa_event, NULL);
+  process_post(&aa_process, aa_event, (void *)vip_pkt);
 }
 
-// static void
-// handler_vrr() {
+static void
+handle_beacon() {
+  printf("I'm beacon handler\n");
+}
 
-// }
 
-// static void
-// handler_vra() {
+static void
+handler_vrr() {
 
-// }
+}
 
-// static void
-// handler_vrc() {
+static void
+handler_vra() {
 
-// }
+}
 
-// static void
-// handler_rel() {
+static void
+handler_vrc() {
 
-// }
+}
 
-// static void
-// handler_ser() {
+static void
+handler_rel() {
 
-// }
+}
 
-// static void
-// handler_sea() {
+static void
+handler_ser() {
 
-// }
+}
 
-// static void
-// handler_sec() {
+static void
+handler_sea() {
 
-// }
+}
 
-// static void
-// handler_sd() {
+static void
+handler_sec() {
 
-// }
+}
 
-// static void
-// handler_sda() {
+static void
+handler_sd() {
 
-// }
+}
 
+static void
+handler_sda() {
+
+}
+
+static void
+handler_vu() {
+
+}
+
+static void
+handler_vm() {
+
+}
 
 static void
 res_event_handler(void)
