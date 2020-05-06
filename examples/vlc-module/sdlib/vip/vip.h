@@ -29,6 +29,7 @@ void vip_init_message(vip_message_t *message, uint8_t type, uint16_t aa_id, uint
 
 int vip_serialize_message(vip_message_t *message, uint8_t *buffer);
 int vip_parse_common_header(vip_message_t *message, uint8_t *data, uint16_t data_len);
+uint32_t vip_parse_int_option(uint8_t *bytes, size_t length);
 
 /* Type Specific Header */
 uint8_t* vip_serialize_beacon(vip_message_t *message, uint8_t *buffer);
