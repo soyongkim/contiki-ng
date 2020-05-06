@@ -32,7 +32,7 @@ int vip_parse_common_header(vip_message_t *message, uint8_t *data, uint16_t data
 
 /* Type Specific Header */
 uint8_t* vip_serialize_beacon(vip_message_t *message, uint8_t *buffer);
-int vip_parse_beacon(vip_message_t *message);
+void vip_parse_beacon(vip_message_t *message);
 
 uint8_t* vip_serialize_VRR(vip_message_t *message, uint8_t *buffer);
 int vip_parse_VRR(vip_message_t *message, uint8_t *buffer);

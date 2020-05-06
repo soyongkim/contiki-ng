@@ -314,7 +314,7 @@ vip_parse_common_header(vip_message_t *vip_pkt, uint8_t *data, uint16_t data_len
     return VIP_NO_ERROR;
 }
 
-int 
+void
 vip_parse_beacon(vip_message_t *vip_pkt)
 {
     /* start from common header */
