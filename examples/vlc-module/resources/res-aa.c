@@ -46,7 +46,18 @@
 
 static void res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset);
 static void res_event_handler(void);
-
+static void handler_beacon(vip_message_t *rcv_pkt);
+static void handler_vrr(vip_message_t *rcv_pkt);
+static void handler_vra(vip_message_t *rcv_pkt);
+static void handler_vrc(vip_message_t *rcv_pkt);
+static void handler_rel(vip_message_t *rcv_pkt);
+static void handler_ser(vip_message_t *rcv_pkt);
+static void handler_sea(vip_message_t *rcv_pkt);
+static void handler_sec(vip_message_t *rcv_pkt);
+static void handler_sd(vip_message_t *rcv_pkt);
+static void handler_sda(vip_message_t *rcv_pkt);
+static void handler_vu(vip_message_t *rcv_pkt);
+static void handler_vm(vip_message_t *rcv_pkt);
 
 /* A simple actuator example. Toggles the red led */
 EVENT_RESOURCE(res_aaa,
@@ -59,7 +70,7 @@ EVENT_RESOURCE(res_aaa,
 
 
 /* vip type handler */
-TYPE_HANDLER(aa_type_handler, handle_beacon, handler_vrr, handler_vra, 
+TYPE_HANDLER(aa_type_handler, handler_beacon, handler_vrr, handler_vra, 
               handler_vrc, handler_rel, handler_ser, handler_sea, handler_sec,
               handler_sd, handler_sda, handler_vu, handler_vm);
 
@@ -84,63 +95,63 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
 }
 
 static void
-handle_beacon(vip_message_t *received_pkt, vip_message_t *send_pkt) {
+handler_beacon(vip_message_t *rcv_pkt) {
   printf("I'm beacon handler\n");
 }
 
 
 static void
-handler_vrr(vip_message_t *received_pkt, vip_message_t *send_pkt) {
+handler_vrr(vip_message_t *rcv_pkt) {
 
 }
 
 static void
-handler_vra() {
+handler_vra(vip_message_t *rcv_pkt) {
 
 }
 
 static void
-handler_vrc() {
+handler_vrc(vip_message_t *rcv_pkt) {
 
 }
 
 static void
-handler_rel() {
+handler_rel(vip_message_t *rcv_pkt) {
 
 }
 
 static void
-handler_ser() {
+handler_ser(vip_message_t *rcv_pkt) {
 
 }
 
 static void
-handler_sea() {
+handler_sea(vip_message_t *rcv_pkt) {
 
 }
 
 static void
-handler_sec() {
+handler_sec(vip_message_t *rcv_pkt) {
 
 }
 
 static void
-handler_sd() {
+handler_sd(vip_message_t *rcv_pkt) {
 
 }
 
 static void
-handler_sda() {
+handler_sda(vip_message_t *rcv_pkt) {
 
 }
 
 static void
-handler_vu() {
+handler_vu(vip_message_t *rcv_pkt) {
 
 }
 
 static void
-handler_vm() {
+handler_vm(vip_message_t *rcv_pkt) {
 
 }
 
