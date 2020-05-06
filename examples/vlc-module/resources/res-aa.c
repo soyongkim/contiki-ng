@@ -95,7 +95,7 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
 
 static void
 handler_beacon(vip_message_t *rcv_pkt) {
-  printf("I'm beacon handler [%d]\n", rcv_pkt->type);
+  printf("I'm beacon handler [%s]\n", rcv_pkt->uplink_id);
 }
 
 
