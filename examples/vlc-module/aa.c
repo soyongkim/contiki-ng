@@ -59,7 +59,8 @@ extern vip_entity_t aa_type_handler;
 process_event_t aa_event;
 
   
-vip_message_t vip_pkt[2];
+vip_message_t *rcv_pkt;
+vip_message_t snd_pkt;
 
 PROCESS(aa_process, "AA");
 AUTOSTART_PROCESSES(&aa_process);
@@ -87,10 +88,10 @@ PROCESS_THREAD(aa_process, ev, data)
       if(ev == aa_event) {
         res_aaa.trigger();
 
-        vip_pkt[0] = (vip_message_t *)data;
-        printf("type is %d\n", vip_pkt[0]->type);
+        rcv_pkt = (vip_message_t *)data;
+        printf("type is %d\n", rcv_pkt->type);
 
-        aa_type_handler.beacon_handler(vip_pkt[0], vip_pkt[1]);
+        aa_type_handler.beacon_handler(rcv_pkt, &snd_pkt);
       }
 
       printf("EVENT!\n");
