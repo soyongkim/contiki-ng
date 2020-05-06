@@ -81,14 +81,13 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
   // printf("LEN:%d\n", request->payload_len);
 
   static vip_message_t vip_pkt[1];
-  if (vip_parse_message(vip_pkt, request->payload, request->payload_len) == VIP_NO_ERROR)
+  if (vip_parse_common_header(vip_pkt, request->payload, request->payload_len) == VIP_NO_ERROR)
   {
-    printf("VIP: NO ERROR");
-    vip_route(vip_pkt);
+    printf("VIP: NO ERROR\n");
   }
   else
   {
-    printf("VIP: NoT VIP Packet");
+    printf("VIP: Not VIP Packet\n");
   }
 
   process_post(&aa_process, aa_event, (void *)vip_pkt);
@@ -96,7 +95,7 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
 
 static void
 handler_beacon(vip_message_t *rcv_pkt) {
-  printf("I'm beacon handler\n");
+  printf("I'm beacon handler [%d]\n", rcv_pkt->type);
 }
 
 

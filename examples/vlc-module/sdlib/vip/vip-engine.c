@@ -10,51 +10,131 @@
 
 #include "aa.h"
 
-PROCESS(vip_engine, "VIP Engine");
+int 
+vip_route(vip_message_t *vip_pkt, vip_entity_t *type_handler) {
+   /* start from common header */
+    uint8_t *offset = vip_pkt->buffer + VIP_COMMON_HEADER_LEN;
 
-LIST(vip_type_handlers);
-static uint8_t is_init = 0;
+    /* parse type field and payload */
+    switch (vip_pkt->type)
+    {
+    case VIP_TYPE_BEACON:
+        vip_parse_beacon(vip_pkt);
+        type_handler->beacon_handler(vip_pkt);
+        break;
+    case VIP_TYPE_VRR:
+        /* code */
+        vip_pkt->vr_id = vip_parse_int_option(offset, 4);
+        break;
+    case VIP_TYPE_VRA:
+        /* code */
+        vip_pkt->vr_id = vip_parse_int_option(offset, 4);
+        offset += 4;
+        uint32_t service_num = (vip_pkt->total_len - VIP_COMMON_HEADER_LEN) / 4 + 4;
+        for (uint32_t current_position = 0; current_position < service_num; current_position++)
+        {
+            vip_pkt->service_id[current_position] = vip_parse_int_option(offset, 4);
+            offset += 4;
+        }
+        break;
+    case VIP_TYPE_VRC:
+        /* code */
+        vip_pkt->vr_id = vip_parse_int_option(offset, 4);
 
-void
-vip_add_handler(vip_type_handler_t *handler) {
-    list_add(vip_type_handlers, handler);
-}
-
-void
-vip_remove_handler(vip_type_handler_t *handler) {
-    list_remove(vip_type_handlers, handler);
-}
-
-void
-vip_engine_init(void)
-{
-  /* avoid initializing twice */
-  if(is_init) {
-    return;
-  }
-  is_init = 1;
-
-  printf("Starting VIP engine...\n");
-
-  list_init(vip_type_handlers);
-
-  process_start(&vip_engine, NULL);
-}
-
-PROCESS_THREAD(vip_engine, ev, data)
-{
-  static int count = 0;
-  static struct etimer et;
-  PROCESS_BEGIN();
-
-  etimer_set(&et, CLOCK_SECOND);
-  while(1) {
-    PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&et));
-    printf("VIP Engine Test Count %d\n", count++);
-    //process_poll(&aa_process);
-    //process_post(&aa_process, aa_event, NULL);
-    etimer_reset(&et);
+        break;
+    case VIP_TYPE_REL:
+        /* code */
+        vip_pkt->vr_id = vip_parse_int_option(offset, 4);
+        break;
+    case VIP_TYPE_SER:
+        /* code */
+        vip_pkt->vr_id = vip_parse_int_option(offset, 4);
+        offset += 4;
+        vip_pkt->service_id[0] = vip_parse_int_option(offset, 4);
+        offset += 4;
+        vip_pkt->vr_seq_number = vip_parse_int_option(offset, 4);
+        break;
+    case VIP_TYPE_SEA:
+        /* code */
+        vip_pkt->vr_id = vip_parse_int_option(offset, 4);
+        offset += 4;
+        vip_pkt->service_id[0] = vip_parse_int_option(offset, 4);
+        offset += 4;
+        vip_pkt->vg_seq_number = vip_parse_int_option(offset, 4);
+        break;
+    case VIP_TYPE_SEC:
+        /* code */
+        break;
+    case VIP_TYPE_SD:
+        /* code */
+        vip_pkt->vr_id = vip_parse_int_option(offset, 4);
+        offset += 4;
+        vip_pkt->service_id[0] = vip_parse_int_option(offset , 4);
+        offset += 4;
+        vip_pkt->vg_seq_number = vip_parse_int_option(offset, 4);
+        offset += 4;
+        memcpy(vip_pkt->payload, offset, vip_pkt->total_len - (VIP_COMMON_HEADER_LEN + 12));
+        break;
+    case VIP_TYPE_SDA:
+        /* code */
+        vip_pkt->vr_id = vip_parse_int_option(offset, 4);
+        offset += 4;
+        vip_pkt->service_id[0] = vip_parse_int_option(offset, 4);
+        offset += 4;
+        vip_pkt->vr_seq_number = vip_parse_int_option(offset, 4);
+        offset += 4;
+        memcpy(vip_pkt->payload, offset, vip_pkt->total_len - (VIP_COMMON_HEADER_LEN + 12));
+        break;
+    case VIP_TYPE_VU:
+        /* code */
+        vip_pkt->vr_id = vip_parse_int_option(offset, 4);
+        break;
+    case VIP_TYPE_VM:
+        /* code */
+        vip_pkt->vr_id = vip_parse_int_option(offset, 4);
+        offset += 4;
+        vip_pkt->service_id[0] = vip_parse_int_option(offset, 4);
+        offset += 4;
+        vip_pkt->vg_seq_number = vip_parse_int_option(offset, 4);
+        offset += 4;
+        memcpy(vip_pkt->payload, offset, vip_pkt->total_len - (VIP_COMMON_HEADER_LEN + 12));
+        break;
     }
 
-  PROCESS_END();
+    return 0;
 }
+
+
+// void
+// vip_engine_init(void)
+// {
+//   /* avoid initializing twice */
+//   if(is_init) {
+//     return;
+//   }
+//   is_init = 1;
+
+//   printf("Starting VIP engine...\n");
+
+//   list_init(vip_type_handlers);
+
+//   process_start(&vip_engine, NULL);
+// }
+
+// PROCESS_THREAD(vip_engine, ev, data)
+// {
+//   static int count = 0;
+//   static struct etimer et;
+//   PROCESS_BEGIN();
+
+//   etimer_set(&et, CLOCK_SECOND);
+//   while(1) {
+//     PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&et));
+//     printf("VIP Engine Test Count %d\n", count++);
+//     //process_poll(&aa_process);
+//     //process_post(&aa_process, aa_event, NULL);
+//     etimer_reset(&et);
+//     }
+
+//   PROCESS_END();
+// }

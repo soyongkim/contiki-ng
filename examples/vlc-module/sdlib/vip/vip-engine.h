@@ -23,4 +23,4 @@ struct vip_entity_s {
 #define TYPE_HANDLER(name, beacon_handler, vrr_handler, vra_handler, vrc_handler, rel_handler, ser_handler, sea_handler, sec_handler, sd_handler, sda_handler, vu_handler, vm_handler) \
 vip_entity_t name = { beacon_handler, vrr_handler, vra_handler, vrc_handler, rel_handler, ser_handler, sea_handler, sec_handler, sd_handler, sda_handler, vu_handler, vm_handler };
 
-void vip_engine_init(void);
+int vip_route(vip_message_t *received_pkt, vip_entity_t *type_handler);

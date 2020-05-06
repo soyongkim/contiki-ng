@@ -28,12 +28,11 @@ typedef struct {
 void vip_init_message(vip_message_t *message, uint8_t type, uint16_t aa_id, uint16_t vt_id);
 
 int vip_serialize_message(vip_message_t *message, uint8_t *buffer);
-int vip_parse_message(vip_message_t *message, uint8_t *data, uint16_t data_len);
-int vip_route(vip_message_t *message);
+int vip_parse_common_header(vip_message_t *message, uint8_t *data, uint16_t data_len);
 
 /* Type Specific Header */
 uint8_t* vip_serialize_beacon(vip_message_t *message, uint8_t *buffer);
-int vip_parse_beacon(vip_message_t *message, uint8_t *buffer);
+int vip_parse_beacon(vip_message_t *message);
 
 uint8_t* vip_serialize_VRR(vip_message_t *message, uint8_t *buffer);
 int vip_parse_VRR(vip_message_t *message, uint8_t *buffer);

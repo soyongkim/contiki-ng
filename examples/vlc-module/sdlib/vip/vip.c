@@ -288,7 +288,7 @@ vip_serialize_VM(vip_message_t *vip_pkt, uint8_t *buffer)
 }
 
 int 
-vip_parse_message(vip_message_t *vip_pkt, uint8_t *data, uint16_t data_len)
+vip_parse_common_header(vip_message_t *vip_pkt, uint8_t *data, uint16_t data_len)
 {
     memset(vip_pkt, 0, sizeof(vip_message_t));
 
@@ -314,116 +314,16 @@ vip_parse_message(vip_message_t *vip_pkt, uint8_t *data, uint16_t data_len)
     return VIP_NO_ERROR;
 }
 
-int
-vip_route(vip_message_t *vip_pkt) {
+int 
+vip_parse_beacon(vip_message_t *vip_pkt)
+{
     /* start from common header */
     uint8_t *offset = vip_pkt->buffer + VIP_COMMON_HEADER_LEN;
 
-    /* parse type field and payload */
-    switch (vip_pkt->type)
-    {
-    case VIP_TYPE_BEACON:
-        vip_pkt->uplink_id = (char *)malloc((vip_pkt->total_len) - VIP_COMMON_HEADER_LEN + 1);
-        memcpy(vip_pkt->uplink_id, (char *)offset, (vip_pkt->total_len) - VIP_COMMON_HEADER_LEN + 1);
-        vip_pkt->uplink_id[(vip_pkt->total_len) - VIP_COMMON_HEADER_LEN + 1] = '\0';
-        break;
-    case VIP_TYPE_VRR:
-        /* code */
-        vip_pkt->vr_id = vip_parse_int_option(offset, 4);
-        break;
-    case VIP_TYPE_VRA:
-        /* code */
-        vip_pkt->vr_id = vip_parse_int_option(offset, 4);
-        offset += 4;
-        uint32_t service_num = (vip_pkt->total_len - VIP_COMMON_HEADER_LEN) / 4 + 4;
-        for (uint32_t current_position = 0; current_position < service_num; current_position++)
-        {
-            vip_pkt->service_id[current_position] = vip_parse_int_option(offset, 4);
-            offset += 4;
-        }
-        break;
-    case VIP_TYPE_VRC:
-        /* code */
-        vip_pkt->vr_id = vip_parse_int_option(offset, 4);
-
-        break;
-    case VIP_TYPE_REL:
-        /* code */
-        vip_pkt->vr_id = vip_parse_int_option(offset, 4);
-        break;
-    case VIP_TYPE_SER:
-        /* code */
-        vip_pkt->vr_id = vip_parse_int_option(offset, 4);
-        offset += 4;
-        vip_pkt->service_id[0] = vip_parse_int_option(offset, 4);
-        offset += 4;
-        vip_pkt->vr_seq_number = vip_parse_int_option(offset, 4);
-        break;
-    case VIP_TYPE_SEA:
-        /* code */
-        vip_pkt->vr_id = vip_parse_int_option(offset, 4);
-        offset += 4;
-        vip_pkt->service_id[0] = vip_parse_int_option(offset, 4);
-        offset += 4;
-        vip_pkt->vg_seq_number = vip_parse_int_option(offset, 4);
-        break;
-    case VIP_TYPE_SEC:
-        /* code */
-        break;
-    case VIP_TYPE_SD:
-        /* code */
-        vip_pkt->vr_id = vip_parse_int_option(offset, 4);
-        offset += 4;
-        vip_pkt->service_id[0] = vip_parse_int_option(offset , 4);
-        offset += 4;
-        vip_pkt->vg_seq_number = vip_parse_int_option(offset, 4);
-        offset += 4;
-        memcpy(vip_pkt->payload, offset, vip_pkt->total_len - (VIP_COMMON_HEADER_LEN + 12));
-        break;
-    case VIP_TYPE_SDA:
-        /* code */
-        vip_pkt->vr_id = vip_parse_int_option(offset, 4);
-        offset += 4;
-        vip_pkt->service_id[0] = vip_parse_int_option(offset, 4);
-        offset += 4;
-        vip_pkt->vr_seq_number = vip_parse_int_option(offset, 4);
-        offset += 4;
-        memcpy(vip_pkt->payload, offset, vip_pkt->total_len - (VIP_COMMON_HEADER_LEN + 12));
-        break;
-    case VIP_TYPE_VU:
-        /* code */
-        vip_pkt->vr_id = vip_parse_int_option(offset, 4);
-        break;
-    case VIP_TYPE_VM:
-        /* code */
-        vip_pkt->vr_id = vip_parse_int_option(offset, 4);
-        offset += 4;
-        vip_pkt->service_id[0] = vip_parse_int_option(offset, 4);
-        offset += 4;
-        vip_pkt->vg_seq_number = vip_parse_int_option(offset, 4);
-        offset += 4;
-        memcpy(vip_pkt->payload, offset, vip_pkt->total_len - (VIP_COMMON_HEADER_LEN + 12));
-        break;
-    }
-
-    return 0;
+    vip_pkt->uplink_id = (char *)malloc((vip_pkt->total_len) - VIP_COMMON_HEADER_LEN + 1);
+    memcpy(vip_pkt->uplink_id, (char *)offset, (vip_pkt->total_len) - VIP_COMMON_HEADER_LEN + 1);
+    vip_pkt->uplink_id[(vip_pkt->total_len) - VIP_COMMON_HEADER_LEN + 1] = '\0';
 }
-
-
-// void
-// vip_coap_response(vip_message_t *vip_pkt, char *target_url) {
-//     const coap_endpoint_t server_ep;
-//     static coap_message_t request[1];
-//     char coap_uri[25];
-//     //make_coap_uri(coap_uri, node_id);
-//     //coap_endpoint_parse(coap_uri, strlen(coap_uri), &server_ep);
-
-//     //coap_init_message(request, COAP_TYPE_CON, COAP_POST, 0);
-//     //coap_set_header_uri_path(request, target_url);
-//     //coap_set_payload(request, vip_pkt->buffer, vip_pkt->total_len);
-//     //coap_sendto(&server_ep, request, coap_serialize_message(request, vip_pkt->buffer));
-// }
-
 
 /* Data Configure */
 int
