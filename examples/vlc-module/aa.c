@@ -78,9 +78,6 @@ PROCESS_THREAD(aa_process, ev, data)
    */
   coap_activate_resource(&res_aaa, "vip/aa");
 
-  vip_engine_init();
-
-
   /* Define application-specific events here. */
   while(1) {
       PROCESS_WAIT_EVENT();
