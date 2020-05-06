@@ -89,7 +89,7 @@ PROCESS_THREAD(aa_process, ev, data)
         printf("type is %d\n", rcv_pkt->type);
 
         // 여기서 route를 실행해야함 aa 프로세스가 route해서 보내야함
-        vip_route(rcv_pkt, type_handler);
+        vip_route(rcv_pkt, &aa_type_handler);
       }
 
       printf("EVENT!\n");
