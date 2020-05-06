@@ -58,6 +58,8 @@ extern vip_entity_t aa_type_handler;
 /* test event process */
 process_event_t aa_event;
 
+  
+vip_message_t vip_pkt[2];
 
 PROCESS(aa_process, "AA");
 AUTOSTART_PROCESSES(&aa_process);
@@ -76,8 +78,6 @@ PROCESS_THREAD(aa_process, ev, data)
   coap_activate_resource(&res_aaa, "vip/aa");
 
   vip_engine_init();
-  
-  vip_message_t *vip_pkt;
 
 
   /* Define application-specific events here. */
@@ -87,10 +87,10 @@ PROCESS_THREAD(aa_process, ev, data)
       if(ev == aa_event) {
         res_aaa.trigger();
 
-        vip_pkt = (vip_message_t *)data;
-        printf("type is %d\n", vip_pkt->type);
+        vip_pkt[0] = (vip_message_t *)data;
+        printf("type is %d\n", vip_pkt[0]->type);
 
-        aa_type_handler.beacon_handler();
+        aa_type_handler.beacon_handler(vip_pkt[0], vip_pkt[1]);
       }
 
       printf("EVENT!\n");

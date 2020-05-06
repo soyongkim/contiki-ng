@@ -84,13 +84,13 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
 }
 
 static void
-handle_beacon() {
+handle_beacon(vip_message_t *received_pkt, vip_message_t *send_pkt) {
   printf("I'm beacon handler\n");
 }
 
 
 static void
-handler_vrr() {
+handler_vrr(vip_message_t *received_pkt, vip_message_t *send_pkt) {
 
 }
 

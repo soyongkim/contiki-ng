@@ -3,9 +3,7 @@
 typedef struct vip_entity_s vip_entity_t;
 
 typedef void (* vip_type_handler_t)(vip_message_t *received_pkt, 
-                                    vip_message_t *send_pkt, 
-                                    uint8_t *buffer, 
-                                    uint16_t buffer_size);
+                                    vip_message_t *send_pkt);
 
 struct vip_entity_s {
     vip_type_handler_t beacon_handler;
