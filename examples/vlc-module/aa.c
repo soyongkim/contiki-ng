@@ -28,39 +28,6 @@ PROCESS(aa_process, "AA");
 AUTOSTART_PROCESSES(&aa_process);
 
 
-static void
-aa_coap_request_handler(coap_message_t *res) {
-  const uint8_t *chunk;
-
-  if(res == NULL) {
-    puts("Request timed out");
-    return;
-  }
-
-  coap_get_payload(res, &chunk);
-
-  printf("Req-ack: %s\n", (char*)chunk);
-}
-
-static void
-my_coap_request(vip_message_t *snd_pkt) {
-  static coap_endpoint_t dest_ep;
-  static coap_message_t request[1];
-
-  coap_endpoint_parse(snd_pkt->dest_coap_addr, strlen(snd_pkt->dest_coap_addr), &dest_ep);
-  coap_init_message(request, COAP_TYPE_CON, COAP_POST, 0);
-  coap_set_header_uri_host(request, snd_pkt->dest_url);
-
-  coap_set_payload(request, snd_pkt->buffer, snd_pkt->total_len);
-
-  printf("-- AA Send coap vip[%d] packet --\n", snd_pkt->type);
-  /* 일단 확실히 전송이 되는것부터 테스트 */
-  COAP_BLOCKING_REQUEST(&dest_ep, request, aa_coap_request_handler);
-}
-
-
-
-
 PROCESS_THREAD(aa_process, ev, data)
 {
   PROCESS_BEGIN();
@@ -97,4 +64,36 @@ PROCESS_THREAD(aa_process, ev, data)
 
   PROCESS_END();
 }
+
+
+void
+aa_coap_request_handler(coap_message_t *res) {
+  const uint8_t *chunk;
+
+  if(res == NULL) {
+    puts("Request timed out");
+    return;
+  }
+
+  coap_get_payload(res, &chunk);
+
+  printf("Req-ack: %s\n", (char*)chunk);
+}
+
+void
+my_coap_request(vip_message_t *snd_pkt) {
+  static coap_endpoint_t dest_ep;
+  static coap_message_t request[1];
+
+  coap_endpoint_parse(snd_pkt->dest_coap_addr, strlen(snd_pkt->dest_coap_addr), &dest_ep);
+  coap_init_message(request, COAP_TYPE_CON, COAP_POST, 0);
+  coap_set_header_uri_host(request, snd_pkt->dest_url);
+
+  coap_set_payload(request, snd_pkt->buffer, snd_pkt->total_len);
+
+  printf("-- AA Send coap vip[%d] packet --\n", snd_pkt->type);
+  /* 일단 확실히 전송이 되는것부터 테스트 */
+  COAP_BLOCKING_REQUEST(&dest_ep, request, aa_coap_request_handler);
+}
+
 
