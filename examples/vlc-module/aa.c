@@ -28,6 +28,10 @@ PROCESS(aa_process, "AA");
 AUTOSTART_PROCESSES(&aa_process);
 
 
+void my_coap_request(vip_message_t *snd_pkt);
+void aa_coap_request_handler(vip_message_t *res);
+
+
 PROCESS_THREAD(aa_process, ev, data)
 {
   PROCESS_BEGIN();
@@ -93,7 +97,7 @@ my_coap_request(vip_message_t *snd_pkt) {
 
   printf("-- AA Send coap vip[%d] packet --\n", snd_pkt->type);
   /* 일단 확실히 전송이 되는것부터 테스트 */
-  COAP_BLOCKING_REQUEST(&dest_ep, request, aa_coap_request_handler);
+  //COAP_BLOCKING_REQUEST(&dest_ep, request, aa_coap_request_handler);
 }
 
 
