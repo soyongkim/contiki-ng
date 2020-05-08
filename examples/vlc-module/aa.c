@@ -29,7 +29,7 @@ AUTOSTART_PROCESSES(&aa_process);
 
 
 void my_coap_request(vip_message_t *snd_pkt);
-void aa_coap_request_handler(vip_message_t *res);
+void aa_coap_request_handler(coap_message_t *res);
 
 
 PROCESS_THREAD(aa_process, ev, data)
