@@ -24,6 +24,9 @@ process_event_t aa_rcv_event, aa_snd_event;
 /* vip packet */
 vip_message_t *rcv_pkt, *snd_pkt;
 
+PROCESS(aa_process, "AA");
+AUTOSTART_PROCESSES(&aa_process);
+
 
 static void
 aa_coap_request_handler(coap_message_t *res) {
@@ -34,7 +37,7 @@ aa_coap_request_handler(coap_message_t *res) {
     return;
   }
 
-  int len = coap_get_payload(res, &chunk);
+  coap_get_payload(res, &chunk);
 
   printf("Req-ack: %s\n", (char*)chunk);
 }
@@ -56,8 +59,7 @@ my_coap_request(vip_message_t *snd_pkt) {
 }
 
 
-PROCESS(aa_process, "AA");
-AUTOSTART_PROCESSES(&aa_process);
+
 
 PROCESS_THREAD(aa_process, ev, data)
 {
