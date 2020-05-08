@@ -1,86 +1,138 @@
-#include "contiki.h"
-#include "net/routing/routing.h"
-#include "random.h"
+/*
+ * Copyright (c) 2013, Institute for Pervasive Computing, ETH Zurich
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. Neither the name of the Institute nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software
+ *    without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE INSTITUTE AND CONTRIBUTORS ``AS IS'' AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED.  IN NO EVENT SHALL THE INSTITUTE OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+ * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+ * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
+ *
+ * This file is part of the Contiki operating system.
+ */
+
+/**
+ * \file
+ *      Erbium (Er) CoAP Engine example.
+ * \author
+ *      Matthias Kovatsch <kovatsch@inf.ethz.ch>
+ */
+
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "aa.h"
+#include "coap-engine.h"
+#include "vip-interface.h"
 #include "net/netstack.h"
-#include "net/ipv6/simple-udp.h"
-#include "net/ipv6/uip-ds6.h"
-#include "net/ipv6/uip-debug.h"
-#include "sdlib/common.h"
 
-#include "sys/log.h"
-#define LOG_MODULE "App"
-#define LOG_LEVEL LOG_LEVEL_INFO
+/* Node ID */
+#include "sys/node-id.h"
+/*
+ * Resources to be activated need to be imported through the extern keyword.
+ * The build system automatically compiles the resources in the corresponding sub-directory.
+ */
+extern coap_resource_t res_vt;
+extern vip_entity_t vt_type_handler;
 
-#define WITH_SERVER_REPLY  1
-#define UDP_CLIENT_PORT	8765
-#define UDP_SERVER_PORT	5678
 
-#define SEND_INTERVAL		  (60 * CLOCK_SECOND)
+/* test event process */
+process_event_t vt_rcv_event, vt_snd_event;
 
-static struct simple_udp_connection udp_conn;
+int vt_id;
+  
+vip_message_t *rcv_pkt, *snd_pkt;
 
-/*---------------------------------------------------------------------------*/
-PROCESS(udp_client_process, "UDP client");
-AUTOSTART_PROCESSES(&udp_client_process);
-/*---------------------------------------------------------------------------*/
+
 static void
-udp_rx_callback(struct simple_udp_connection *c,
-         const uip_ipaddr_t *sender_addr,
-         uint16_t sender_port,
-         const uip_ipaddr_t *receiver_addr,
-         uint16_t receiver_port,
-         const uint8_t *data,
-         uint16_t datalen)
-{
+aa_coap_request_handler(coap_message_t *res) {
+  const uint8_t *chunk;
 
-  LOG_INFO("Received response '%.*s' from ", datalen, (char *) data);
-  LOG_INFO_6ADDR(sender_addr);
-#if LLSEC802154_CONF_ENABLED
-  LOG_INFO_(" LLSEC LV:%d", uipbuf_get_attr(UIPBUF_ATTR_LLSEC_LEVEL));
-#endif
-  LOG_INFO_("\n");
+  if(res == NULL) {
+    puts("Request timed out");
+    return;
+  }
 
+  int len = coap_get_payload(res, &chunk);
+
+  printf("Req-ack: %s\n", (char*)chunk);
 }
 
-/*---------------------------------------------------------------------------*/
-PROCESS_THREAD(udp_client_process, ev, data)
+static void
+my_coap_request(vip_message_t *snd_pkt) {
+  static coap_endpoint_t dest_ep;
+  static coap_message_t request[1];
+
+  coap_endpoint_parse(snd_pkt->dest_coap_addr, strlen(snd_pkt->dest_coap_addr), &dest_ep);
+  coap_init_message(request, COAP_TYPE_CON, COAP_POST, 0);
+  coap_set_header_uri_host(request, snd_pkt->dest_url);
+
+  coap_set_payload(request, snd_pkt->buffer, snd_pkt->total_len);
+
+  printf("-- VT Send coap vip[%d] packet --\n", snd_pkt->type);
+  /* 일단 확실히 전송이 되는것부터 테스트 */
+  COAP_BLOCKING_REQUEST(&dest_ep, request, aa_coap_request_handler);
+}
+
+
+
+
+PROCESS(vt_process, "VT");
+AUTOSTART_PROCESSES(&vt_process);
+
+PROCESS_THREAD(vt_process, ev, data)
 {
-  static struct etimer periodic_timer;
-  static unsigned count;
-  static char payload[32];
-  uip_ipaddr_t dest_ipaddr;
-
   PROCESS_BEGIN();
+  PROCESS_PAUSE();
 
-  /* Initialize UDP connection */
-  simple_udp_register(&udp_conn, UDP_CLIENT_PORT, NULL,
-                      UDP_SERVER_PORT, udp_rx_callback);
+  printf("Node ID is %d\n", node_id);
+  /*
+   * Bind the resources to their Uri-Path.
+   * WARNING: Activating twice only means alternate path, not two instances!
+   * All static variables are the same for each URI path.
+   */
+  coap_activate_resource(&res_vt, "vip/vt");
+  vt_id = 0;
 
-  etimer_set(&periodic_timer, random_rand() % SEND_INTERVAL);
+  /* Define application-specific events here. */
   while(1) {
-    PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&periodic_timer));
+      PROCESS_WAIT_EVENT();
 
-    if(NETSTACK_ROUTING.node_is_reachable() && NETSTACK_ROUTING.get_root_ipaddr(&dest_ipaddr)) {
-      /* Send to DAG root */
-      /* 목적지 원하는 곳으로 바꾸기 */
-      dest_ipaddr = change_target(0);
-      LOG_INFO("Sending request %u to ", count);
-      LOG_INFO_6ADDR(&dest_ipaddr);
-      LOG_INFO_("\n");
-      
-      /* 페이로드 생성 */
-      snprintf(payload, sizeof(payload), "hello %d", count);
-      simple_udp_sendto(&udp_conn, payload, strlen(payload), &dest_ipaddr);
-      count++;
-    } else {
-      LOG_INFO("Not reachable yet\n");
-    }
+      if(ev == vt_rcv_event) {
+        //res_vt.trigger();
 
-    /* Add some jitter */
-    etimer_set(&periodic_timer, SEND_INTERVAL
-      - CLOCK_SECOND + (random_rand() % (2 * CLOCK_SECOND)));
+        rcv_pkt = (vip_message_t *)data;
+        printf("type is %d\n", rcv_pkt->type);
+
+        // 여기서 route를 실행해야함 aa 프로세스가 route해서 보내야함
+        vip_route(rcv_pkt, &vt_type_handler);
+      }
+      else if(ev == vt_snd_event) {
+        snd_pkt = (vip_message_t *)data;
+        my_coap_request(snd_pkt);
+      }
+
+      printf("EVENT!\n");
   }
 
   PROCESS_END();
 }
-/*---------------------------------------------------------------------------*/

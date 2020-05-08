@@ -38,7 +38,7 @@
 
 #include "contiki.h"
 #include "coap-engine.h"
-#include "sdlib/vip/vip.h"
+#include "vip-interface.h"
 
 #include <stdio.h>
 #include <string.h>

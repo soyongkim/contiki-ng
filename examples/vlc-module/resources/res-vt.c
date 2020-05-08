@@ -36,35 +36,153 @@
  *      Matthias Kovatsch <kovatsch@inf.ethz.ch>
  */
 
-#include "contiki.h"
-#include "coap-engine.h"
-#include "sdlib/vip/vip.h"
-
 #include <stdio.h>
 #include <string.h>
 
+#include "contiki.h"
+#include "coap-engine.h"
+#include "coap-callback-api.h"
+#include "vip-interface.h"
+#include "vt.h"
+
+#include "common.h"
+
+extern int vt_id;
+
 static void res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset);
+static void res_event_handler(void);
+static void coap_request_handler(coap_message_t *response);
+
+
+static void handler_beacon(vip_message_t *rcv_pkt);
+static void handler_vrr(vip_message_t *rcv_pkt);
+static void handler_vra(vip_message_t *rcv_pkt);
+static void handler_vrc(vip_message_t *rcv_pkt);
+static void handler_rel(vip_message_t *rcv_pkt);
+static void handler_ser(vip_message_t *rcv_pkt);
+static void handler_sea(vip_message_t *rcv_pkt);
+static void handler_sec(vip_message_t *rcv_pkt);
+static void handler_sd(vip_message_t *rcv_pkt);
+static void handler_sda(vip_message_t *rcv_pkt);
+static void handler_vu(vip_message_t *rcv_pkt);
+static void handler_vm(vip_message_t *rcv_pkt);
+
 
 /* A simple actuator example. Toggles the red led */
-RESOURCE(res_aa,
+EVENT_RESOURCE(res_vt,
          "title=\"VT\";rt=\"Control\"",
          NULL,
          res_post_handler,
          NULL,
-         NULL);
+         NULL, 
+         res_event_handler);
+
+
+/* vip type handler */
+TYPE_HANDLER(vt_type_handler, handler_beacon, handler_vrr, handler_vra, 
+              handler_vrc, handler_rel, handler_ser, handler_sea, handler_sec,
+              handler_sd, handler_sda, handler_vu, handler_vm, allocate_vt_handler);
 
 static void
 res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset)
 {
-  printf("TEST\n");
-  printf("LEN:%d\n", request->payload_len);
+  printf("Received\n");
+  // printf("LEN:%d\n", request->payload_len);
 
   static vip_message_t vip_pkt[1];
-  vip_parse_common_header(vip_pkt, request->payload, request->payload_len);
-  printf("TYPE:%d\n", vip_pkt->type);
-  printf("AA-ID:%d\n", vip_pkt->aa_id);
-  printf("VT-ID:%d\n", vip_pkt->vt_id);
-  printf("Total-length:%d\n", vip_pkt->total_len);
-  printf("UPLINK_ID:%s\n", vip_pkt->uplink_id);
+  if (vip_parse_common_header(vip_pkt, request->payload, request->payload_len) == VIP_NO_ERROR)
+  {
+    printf("VIP: NO ERROR\n");
+  }
+  else
+  {
+    printf("VIP: Not VIP Packet\n");
+  }
 
+  process_post(&vt_process, vt_rcv_event, (void *)vip_pkt);
+}
+
+static void
+handler_beacon(vip_message_t *rcv_pkt) {
+  printf("I'm beacon handler [%s]\n", rcv_pkt->uplink_id);
+
+  // 이제부터 server process가 이 핸들러를 호출할꺼임
+  
+}
+
+
+static void
+handler_vrr(vip_message_t *rcv_pkt) {
+
+}
+
+static void
+handler_vra(vip_message_t *rcv_pkt) {
+
+}
+
+static void
+handler_vrc(vip_message_t *rcv_pkt) {
+
+}
+
+static void
+handler_rel(vip_message_t *rcv_pkt) {
+
+}
+
+static void
+handler_ser(vip_message_t *rcv_pkt) {
+
+}
+
+static void
+handler_sea(vip_message_t *rcv_pkt) {
+
+}
+
+static void
+handler_sec(vip_message_t *rcv_pkt) {
+
+}
+
+static void
+handler_sd(vip_message_t *rcv_pkt) {
+
+}
+
+static void
+handler_sda(vip_message_t *rcv_pkt) {
+
+}
+
+static void
+handler_vu(vip_message_t *rcv_pkt) {
+
+}
+
+static void
+handler_vm(vip_message_t *rcv_pkt) {
+
+}
+
+static void
+allocate_vt_handler(vip_message_t *rcv_pkt) {
+  char uri[25] = {0,};
+  make_coap_uri(uri, 1);
+  printf("URI:%s\n", uri);
+
+  if(vt_id == 0) {
+    rcv_pkt->dest_coap_addr = uri;
+    rcv_pkt->dest_url = "vip/aa";
+    process_poll(&vt_process, vt_snd_event, rcv_pkt);
+  }
+
+}
+
+
+static void
+res_event_handler(void)
+{
+  printf("This is AA event handler\n");
 }

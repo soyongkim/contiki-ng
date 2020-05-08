@@ -38,7 +38,8 @@
 
 #include "contiki.h"
 #include "coap-engine.h"
-#include "vip-engine.h"
+#include "coap-callback-api.h"
+#include "vip-interface.h"
 #include "aa.h"
 
 #include <stdio.h>
@@ -46,6 +47,9 @@
 
 static void res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset);
 static void res_event_handler(void);
+static void coap_request_handler(coap_message_t *response);
+
+
 static void handler_beacon(vip_message_t *rcv_pkt);
 static void handler_vrr(vip_message_t *rcv_pkt);
 static void handler_vra(vip_message_t *rcv_pkt);
@@ -59,20 +63,22 @@ static void handler_sda(vip_message_t *rcv_pkt);
 static void handler_vu(vip_message_t *rcv_pkt);
 static void handler_vm(vip_message_t *rcv_pkt);
 
+
 /* A simple actuator example. Toggles the red led */
-EVENT_RESOURCE(res_aaa,
+PERIODIC_RESOURCE(res_aaa,
          "title=\"AA\";rt=\"Control\"",
          NULL,
          res_post_handler,
          NULL,
-         NULL, 
-         res_event_handler);
+         NULL,
+         1000,
+         res_perioic_ad_handler);
 
 
 /* vip type handler */
 TYPE_HANDLER(aa_type_handler, handler_beacon, handler_vrr, handler_vra, 
               handler_vrc, handler_rel, handler_ser, handler_sea, handler_sec,
-              handler_sd, handler_sda, handler_vu, handler_vm);
+              handler_sd, handler_sda, handler_vu, handler_vm, allocate_vt_handler);
 
 static void
 res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset)
@@ -90,12 +96,15 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
     printf("VIP: Not VIP Packet\n");
   }
 
-  process_post(&aa_process, aa_event, (void *)vip_pkt);
+  process_post(&aa_process, aa_rcv_event, (void *)vip_pkt);
 }
 
 static void
 handler_beacon(vip_message_t *rcv_pkt) {
   printf("I'm beacon handler [%s]\n", rcv_pkt->uplink_id);
+
+  // 이제부터 server process가 이 핸들러를 호출할꺼임
+  
 }
 
 
@@ -155,7 +164,13 @@ handler_vm(vip_message_t *rcv_pkt) {
 }
 
 static void
-res_event_handler(void)
+allocate_vt_handler(vip_message_t *rcv_pkt) {
+  
+}
+
+
+static void
+res_perioic_ad_handler(void)
 {
-  printf("This is AA event handler\n");
+  printf("This is AA Periodic AD handler\n");
 }

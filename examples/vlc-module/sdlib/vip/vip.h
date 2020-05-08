@@ -22,6 +22,9 @@ typedef struct {
 
     uint32_t payload_len;
     uint8_t *payload;
+
+    /* for target handler */
+    char *dest_coap_addr, *dest_url;
 } vip_message_t;
 
 
@@ -36,38 +39,39 @@ uint8_t* vip_serialize_beacon(vip_message_t *message, uint8_t *buffer);
 void vip_parse_beacon(vip_message_t *message);
 
 uint8_t* vip_serialize_VRR(vip_message_t *message, uint8_t *buffer);
-int vip_parse_VRR(vip_message_t *message, uint8_t *buffer);
+void vip_parse_VRR(vip_message_t *message);
 
 uint8_t* vip_serialize_VRA(vip_message_t *message, uint8_t *buffer);
-int vip_parse_VRA(vip_message_t *message, uint8_t *buffer);
+void vip_parse_VRA(vip_message_t *message);
 
 uint8_t* vip_serialize_VRC(vip_message_t *message, uint8_t *buffer);
-int vip_parse_VRC(vip_message_t *message, uint8_t *buffer);
+void vip_parse_VRC(vip_message_t *message);
 
 uint8_t* vip_serialize_REL(vip_message_t *message, uint8_t *buffer);
-int vip_parse_REL(vip_message_t *message, uint8_t *buffer);
+void vip_parse_REL(vip_message_t *message);
 
 uint8_t* vip_serialize_SER(vip_message_t *message, uint8_t *buffer);
-int vip_parse_SER(vip_message_t *message, uint8_t *buffer);
+void vip_parse_SER(vip_message_t *message);
 
 uint8_t* vip_serialize_SEA(vip_message_t *message, uint8_t *buffer);
-int vip_parse_SEA(vip_message_t *message, uint8_t *buffer);
+void vip_parse_SEA(vip_message_t *message);
 
 uint8_t* vip_serialize_SEC(vip_message_t *message, uint8_t *buffer);
-int vip_parse_SEC(vip_message_t *message, uint8_t *buffer);
+void vip_parse_SEC(vip_message_t *message);
 
 uint8_t* vip_serialize_SD(vip_message_t *message, uint8_t *buffer);
-int vip_parse_SD(vip_message_t *message, uint8_t *buffer);
+void vip_parse_SD(vip_message_t *message);
 
 uint8_t* vip_serialize_SDA(vip_message_t *message, uint8_t *buffer);
-int vip_parse_SDA(vip_message_t *message, uint8_t *buffer);
+void vip_parse_SDA(vip_message_t *message);
 
 uint8_t* vip_serialize_VU(vip_message_t *message, uint8_t *buffer);
-int vip_parse_VU(vip_message_t *message, uint8_t *buffer);
+void vip_parse_VU(vip_message_t *message);
 
 uint8_t* vip_serialize_VM(vip_message_t *message, uint8_t *buffer);
-int vip_parse_VM(vip_message_t *message, uint8_t *buffer);
+void vip_parse_VM(vip_message_t *message);
 
+uint8_t* vip_serialize_no_type(vip_message_t *message, uint8_t *buffer);
 
 /* Data configure */
 int vip_get_header_total_len(vip_message_t *message, uint32_t *total_len);

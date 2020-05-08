@@ -17,10 +17,11 @@ struct vip_entity_s {
     vip_type_handler_t sda_handler;
     vip_type_handler_t vu_handler;
     vip_type_handler_t vm_handler;
+    vip_type_handler_t allocate_vt_handler;
 };
 
 
-#define TYPE_HANDLER(name, beacon_handler, vrr_handler, vra_handler, vrc_handler, rel_handler, ser_handler, sea_handler, sec_handler, sd_handler, sda_handler, vu_handler, vm_handler) \
-vip_entity_t name = { beacon_handler, vrr_handler, vra_handler, vrc_handler, rel_handler, ser_handler, sea_handler, sec_handler, sd_handler, sda_handler, vu_handler, vm_handler };
+#define TYPE_HANDLER(name, beacon_handler, vrr_handler, vra_handler, vrc_handler, rel_handler, ser_handler, sea_handler, sec_handler, sd_handler, sda_handler, vu_handler, vm_handler, allocate_vt_handler) \
+vip_entity_t name = { beacon_handler, vrr_handler, vra_handler, vrc_handler, rel_handler, ser_handler, sea_handler, sec_handler, sd_handler, sda_handler, vu_handler, vm_handler, allocate_vt_handler };
 
-int vip_route(vip_message_t *received_pkt, vip_entity_t *type_handler);
+void vip_route(vip_message_t *received_pkt, vip_entity_t *type_handler);
