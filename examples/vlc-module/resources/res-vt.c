@@ -45,7 +45,7 @@
 #include "vip-interface.h"
 #include "vt.h"
 
-#include "common.h"
+#include "sdlib/common.h"
 
 extern int vt_id;
 
@@ -175,7 +175,7 @@ allocate_vt_handler(vip_message_t *rcv_pkt) {
   if(vt_id == 0) {
     rcv_pkt->dest_coap_addr = uri;
     rcv_pkt->dest_url = "vip/aa";
-    process_poll(&vt_process, vt_snd_event, rcv_pkt);
+    process_post(&vt_process, vt_snd_event, (void *)rcv_pkt);
   }
 
 }
