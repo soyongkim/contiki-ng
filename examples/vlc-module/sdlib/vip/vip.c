@@ -122,8 +122,6 @@ int vip_serialize_message(vip_message_t *vip_pkt, uint8_t *buffer)
         /* code */
         offset = vip_serialize_VM(vip_pkt, buffer);
         break;
-    default:
-        /* vt allocation. do nothing */
     }
 
     memmove(offset, vip_pkt->payload, vip_pkt->payload_len);
