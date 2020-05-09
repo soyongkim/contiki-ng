@@ -68,6 +68,10 @@ static void handler_vm(vip_message_t *rcv_pkt);
 static void allocate_vt_handler(vip_message_t *rcv_pkt);
 
 
+static char vt_addr[] = VIP_BROADCAST_URI;
+static char vt_url[] = "vip/vt";
+
+
 /* A simple actuator example. Toggles the red led */
 PERIODIC_RESOURCE(res_aaa,
          "title=\"AA\";rt=\"Control\"",
@@ -184,8 +188,8 @@ res_periodic_ad_handler(void)
   snd_pkt->vt_id = 0;
   snd_pkt->total_len = VIP_COMMON_HEADER_LEN;
 
-  snd_pkt->dest_coap_addr = "coap://[fe80::201:1:1:1]";
-  snd_pkt->dest_url = "vip/vt";
+  snd_pkt->dest_coap_addr = vt_addr;
+  snd_pkt->dest_url = vt_url;
 
   vip_serialize_message(snd_pkt, buffer);
 
