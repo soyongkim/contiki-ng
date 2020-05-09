@@ -69,7 +69,6 @@ PROCESS_THREAD(aa_process, ev, data)
   PROCESS_END();
 }
 
-
 void
 aa_coap_request_handler(coap_message_t *res) {
   const uint8_t *chunk;
@@ -97,7 +96,8 @@ my_coap_request(vip_message_t *snd_pkt) {
 
   printf("-- AA Send coap vip[%d] packet --\n", snd_pkt->type);
   /* 일단 확실히 전송이 되는것부터 테스트 */
-  //COAP_BLOCKING_REQUEST(&dest_ep, request, aa_coap_request_handler);
+  COAP_BLOCKING_REQUEST(&dest_ep, request, 
+                        aa_coap_request_handler);
 }
 
 
