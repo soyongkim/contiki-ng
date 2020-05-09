@@ -4,7 +4,7 @@
 #include <string.h>
 #include "aa.h"
 #include "coap-engine.h"
-#include "coap-blocking-api.h"
+#include "coap-callback-api.h"
 #include "vip-interface.h"
 #include "net/netstack.h"
 
@@ -70,22 +70,15 @@ PROCESS_THREAD(aa_process, ev, data)
 }
 
 void
-aa_coap_request_handler(coap_message_t *res) {
-  const uint8_t *chunk;
-
-  if(res == NULL) {
-    puts("Request timed out");
-    return;
-  }
-
-  coap_get_payload(res, &chunk);
-
-  printf("Req-ack: %s\n", (char*)chunk);
+aa_coap_request_handler(coap_callback_request_state_t *callback_state) {
+  printf("AA CoAP Response Handler\n");
+  printf("CODE:%d\n", callback_state->state.response->code);
 }
 
 void
 my_coap_request(vip_message_t *snd_pkt) {
-  static coap_endpoint_t dest_ep;
+  static coap_callback_request_state_t callback_state[1];
+  static coap_endpoint_t dest_ep[1];
   static coap_message_t request[1];
 
   coap_endpoint_parse(snd_pkt->dest_coap_addr, strlen(snd_pkt->dest_coap_addr), &dest_ep);
@@ -95,9 +88,8 @@ my_coap_request(vip_message_t *snd_pkt) {
   coap_set_payload(request, snd_pkt->buffer, snd_pkt->total_len);
 
   printf("-- AA Send coap vip[%d] packet --\n", snd_pkt->type);
-  /* 일단 확실히 전송이 되는것부터 테스트 */
-  COAP_BLOCKING_REQUEST(&dest_ep, request, 
-                        aa_coap_request_handler);
+
+  coap_send_request(callback_state, dest_ep, request, aa_coap_request_handler);
 }
 
-
+ 

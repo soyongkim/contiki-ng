@@ -42,8 +42,13 @@
 #include "vip-interface.h"
 #include "aa.h"
 
+/* Node ID */
+#include "sys/node-id.h"
+
 #include <stdio.h>
 #include <string.h>
+
+
 
 static void res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset);
 static void res_periodic_ad_handler(void);
@@ -101,8 +106,6 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
 static void
 handler_beacon(vip_message_t *rcv_pkt) {
   printf("I'm beacon handler [%s]\n", rcv_pkt->uplink_id);
-
-  // 이제부터 server process가 이 핸들러를 호출할꺼임
   
 }
 
@@ -171,5 +174,17 @@ allocate_vt_handler(vip_message_t *rcv_pkt) {
 static void
 res_periodic_ad_handler(void)
 {
+  // vt 등록을 위한 첫 트랜잭션의 시작
+  static vip_message_t snd_pkt[1];
+  static uint8_t buffer[8];
   printf("This is AA Periodic AD handler\n");
+
+  snd_pkt->type = 11;
+  snd_pkt->aa_id = node_id;
+  snd_pkt->vt_id = 0;
+  snd_pkt->total_len = VIP_COMMON_HEADER_LEN;
+
+  vip_serialize_message(snd_pkt, buffer);
+
+  process_post(&aa_process, aa_snd_event, (void *)snd_pkt);
 }
