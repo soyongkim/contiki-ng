@@ -46,10 +46,6 @@
 #include <string.h>
 
 static void res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset);
-static void res_event_handler(void);
-static void coap_request_handler(coap_message_t *response);
-
-
 static void handler_beacon(vip_message_t *rcv_pkt);
 static void handler_vrr(vip_message_t *rcv_pkt);
 static void handler_vra(vip_message_t *rcv_pkt);
@@ -62,6 +58,7 @@ static void handler_sd(vip_message_t *rcv_pkt);
 static void handler_sda(vip_message_t *rcv_pkt);
 static void handler_vu(vip_message_t *rcv_pkt);
 static void handler_vm(vip_message_t *rcv_pkt);
+static void allocate_vt_handler(vip_message_t *rcv_pkt);
 
 
 /* A simple actuator example. Toggles the red led */
@@ -72,7 +69,7 @@ PERIODIC_RESOURCE(res_aaa,
          NULL,
          NULL,
          1000,
-         res_perioic_ad_handler);
+         res_periodic_ad_handler);
 
 
 /* vip type handler */
@@ -170,7 +167,7 @@ allocate_vt_handler(vip_message_t *rcv_pkt) {
 
 
 static void
-res_perioic_ad_handler(void)
+res_periodic_ad_handler(void)
 {
   printf("This is AA Periodic AD handler\n");
 }
