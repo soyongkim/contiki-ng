@@ -81,7 +81,7 @@ my_coap_request(vip_message_t *snd_pkt) {
   static coap_endpoint_t dest_ep[1];
   static coap_message_t request[1];
 
-  coap_endpoint_parse(snd_pkt->dest_coap_addr, 16, &dest_ep);
+  coap_endpoint_parse(VIP_BROADCAST_URI, strlen(VIP_BROADCAST_URI), &dest_ep);
   coap_init_message(request, COAP_TYPE_CON, COAP_POST, 0);
   coap_set_header_uri_host(request, snd_pkt->dest_url);
 
