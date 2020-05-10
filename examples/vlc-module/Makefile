@@ -3,6 +3,7 @@ all: $(CONTIKI_PROJECT)
 
 # include sdlib
 MODULES_REL += ./sdlib/vip
+MODULES += ./sdlib/configure_cooja
 
 # Include CoAP resources
 MODULES_REL += ./resources
