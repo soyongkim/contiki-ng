@@ -101,4 +101,8 @@ int vip_set_type_header_vg_seq_num(vip_message_t *message, uint32_t vg_seq_numbe
 int vip_get_payload(vip_message_t *message, const uint8_t **payload);
 int vip_set_payload(vip_message_t *message, const void *payload, size_t payload_len);
 
+int vip_set_dest_ep(vip_message_t *message, char *dest_addr, char *dest_url);
+
+
+
 void vip_coap_response(vip_message_t *vip_pkt, char *taget_url);

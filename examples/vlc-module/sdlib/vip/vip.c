@@ -465,4 +465,10 @@ vip_set_type_header_uplink_id(vip_message_t *vip_pkt, char *uplink_id) {
     return 1;
 }
 
+int 
+vip_set_dest_ep(vip_message_t *vip_pkt, char *dest_addr, char *dest_url) {
+    vip_pkt->dest_coap_addr = dest_addr;
+    vip_pkt->dest_url = dest_url;
+    return 1;
+}
 
