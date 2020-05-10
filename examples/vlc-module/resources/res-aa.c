@@ -186,5 +186,5 @@ res_periodic_ad_handler(void)
 
   vip_serialize_message(snd_pkt, buffer);
 
-  //process_post(&aa_process, aa_snd_event, (void *)snd_pkt);
+  process_post(&aa_process, aa_snd_event, (void *)snd_pkt);
 }
