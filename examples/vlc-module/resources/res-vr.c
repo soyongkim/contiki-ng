@@ -46,7 +46,7 @@
 static void res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset);
 
 /* A simple actuator example. Toggles the red led */
-RESOURCE(res_aa,
+RESOURCE(res_vr,
          "title=\"VR\";rt=\"Control\"",
          NULL,
          res_post_handler,
