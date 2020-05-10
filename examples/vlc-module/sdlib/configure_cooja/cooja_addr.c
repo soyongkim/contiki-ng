@@ -50,10 +50,9 @@ cooja_mote_address(uip_ipaddr_t *dest_ipaddr, int node_id) {
 
 void
 make_coap_uri(char *src_coap_uri, int node_id) {
-  char coap_uri[25];
+  char coap_uri[25] = "coap://[fe:80::";
   char first[4], second[4], third[4], forth[4];
-
-  coap_uri[25] = "coap://[fe:80::";
+  
   sprintf(first, "%d", 200 + node_id);
   strcat(coap_uri, first);
   strcat(coap_uri, ":");
