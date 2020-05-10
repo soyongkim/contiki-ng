@@ -77,7 +77,7 @@ PROCESS_THREAD(aa_process, ev, data)
 void
 aa_coap_request_handler(coap_callback_request_state_t *callback_state) {
   printf("AA CoAP Response Handler\n");
-  printf("CODE:%d\n", callback_state->state.response->code);
+  //printf("CODE:%d\n", callback_state->state.response->code);
 }
 
 void
