@@ -43,6 +43,10 @@ PROCESS_THREAD(aa_process, ev, data)
   PROCESS_PAUSE();
 
   printf("Node ID is %d\n", node_id);
+
+  aa_rcv_event = process_alloc_event();
+  aa_snd_event = process_alloc_event();
+
   /*
    * Bind the resources to their Uri-Path.
    * WARNING: Activating twice only means alternate path, not two instances!

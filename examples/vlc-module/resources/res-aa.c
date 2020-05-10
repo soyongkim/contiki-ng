@@ -84,6 +84,8 @@ TYPE_HANDLER(aa_type_handler, handler_beacon, handler_vrr, handler_vra,
               handler_vrc, handler_rel, handler_ser, handler_sea, handler_sec,
               handler_sd, handler_sda, handler_vu, handler_vm, allocate_vt_handler);
 
+
+/* called by coap-engine proc */
 static void
 res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset)
 {
