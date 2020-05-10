@@ -48,8 +48,6 @@
 #include <stdio.h>
 #include <string.h>
 
-
-
 static void res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset);
 static void res_periodic_ad_handler(void);
 
@@ -66,6 +64,9 @@ static void handler_sda(vip_message_t *rcv_pkt);
 static void handler_vu(vip_message_t *rcv_pkt);
 static void handler_vm(vip_message_t *rcv_pkt);
 static void allocate_vt_handler(vip_message_t *rcv_pkt);
+
+static vip_message_t snd_pkt[1];
+static uint8_t buffer[50];
 
 /* A simple actuator example. Toggles the red led */
 PERIODIC_RESOURCE(res_aa,
@@ -174,8 +175,6 @@ static void
 res_periodic_ad_handler(void)
 {
   // vt 등록을 위한 첫 트랜잭션의 시작
-  static vip_message_t snd_pkt[1];
-  static uint8_t buffer[50];
   printf("This is AA Periodic AD handler\n");
 
   vip_init_message(snd_pkt, 11, 1, 1);
