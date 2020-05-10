@@ -180,7 +180,7 @@ res_periodic_ad_handler(void)
 {
   // vt 등록을 위한 첫 트랜잭션의 시작
   static vip_message_t snd_pkt[1];
-  static uint8_t buffer[8];
+  static uint8_t buffer[10];
   printf("This is AA Periodic AD handler\n");
 
   snd_pkt->type = 11;
