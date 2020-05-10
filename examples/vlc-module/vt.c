@@ -60,8 +60,6 @@ process_event_t vt_rcv_event, vt_snd_event;
   
 vip_message_t *rcv_pkt, *snd_pkt;
 
-
-
 PROCESS(vt_process, "VT");
 AUTOSTART_PROCESSES(&vt_process);
 
