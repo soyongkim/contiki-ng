@@ -40,7 +40,7 @@
 #include "coap-engine.h"
 #include "coap-callback-api.h"
 #include "vip-interface.h"
-#include "aa.h"
+#include "vt.h"
 
 /* Node ID */
 #include "sys/node-id.h"
