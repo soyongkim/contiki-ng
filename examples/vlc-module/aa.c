@@ -62,7 +62,7 @@ PROCESS_THREAD(aa_process, ev, data)
         vip_route(rcv_pkt, &aa_type_handler);
       }
       else if(ev == aa_snd_event) {
-        my_coap_request(;
+        my_coap_request();
       }
 
       printf("EVENT!\n");
