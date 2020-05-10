@@ -68,7 +68,7 @@ static void handler_vm(vip_message_t *rcv_pkt);
 static void allocate_vt_handler(vip_message_t *rcv_pkt);
 
 /* A simple actuator example. Toggles the red led */
-PERIODIC_RESOURCE(res_aaa,
+PERIODIC_RESOURCE(res_aa,
          "title=\"AA\";rt=\"Control\"",
          NULL,
          res_post_handler,
