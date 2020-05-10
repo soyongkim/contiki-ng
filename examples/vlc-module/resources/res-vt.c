@@ -36,16 +36,17 @@
  *      Matthias Kovatsch <kovatsch@inf.ethz.ch>
  */
 
-#include <stdio.h>
-#include <string.h>
-
 #include "contiki.h"
 #include "coap-engine.h"
 #include "coap-callback-api.h"
 #include "vip-interface.h"
-#include "vt.h"
+#include "aa.h"
 
-#include "sdlib/common.h"
+/* Node ID */
+#include "sys/node-id.h"
+
+#include <stdio.h>
+#include <string.h>
 
 static void res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset);
 
@@ -61,9 +62,10 @@ static void handler_sd(vip_message_t *rcv_pkt);
 static void handler_sda(vip_message_t *rcv_pkt);
 static void handler_vu(vip_message_t *rcv_pkt);
 static void handler_vm(vip_message_t *rcv_pkt);
+static void allocate_vt_handler(vip_message_t *rcv_pkt);
 
-/* vt id */
-int vt_id;
+static vip_message_t snd_pkt[1];
+static uint8_t buffer[50];
 
 /* A simple actuator example. Toggles the red led */
 RESOURCE(res_vt,
@@ -75,10 +77,12 @@ RESOURCE(res_vt,
 
 
 /* vip type handler */
-TYPE_HANDLER(vt_type_handler, handler_beacon, handler_vrr, handler_vra, 
+TYPE_HANDLER(aa_type_handler, handler_beacon, handler_vrr, handler_vra, 
               handler_vrc, handler_rel, handler_ser, handler_sea, handler_sec,
               handler_sd, handler_sda, handler_vu, handler_vm, allocate_vt_handler);
 
+
+/* called by coap-engine proc */
 static void
 res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset)
 {
@@ -101,6 +105,7 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
 static void
 handler_beacon(vip_message_t *rcv_pkt) {
   printf("I'm beacon handler [%s]\n", rcv_pkt->uplink_id);
+  
 }
 
 
@@ -161,15 +166,5 @@ handler_vm(vip_message_t *rcv_pkt) {
 
 static void
 allocate_vt_handler(vip_message_t *rcv_pkt) {
-//   char uri[25] = {0,};
-//   make_coap_uri(uri, 1);
-//   printf("URI:%s\n", uri);
-
-//   if(vt_id == 0) {
-//     rcv_pkt->dest_coap_addr = uri;
-//     rcv_pkt->dest_url = "vip/aa";
-//     process_post(&vt_process, vt_snd_event, (void *)rcv_pkt);
-//   }
-
-    printf("test rcv_handler %d\n", rcv_pkt->type);
+  printf("WOW %d\n", rcv_pkt->type); 
 }
