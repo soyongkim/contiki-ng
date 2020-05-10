@@ -91,11 +91,7 @@ PROCESS_THREAD(er_example_client, ev, data)
     // coap_endpoint_parse(SERVER_EP, strlen(SERVER_EP), &server_ep);
 
     /* test broadcast */
-    //coap_endpoint_parse(VIP_BROADCAST_URI, strlen(VIP_BROADCAST_URI), &server_ep);
-    
-    server_ep.port = COAP_SERVER_PORT;
-    server_ep.ipaddr = change_target(0);
-    server_ep.secure = 0;
+    coap_endpoint_parse(SERVER_EP, strlen(SERVER_EP), &server_ep);
 
 
     static vip_message_t vip_pkt[1];

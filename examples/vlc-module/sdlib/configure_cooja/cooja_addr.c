@@ -3,7 +3,7 @@
 #include "net/ipv6/uip-ds6.h"
 #include "net/ipv6/uip-debug.h"
 
-uip_ip6addr_t
+uip_ipaddr_t
 change_target(int node_id) {
     const uip_ipaddr_t *default_prefix = uip_ds6_default_prefix();
     uip_ipaddr_t dest_ipaddr;
@@ -50,9 +50,9 @@ cooja_mote_address(uip_ipaddr_t *dest_ipaddr, int node_id) {
 
 void
 make_coap_uri(char *src_coap_uri, int node_id) {
-  char coap_uri[25] = "coap://[fe:80::";
+  char coap_uri[25] = "coap://[fe80::";
   char first[4], second[4], third[4], forth[4];
-  
+
   sprintf(first, "%d", 200 + node_id);
   strcat(coap_uri, first);
   strcat(coap_uri, ":");
