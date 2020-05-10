@@ -177,14 +177,14 @@ res_periodic_ad_handler(void)
   // vt 등록을 위한 첫 트랜잭션의 시작
   printf("This is AA Periodic AD handler\n");
 
-  vip_init_message(snd_pkt, 11, 1, 1);
-  vip_set_header_total_len(snd_pkt, VIP_COMMON_HEADER_LEN);
+  //vip_init_message(snd_pkt, 11, 1, 1);
+  //vip_set_header_total_len(snd_pkt, VIP_COMMON_HEADER_LEN);
   // 문자열을 그대로 넘겨줘도 알아서 포인터로 넘어가나? 그게 궁금함
-  vip_set_dest_ep(snd_pkt, VIP_BROADCAST_URI, "vip/vt");
+  //vip_set_dest_ep(snd_pkt, VIP_BROADCAST_URI, "vip/vt");
 
-  printf("test addr: %s / %s\n", snd_pkt->dest_coap_addr, snd_pkt->dest_url);
+  //printf("test addr: %s / %s\n", snd_pkt->dest_coap_addr, snd_pkt->dest_url);
 
-  vip_serialize_message(snd_pkt, buffer);
+  //vip_serialize_message(snd_pkt, buffer);
 
-  process_post(&aa_process, aa_snd_event, (void *)snd_pkt);
+  //process_post(&aa_process, aa_snd_event, (void *)snd_pkt);
 }

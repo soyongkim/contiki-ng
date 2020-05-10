@@ -86,6 +86,7 @@ my_coap_request(vip_message_t *snd_pkt) {
   // coap_set_payload(request, snd_pkt->buffer, snd_pkt->total_len);
 
   printf("-- AA Send coap vip[%d] packet --\n", snd_pkt->type);
+  
 
   //coap_send_request(callback_state, &dest_ep, request, aa_coap_request_handler);
 }
