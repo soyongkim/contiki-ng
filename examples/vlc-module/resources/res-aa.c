@@ -185,6 +185,5 @@ res_periodic_ad_handler(void)
   printf("test addr: %s / %s\n", snd_pkt->dest_coap_addr, snd_pkt->dest_url);
 
   vip_serialize_message(snd_pkt, buffer);
-
   process_post(&aa_process, aa_snd_event, (void *)snd_pkt);
 }
