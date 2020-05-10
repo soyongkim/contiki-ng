@@ -25,9 +25,9 @@ process_event_t aa_rcv_event, aa_snd_event;
 vip_message_t *rcv_pkt;
 
 /* for send packet */
-//static coap_callback_request_state_t callback_state[1];
-// static coap_endpoint_t dest_ep;
-// static coap_message_t request[1];
+static coap_callback_request_state_t callback_state[1];
+static coap_endpoint_t dest_ep;
+static coap_message_t request[1];
 
 PROCESS(aa_process, "AA");
 AUTOSTART_PROCESSES(&aa_process);
