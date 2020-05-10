@@ -66,7 +66,7 @@ static void handler_vm(vip_message_t *rcv_pkt);
 static void allocate_vt_handler(vip_message_t *rcv_pkt);
 
 static vip_message_t snd_pkt[1];
-static uint8_t buffer[50];
+// static uint8_t buffer[50];
 
 /* A simple actuator example. Toggles the red led */
 PERIODIC_RESOURCE(res_aa,
@@ -177,7 +177,7 @@ res_periodic_ad_handler(void)
   // vt 등록을 위한 첫 트랜잭션의 시작
   printf("This is AA Periodic AD handler\n");
 
-  //vip_init_message(snd_pkt, 11, 1, 1);
+  vip_init_message(snd_pkt, 11, 1, 1);
   //vip_set_header_total_len(snd_pkt, VIP_COMMON_HEADER_LEN);
   // 문자열을 그대로 넘겨줘도 알아서 포인터로 넘어가나? 그게 궁금함
   //vip_set_dest_ep(snd_pkt, VIP_BROADCAST_URI, "vip/vt");
