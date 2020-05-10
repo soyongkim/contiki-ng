@@ -55,6 +55,7 @@ vip_parse_int_option(uint8_t *bytes, size_t length)
 int vip_serialize_message(vip_message_t *vip_pkt, uint8_t *buffer)
 {
     uint8_t *offset;
+    memset(buffer, 0, sizeof(buffer));
 
     /* Initialize */
     vip_pkt->buffer = buffer;
