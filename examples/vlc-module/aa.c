@@ -33,7 +33,7 @@ PROCESS(aa_process, "AA");
 AUTOSTART_PROCESSES(&aa_process);
 
 
-void my_coap_request(vip_message_t *snd_pkt);
+void my_coap_request();
 void aa_coap_request_handler(coap_callback_request_state_t *callback_state);
 
 
