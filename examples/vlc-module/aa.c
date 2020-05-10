@@ -17,7 +17,6 @@
 extern coap_resource_t res_aa;
 extern vip_entity_t aa_type_handler;
 
-
 /* test event process */
 process_event_t aa_rcv_event, aa_snd_event;
 
