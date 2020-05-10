@@ -66,7 +66,7 @@ static void handler_vm(vip_message_t *rcv_pkt);
 static void allocate_vt_handler(vip_message_t *rcv_pkt);
 
 static vip_message_t snd_pkt[1];
-// static uint8_t buffer[50];
+static uint8_t buffer[50];
 
 /* A simple actuator example. Toggles the red led */
 PERIODIC_RESOURCE(res_aa,
