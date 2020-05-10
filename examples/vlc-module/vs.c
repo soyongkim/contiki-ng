@@ -44,7 +44,7 @@
 #include "coap-engine.h"
 #include "coap-blocking-api.h"
 #include "vip.h"
-#include "common.h"
+#include "cooja_addr.h"
 
 /* FIXME: This server address is hard-coded for Cooja and link-local for unconnected border router. */
 /* default address */

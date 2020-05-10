@@ -31,7 +31,7 @@
 #include "net/routing/routing.h"
 #include "net/netstack.h"
 #include "net/ipv6/simple-udp.h"
-#include "sdlib/common.h"
+#include "cooja_addr.h"
 
 #include "sdlib/vip/vip.h"
 

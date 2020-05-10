@@ -1,4 +1,4 @@
-#include "common.h"
+#include "cooja_addr.h"
 #include "net/ipv6/simple-udp.h"
 #include "net/ipv6/uip-ds6.h"
 #include "net/ipv6/uip-debug.h"
