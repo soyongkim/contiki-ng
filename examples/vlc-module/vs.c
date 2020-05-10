@@ -87,7 +87,10 @@ PROCESS_THREAD(er_example_client, ev, data)
 
     static coap_message_t request[1]; /* This way the packet can be treated as pointer as usual. */
 
-    coap_endpoint_parse(SERVER_EP, strlen(SERVER_EP), &server_ep);
+    // coap_endpoint_parse(SERVER_EP, strlen(SERVER_EP), &server_ep);
+
+    /* test broadcast */
+    coap_endpoint_parse(VIP_BROADCAST_URI, strlen(VIP_BROADCAST_URI), &server_ep);
 
     static vip_message_t vip_pkt[1];
     uint8_t buffer[50];

@@ -1,12 +1,10 @@
 #define VIP_MAX_SERVICE 65536
-
 #define VIP_COMMON_HEADER_LEN 8
 
 #define VIP_VR_ID_LEN 4
 #define VIP_NO_ALLOCATED_VR_ID 0
 
 #define VIP_MAX_UPLINK_ID 1024
-
 #define VIP_SEQ_LEN 4
 
 #define VIP_SERVICE_NUM 2
