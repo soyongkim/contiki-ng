@@ -43,8 +43,8 @@
 #include "contiki-net.h"
 #include "coap-engine.h"
 #include "coap-blocking-api.h"
-#include "sdlib/vip/vip.h"
-#include "sdlib/common.h"
+#include "vip.h"
+#include "common.h"
 
 /* FIXME: This server address is hard-coded for Cooja and link-local for unconnected border router. */
 /* default address */

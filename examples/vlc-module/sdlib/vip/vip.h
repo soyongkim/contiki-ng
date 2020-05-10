@@ -1,4 +1,3 @@
-#include "contiki.h"
 #include "net/ipv6/uip.h"
 #include "vip-constants.h"
 

@@ -1,4 +1,3 @@
-#include "contiki.h"
 #include "net/ipv6/uip.h"
 
 #define BROADCAST 0
