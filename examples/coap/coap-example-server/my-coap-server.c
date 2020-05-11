@@ -44,17 +44,6 @@
 #include "coap-engine.h"
 #include "net/netstack.h"
 
-#if PLATFORM_SUPPORTS_BUTTON_HAL
-#include "dev/button-hal.h"
-#else
-#include "dev/button-sensor.h"
-#endif
-
-/* Log configuration */
-#include "sys/log.h"
-#define LOG_MODULE "App"
-#define LOG_LEVEL LOG_LEVEL_APP
-
 
 /* Node ID */
 #include "sys/node-id.h"
