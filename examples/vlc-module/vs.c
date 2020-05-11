@@ -96,6 +96,7 @@ PROCESS_THREAD(er_example_client, ev, data)
 
     static vip_message_t vip_pkt[1];
     uint8_t buffer[50];
+    int mid_cnt = 0;
 
     etimer_set(&et, CLOCK_SECOND);
     while (1)
@@ -107,7 +108,7 @@ PROCESS_THREAD(er_example_client, ev, data)
         vip_set_header_total_len(vip_pkt, VIP_COMMON_HEADER_LEN + 8);
         vip_serialize_message(vip_pkt, buffer);
 
-        coap_init_message(request, COAP_TYPE_NON, COAP_POST, 0);
+        coap_init_message(request, COAP_TYPE_CON, COAP_POST, mid_cnt++);
         coap_set_header_uri_path(request, "vip/aa");
 
         coap_set_payload(request, vip_pkt->buffer, vip_pkt->total_len);
