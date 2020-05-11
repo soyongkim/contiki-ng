@@ -42,8 +42,6 @@
 #include <string.h>
 #include "contiki.h"
 #include "coap-engine.h"
-#include "net/netstack.h"
-
 
 /* Node ID */
 #include "sys/node-id.h"
@@ -54,11 +52,7 @@
  * The build system automatically compiles the resources in the corresponding sub-directory.
  */
 extern coap_resource_t
-  res_hello,
-  res_mirror,
-  res_chunks,
-  res_separate,
-  res_push;
+  res_hello;
 
 PROCESS(er_example_server, "Erbium Example Server");
 AUTOSTART_PROCESSES(&er_example_server);
@@ -75,10 +69,6 @@ PROCESS_THREAD(er_example_server, ev, data)
    * All static variables are the same for each URI path.
    */
   coap_activate_resource(&res_hello, "test/hello");
-  coap_activate_resource(&res_mirror, "debug/mirror");
-  coap_activate_resource(&res_chunks, "test/chunks");
-  coap_activate_resource(&res_separate, "test/separate");
-  coap_activate_resource(&res_push, "test/push");
 
   
   /* Define application-specific events here. */
