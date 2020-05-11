@@ -10,11 +10,17 @@
 
 /* Node ID */
 #include "sys/node-id.h"
+
+
+void my_coap_request(vip_message_t *snd_pkt);
+void aa_coap_request_handler(coap_callback_request_state_t *callback_state);
+
+
 /*
  * Resources to be activated need to be imported through the extern keyword.
  * The build system automatically compiles the resources in the corresponding sub-directory.
  */
-extern coap_resource_t res_hello, res_aa;
+extern coap_resource_t res_hello;
 extern vip_entity_t aa_type_handler;
 
 /* test event process */
@@ -31,11 +37,6 @@ static coap_message_t request[1];
 PROCESS(aa_process, "AA");
 AUTOSTART_PROCESSES(&aa_process);
 
-
-void my_coap_request(vip_message_t *snd_pkt);
-void aa_coap_request_handler(coap_callback_request_state_t *callback_state);
-
-
 PROCESS_THREAD(aa_process, ev, data)
 {
   PROCESS_BEGIN();
@@ -51,7 +52,7 @@ PROCESS_THREAD(aa_process, ev, data)
    * WARNING: Activating twice only means alternate path, not two instances!
    * All static variables are the same for each URI path.
    */
-  coap_activate_resource(&res_aa, "vip/aa");
+  //coap_activate_resource(&res_aa, "vip/aa");
   coap_activate_resource(&res_hello, "test/hello");
 
   /* Define application-specific events here. */

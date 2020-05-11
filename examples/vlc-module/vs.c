@@ -77,7 +77,6 @@ void client_chunk_handler(coap_message_t *response)
     int len = coap_get_payload(response, &chunk);+
 
     printf("|%.*s", len, (char *)chunk);
-    printf("TEST_str:%s\n", uplink_id);
 }
 
 PROCESS_THREAD(er_example_client, ev, data)
