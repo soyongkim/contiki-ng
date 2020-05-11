@@ -43,7 +43,6 @@
 #include "contiki.h"
 #include "coap-engine.h"
 #include "net/netstack.h"
-#include "net/nullnet/nullnet.h"
 
 #if PLATFORM_SUPPORTS_BUTTON_HAL
 #include "dev/button-hal.h"
@@ -72,20 +71,6 @@ extern coap_resource_t
   res_separate,
   res_push;
 
-
-void input_callback(const void *data, uint16_t len,
-  const linkaddr_t *src, const linkaddr_t *dest)
-{
-  if(len == sizeof(unsigned)) {
-    unsigned count;
-    memcpy(&count, data, sizeof(count));
-    LOG_INFO("Received %u from ", count);
-    LOG_INFO_LLADDR(src);
-    LOG_INFO_("\n");
-  }
-}
-
-
 PROCESS(er_example_server, "Erbium Example Server");
 AUTOSTART_PROCESSES(&er_example_server);
 
@@ -94,9 +79,7 @@ PROCESS_THREAD(er_example_server, ev, data)
   PROCESS_BEGIN();
   PROCESS_PAUSE();
 
-  LOG_INFO("Starting Erbium Example Server\n");
   printf("[SD] Node ID is %d\n", node_id);
-  nullnet_set_input_callback(input_callback);
   /*
    * Bind the resources to their Uri-Path.
    * WARNING: Activating twice only means alternate path, not two instances!
