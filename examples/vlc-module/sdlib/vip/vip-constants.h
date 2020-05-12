@@ -15,7 +15,7 @@
 #define VIP_ERROR 0
 #define VIP_NO_ERROR 1
 
-#define VIP_BROADCAST_URI "coap://[ff02::1:ff00:0]"
+#define VIP_BROADCAST_URI "coap://[fe80::202:2:2:2]"
 
 /* VIP message types */
 typedef enum {
