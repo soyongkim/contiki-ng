@@ -163,5 +163,5 @@ handler_vm(vip_message_t *rcv_pkt) {
 
 static void
 allocate_vt_handler(vip_message_t *rcv_pkt) {
-  printf("WOW %d\n", rcv_pkt->type); 
+  printf("WOW %d\n", rcv_pkt->type);
 }
