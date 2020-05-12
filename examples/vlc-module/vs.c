@@ -87,10 +87,10 @@ PROCESS_THREAD(er_example_client, ev, data)
 
     static coap_message_t request[1]; /* This way the packet can be treated as pointer as usual. */
 
-     coap_endpoint_parse(SERVER_EP, strlen(SERVER_EP), &server_ep);
+     //coap_endpoint_parse(SERVER_EP, strlen(SERVER_EP), &server_ep);
 
     /* test broadcast */
-    //coap_endpoint_parse(VIP_BROADCAST_URI, strlen(VIP_BROADCAST_URI), &server_ep);
+    coap_endpoint_parse(VIP_BROADCAST_URI, strlen(VIP_BROADCAST_URI), &server_ep);
 
 
     static vip_message_t vip_pkt[1];
@@ -107,11 +107,11 @@ PROCESS_THREAD(er_example_client, ev, data)
     {
         PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&et));
         /* send a request to notify the end of the process */
-        coap_init_message(request, COAP_TYPE_CON, COAP_GET, 0);
-        coap_set_header_uri_path(request, "test/hello");
+        coap_init_message(request, COAP_TYPE_NON, COAP_POST, 0);
+        coap_set_header_uri_path(request, "vip/vt");
         //coap_set_payload(request, vip_pkt->buffer, vip_pkt->total_len);
 
-        printf("--Requesting vip/aa--\n");
+        printf("--Requesting vip/vt--\n");
 
         COAP_BLOCKING_REQUEST(&server_ep, request,
                               client_chunk_handler);

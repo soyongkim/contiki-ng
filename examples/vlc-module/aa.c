@@ -85,14 +85,14 @@ aa_coap_request_callback(coap_callback_request_state_t *callback_state) {
 void
 my_coap_request(vip_message_t *snd_pkt) {
 
-  coap_endpoint_parse(snd_pkt->dest_coap_addr, strlen(snd_pkt->dest_coap_addr), &dest_ep);
+  coap_endpoint_parse(VIP_BROADCAST_URI, strlen(VIP_BROADCAST_URI), &dest_ep);
 
   // NON_TYPE이 맞음
   // 계속해서 메시지를 날려야 하는데, CON TYPE으로 날리면 매번 날리는 메시지에 응답을 요구함
   // 응답은 VT에 따라 올 수도 있고 안올 수도 있으므로 NON이 맞음.
   // 구현 상 CON으로 보내면, 메시지 응답을 4개 기다리면, 그때부터는 더 못보내는 식으로 되어 있는 것 같음
   coap_init_message(request, COAP_TYPE_NON, COAP_POST, 0);
-  coap_set_header_uri_host(request, snd_pkt->dest_url);
+  coap_set_header_uri_host(request, "vip/vt");
   coap_set_payload(request, snd_pkt->buffer, snd_pkt->total_len);
 
   printf("-- AA Send coap vip[%d] packet --\n", snd_pkt->type);
