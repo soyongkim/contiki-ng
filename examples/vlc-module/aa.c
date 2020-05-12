@@ -30,7 +30,7 @@ process_event_t aa_rcv_event, aa_snd_event;
 vip_message_t *rcv_pkt;
 
 /* for send packet */
-//static coap_callback_request_state_t callback_state[1];
+static coap_callback_request_state_t callback_state[1];
 static coap_endpoint_t dest_ep;
 static coap_message_t request[1];
 static int snd_cnt;
@@ -48,7 +48,7 @@ PROCESS_THREAD(aa_process, ev, data)
   aa_rcv_event = process_alloc_event();
   aa_snd_event = process_alloc_event();
 
-  snd_cnt = 0;
+  snd_cnt = 1;
   /*
    * Bind the resources to their Uri-Path.
    * WARNING: Activating twice only means alternate path, not two instances!
@@ -94,7 +94,7 @@ my_coap_request(vip_message_t *snd_pkt) {
 
   printf("-- AA Send coap vip[%d] packet --\n", snd_pkt->type);
 
-  //coap_send_request(callback_state, &dest_ep, request, aa_coap_request_handler);
+  coap_send_request(callback_state, &dest_ep, request, aa_coap_request_handler);
 }
 
  
