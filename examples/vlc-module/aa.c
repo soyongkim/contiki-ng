@@ -11,9 +11,8 @@
 /* Node ID */
 #include "sys/node-id.h"
 
-
-void my_coap_request(vip_message_t *snd_pkt);
-void aa_coap_request_handler(coap_callback_request_state_t *callback_state);
+static void my_coap_request(vip_message_t *snd_pkt);
+static void aa_coap_request_callback(coap_callback_request_state_t *callback_state);
 
 
 /*
@@ -30,10 +29,10 @@ process_event_t aa_rcv_event, aa_snd_event;
 vip_message_t *rcv_pkt;
 
 /* for send packet */
-static coap_callback_request_state_t callback_state[1];
+static coap_callback_request_state_t callback_state;
 static coap_endpoint_t dest_ep;
 static coap_message_t request[1];
-static int snd_cnt;
+
 
 PROCESS(aa_process, "AA");
 AUTOSTART_PROCESSES(&aa_process);
@@ -48,7 +47,6 @@ PROCESS_THREAD(aa_process, ev, data)
   aa_rcv_event = process_alloc_event();
   aa_snd_event = process_alloc_event();
 
-  snd_cnt = 1;
   /*
    * Bind the resources to their Uri-Path.
    * WARNING: Activating twice only means alternate path, not two instances!
@@ -79,7 +77,7 @@ PROCESS_THREAD(aa_process, ev, data)
 }
 
 void
-aa_coap_request_handler(coap_callback_request_state_t *callback_state) {
+aa_coap_request_callback(coap_callback_request_state_t *callback_state) {
   printf("AA CoAP Response Handler\n");
   //printf("CODE:%d\n", callback_state->state.response->code);
 }
@@ -88,13 +86,14 @@ void
 my_coap_request(vip_message_t *snd_pkt) {
 
   coap_endpoint_parse(snd_pkt->dest_coap_addr, strlen(snd_pkt->dest_coap_addr), &dest_ep);
-  coap_init_message(request, COAP_TYPE_CON, COAP_POST, snd_cnt++);
+  coap_init_message(request, COAP_TYPE_CON, COAP_POST, 0);
   coap_set_header_uri_host(request, snd_pkt->dest_url);
+  
   coap_set_payload(request, snd_pkt->buffer, snd_pkt->total_len);
 
   printf("-- AA Send coap vip[%d] packet --\n", snd_pkt->type);
 
-  coap_send_request(callback_state, &dest_ep, request, aa_coap_request_handler);
+  coap_send_request(&callback_state, &dest_ep, request, aa_coap_request_callback);
 }
 
  

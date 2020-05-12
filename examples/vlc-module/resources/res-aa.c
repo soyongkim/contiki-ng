@@ -184,7 +184,7 @@ res_periodic_ad_handler(void)
   vip_init_message(snd_pkt, 11, 1, 1);
   vip_set_header_total_len(snd_pkt, VIP_COMMON_HEADER_LEN);
   // 문자열을 그대로 넘겨줘도 알아서 포인터로 넘어가나? 그게 궁금함
-  vip_set_dest_ep(snd_pkt, SERVER_EP, "vip/aa");
+  vip_set_dest_ep(snd_pkt, VIP_BROADCAST_URI, "vip/aa");
 
   printf("test addr: %s / %s\n", snd_pkt->dest_coap_addr, snd_pkt->dest_url);
 
