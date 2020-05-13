@@ -88,7 +88,7 @@ PROCESS_THREAD(vt_process, ev, data)
         rcv_pkt = (vip_message_t *)data;
         printf("type is %d\n", rcv_pkt->type);
 
-        //vip_route(rcv_pkt, &vt_type_handler);
+        vip_route(rcv_pkt, &vt_type_handler);
       }
       else if(ev == vt_snd_event) {
         snd_pkt = (vip_message_t *)data;

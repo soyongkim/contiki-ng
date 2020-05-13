@@ -30,5 +30,6 @@ typedef enum {
   VIP_TYPE_SD,                 /* Service Data */
   VIP_TYPE_SDA,                /* Service Data ACK */
   VIP_TYPE_VU,                 /* VR Update */
-  VIP_TYPE_VM                  /* VR Migration */
+  VIP_TYPE_VM,                  /* VR Migration */
+  VIP_TYPE_ALLOW
 } vip_message_type_t;

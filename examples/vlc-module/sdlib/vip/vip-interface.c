@@ -62,7 +62,7 @@ vip_route(vip_message_t *vip_pkt, vip_entity_t *type_handler) {
         vip_parse_VM(vip_pkt);
         type_handler->vu_handler(vip_pkt);
         break;
-    default:
+    case VIP_TYPE_ALLOW:
         type_handler->allocate_vt_handler(vip_pkt);
     } 
 }
