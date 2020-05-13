@@ -69,6 +69,9 @@ PROCESS_THREAD(vt_process, ev, data)
   PROCESS_PAUSE();
 
   printf("Node ID is %d\n", node_id);
+
+  vt_rcv_event = process_alloc_event();
+  vt_snd_event = process_alloc_event();
   /*
    * Bind the resources to their Uri-Path.
    * WARNING: Activating twice only means alternate path, not two instances!
@@ -76,8 +79,6 @@ PROCESS_THREAD(vt_process, ev, data)
    */
   coap_activate_resource(&res_vt, "vip/vt");
 
-  vt_rcv_event = process_alloc_event();
-  vt_snd_event = process_alloc_event();
 
   /* Define application-specific events here. */
   while(1) {
@@ -87,7 +88,7 @@ PROCESS_THREAD(vt_process, ev, data)
         rcv_pkt = (vip_message_t *)data;
         printf("type is %d\n", rcv_pkt->type);
 
-        vip_route(rcv_pkt, &vt_type_handler);
+        //vip_route(rcv_pkt, &vt_type_handler);
       }
       else if(ev == vt_snd_event) {
         snd_pkt = (vip_message_t *)data;
