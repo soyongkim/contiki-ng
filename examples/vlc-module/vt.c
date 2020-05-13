@@ -40,7 +40,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "aa.h"
+#include "vt.h"
 #include "coap-engine.h"
 #include "vip-interface.h"
 #include "net/netstack.h"
