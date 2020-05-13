@@ -12,7 +12,7 @@
 #include "sys/node-id.h"
 
 static void my_coap_request(vip_message_t *snd_pkt);
-static void aa_coap_request_callback(coap_callback_request_state_t *callback_state);
+//static void aa_coap_request_callback(coap_callback_request_state_t *callback_state);
 
 
 /*
