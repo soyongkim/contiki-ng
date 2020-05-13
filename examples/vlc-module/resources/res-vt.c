@@ -96,7 +96,10 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
     printf("VIP: Not VIP Packet\n");
   }
 
-  process_post(&vt_process, vt_rcv_event, (void *)vip_pkt);
+
+  printf("aa-id:%d | vt-id:%d\n", vip_pkt->aa_id, vip_pkt->vt_id);
+
+  //process_post(&vt_process, vt_rcv_event, (void *)vip_pkt);
 }
 
 static void
