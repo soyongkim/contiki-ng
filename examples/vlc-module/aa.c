@@ -29,7 +29,7 @@ process_event_t aa_rcv_event, aa_snd_event;
 vip_message_t *rcv_pkt;
 
 /* for send packet */
-static coap_callback_request_state_t callback_state;
+//static coap_callback_request_state_t callback_state;
 static coap_endpoint_t dest_ep;
 static coap_message_t request[1];
 
@@ -76,11 +76,11 @@ PROCESS_THREAD(aa_process, ev, data)
   PROCESS_END();
 }
 
-void
-aa_coap_request_callback(coap_callback_request_state_t *callback_state) {
-  printf("AA CoAP Response Handler\n");
-  //printf("CODE:%d\n", callback_state->state.response->code);
-}
+// void
+// aa_coap_request_callback(coap_callback_request_state_t *callback_state) {
+//   printf("AA CoAP Response Handler\n");
+//   //printf("CODE:%d\n", callback_state->state.response->code);
+// }
 
 void
 my_coap_request(vip_message_t *snd_pkt) {
