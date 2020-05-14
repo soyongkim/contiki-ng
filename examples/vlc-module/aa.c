@@ -67,7 +67,7 @@ PROCESS_THREAD(aa_process, ev, data)
       else if(ev == aa_snd_event) {
         snd_pkt = (vip_message_t *)data;
         coap_endpoint_parse(snd_pkt->dest_coap_addr, strlen(snd_pkt->dest_coap_addr), &dest_ep);
-        uip_create_linklocal_allnodes_mcast(&dest_ep.ipaddr);
+        //uip_create_linklocal_allnodes_mcast(&dest_ep.ipaddr);
         coap_init_message(request, COAP_TYPE_CON, COAP_POST, 0);
         coap_set_header_uri_path(request, snd_pkt->dest_url);
         coap_set_payload(request, snd_pkt->buffer, snd_pkt->total_len);
