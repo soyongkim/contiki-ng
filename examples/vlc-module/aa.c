@@ -8,6 +8,7 @@
 #include "vip-interface.h"
 #include "net/netstack.h"
 
+#include "net/ipv6/multicast/uip-mcast6.h"
 /* Node ID */
 #include "sys/node-id.h"
 
