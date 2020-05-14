@@ -31,7 +31,7 @@ vip_message_t *rcv_pkt, *snd_pkt;
 static coap_callback_request_state_t callback_state;
 static coap_endpoint_t dest_ep;
 static coap_message_t request[1];
-
+static uip_ipaddr_t dest_addr;
 
 PROCESS(aa_process, "AA");
 AUTOSTART_PROCESSES(&aa_process);
@@ -67,8 +67,9 @@ PROCESS_THREAD(aa_process, ev, data)
       }
       else if(ev == aa_snd_event) {
         snd_pkt = (vip_message_t *)data;
-
         coap_endpoint_parse(snd_pkt->dest_coap_addr, strlen(snd_pkt->dest_coap_addr), &dest_ep);
+        uip_create_linklocal_allnodes_mcast(&dest_addr);
+        dest_ep.ipaddr = dest_addr;
         coap_init_message(request, COAP_TYPE_CON, COAP_POST, 0);
         coap_set_header_uri_path(request, snd_pkt->dest_url);
         coap_set_payload(request, snd_pkt->buffer, snd_pkt->total_len);
