@@ -36,7 +36,6 @@ static coap_message_t request[1];
 
 
 static uip_ipaddr_t addr;
-uip_ipaddr_t *default_prefix = uip_ds6_default_prefix();
 
 PROCESS(aa_process, "AA");
 AUTOSTART_PROCESSES(&aa_process);
@@ -72,6 +71,8 @@ PROCESS_THREAD(aa_process, ev, data)
       }
       else if(ev == aa_snd_event) {
         snd_pkt = (vip_message_t *)data;
+
+        const uip_ipaddr_t *default_prefix = uip_ds6_default_prefix();
         coap_endpoint_parse(snd_pkt->dest_coap_addr, strlen(snd_pkt->dest_coap_addr), &dest_ep);
 
         /* First, set our v6 global */
