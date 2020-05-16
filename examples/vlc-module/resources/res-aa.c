@@ -100,8 +100,7 @@ TYPE_HANDLER(aa_type_handler, handler_beacon, handler_vrr, handler_vra,
 void
 add_vt_id_tuple(int node_id) {
   vip_vt_tuple_t *new_tuple = malloc(sizeof(vip_vt_tuple_t));
-  new_tuple->node_id = node_id;
-  new_tuple->vt_id = vt_cnt;
+  new_tuple->vt_id = node_id;
   list_add(vt_table, new_tuple);
 }
 
@@ -117,7 +116,7 @@ find_node_id(int vt_id) {
   for(c = list_head(vt_table); c != NULL; c = c->next) {
     if(c->vt_id == vt_id) {
       /* found vt id */
-      return c->node_id;
+      return c->vt_id;
     }
   }
 
@@ -128,7 +127,7 @@ find_node_id(int vt_id) {
 void show_vt_table() {
   vip_vt_tuple_t *c;
   for(c = list_head(vt_table); c != NULL; c = c->next) {
-    printf("[vt(%d):node(%d)]\n", c->vt_id, c->node_id);
+    printf("[aa(%d) -> vt(%d):]\n", node_id, c->vt_id);
   }
 }
 

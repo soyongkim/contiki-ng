@@ -66,7 +66,7 @@ static void request_vt_id_handler(vip_message_t *rcv_pkt);
 
 static vip_message_t snd_pkt[1];
 static uint8_t buffer[50];
-static int vt_id;
+static int vt_id, aa_id;
 
 /* A simple actuator example. Toggles the red led */
 RESOURCE(res_vt,
@@ -100,9 +100,7 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
     printf("VIP: Not VIP Packet\n");
   }
 
-
   printf("aa-id:%d | vt-id:%d\n", vip_pkt->aa_id, vip_pkt->vt_id);
-
   process_post(&vt_process, vt_rcv_event, (void *)vip_pkt);
 }
 
@@ -172,6 +170,7 @@ static void
 request_vt_id_handler(vip_message_t *rcv_pkt) {
   if(!vt_id && !rcv_pkt->vt_id) {
     /* pkt, type, aa-id, vt-id(my node id) */
+    aa_id = rcv_pkt->aa_id;
     vip_init_message(snd_pkt, VIP_TYPE_ALLOW, rcv_pkt->aa_id, node_id);
     vip_set_header_total_len(snd_pkt, VIP_COMMON_HEADER_LEN);
     vip_set_dest_ep(snd_pkt, VIP_BROADCAST_URI, "vip/aa");
@@ -180,7 +179,7 @@ request_vt_id_handler(vip_message_t *rcv_pkt) {
   }
   else {
     if(!vt_id) {
-      vt_id = rcv_pkt->vt_id;
+      vt_id = node_id;
       printf("[%d] is allocated\n", vt_id);
     }else {
       printf("Already allocated with %d\n", vt_id);

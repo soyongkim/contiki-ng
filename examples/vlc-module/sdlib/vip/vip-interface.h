@@ -25,7 +25,6 @@ struct vip_entity_s {
 struct vip_vt_tuple {
     vip_vt_tuple_t *next;
     int vt_id;
-    int node_id;
 };
 
 
