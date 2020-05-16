@@ -42,7 +42,7 @@
 #include <string.h>
 #include "vt.h"
 #include "coap-engine.h"
-#include "coap-callback-api.h"s
+#include "coap-callback-api.h"
 #include "vip-interface.h"
 #include "net/netstack.h"
 
