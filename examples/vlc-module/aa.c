@@ -71,7 +71,7 @@ PROCESS_THREAD(aa_process, ev, data)
       else if(ev == aa_snd_event) {
         snd_pkt = (vip_message_t *)data;
 
-        const uip_ipaddr_t *default_prefix = uip_ds6_default_prefix();
+        //const uip_ipaddr_t *default_prefix = uip_ds6_default_prefix();
         coap_endpoint_parse(snd_pkt->dest_coap_addr, strlen(snd_pkt->dest_coap_addr), &dest_ep);
 
         /* First, set our v6 global */
