@@ -62,7 +62,7 @@ static void handler_sd(vip_message_t *rcv_pkt);
 static void handler_sda(vip_message_t *rcv_pkt);
 static void handler_vu(vip_message_t *rcv_pkt);
 static void handler_vm(vip_message_t *rcv_pkt);
-static void allocate_vt_handler(vip_message_t *rcv_pkt);
+static void request_vt_id_handler(vip_message_t *rcv_pkt);
 
 static vip_message_t snd_pkt[1];
 static uint8_t buffer[50];
@@ -179,6 +179,6 @@ request_vt_id_handler(vip_message_t *rcv_pkt) {
     process_post(&vt_process, vt_snd_event, (void *)snd_pkt);
   }
   else {
-    print("already allocated with %d\n", vt_id);
+    printf("already allocated with %d\n", vt_id);
   }
 }
