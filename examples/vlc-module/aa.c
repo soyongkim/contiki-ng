@@ -14,6 +14,7 @@
 /* Node ID */
 #include "sys/node-id.h"
 
+/* using coap callback api */
 static void vip_request_callback(coap_callback_request_state_t *callback_state);
 static void vip_request(vip_message_t *snd_pkt);
 
@@ -87,6 +88,7 @@ vip_request_callback(coap_callback_request_state_t *callback_state) {
 
 static void
 vip_request(vip_message_t *snd_pkt) {
+  /* set vip endpoint */
   coap_endpoint_parse(snd_pkt->dest_coap_addr, strlen(snd_pkt->dest_coap_addr), &dest_ep);
   coap_init_message(request, COAP_TYPE_CON, COAP_POST, 0);
   coap_set_header_uri_path(request, snd_pkt->dest_url);
