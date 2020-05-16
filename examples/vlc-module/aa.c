@@ -14,8 +14,8 @@
 /* Node ID */
 #include "sys/node-id.h"
 
-static void aa_coap_request_callback(coap_callback_request_state_t *callback_state);
-
+static void vip_request_callback(coap_callback_request_state_t *callback_state);
+static void vip_request(vip_message_t *snd_pkt);
 
 /*
  * Resources to be activated need to be imported through the extern keyword.
@@ -26,9 +26,6 @@ extern vip_entity_t aa_type_handler;
 
 /* test event process */
 process_event_t aa_rcv_event, aa_snd_event;
-
-/* vip packet */
-vip_message_t *rcv_pkt, *snd_pkt;
 
 /* for send packet */
 static coap_callback_request_state_t callback_state;
@@ -57,6 +54,9 @@ PROCESS_THREAD(aa_process, ev, data)
   coap_activate_resource(&res_aa, "vip/aa");
   coap_activate_resource(&res_hello, "test/hello");
 
+  /* vip packet */
+  vip_message_t *rcv_pkt, *snd_pkt;
+
   /* Define application-specific events here. */
   while(1) {
       PROCESS_WAIT_EVENT();
@@ -70,24 +70,7 @@ PROCESS_THREAD(aa_process, ev, data)
       }
       else if(ev == aa_snd_event) {
         snd_pkt = (vip_message_t *)data;
-
-        //const uip_ipaddr_t *default_prefix = uip_ds6_default_prefix();
-        coap_endpoint_parse(snd_pkt->dest_coap_addr, strlen(snd_pkt->dest_coap_addr), &dest_ep);
-
-        /* First, set our v6 global */
-        // uip_ip6addr_copy(&addr, default_prefix);
-        // uip_ds6_set_addr_iid(&addr, &uip_lladdr);
-        // uip_ds6_addr_add(&addr, 0, ADDR_AUTOCONF);
-        // uip_create_linklocal_allnodes_mcast(&addr);
-        // dest_ep.ipaddr = addr;
-
-        coap_init_message(request, COAP_TYPE_CON, COAP_POST, 0);
-        coap_set_header_uri_path(request, snd_pkt->dest_url);
-        coap_set_payload(request, snd_pkt->buffer, snd_pkt->total_len);
-
-        printf("-- AA Send coap vip[%d] packet --\n", snd_pkt->type);
-
-        coap_send_request(&callback_state, &dest_ep, request, aa_coap_request_callback);
+        vip_request(snd_pkt);
       }
 
       printf("EVENT!\n");
@@ -97,8 +80,19 @@ PROCESS_THREAD(aa_process, ev, data)
 }
 
 static void
-aa_coap_request_callback(coap_callback_request_state_t *callback_state) {
+vip_request_callback(coap_callback_request_state_t *callback_state) {
   printf("AA CoAP Response Handler\n");
   //printf("CODE:%d\n", callback_state->state.response->code);
 }
- 
+
+static void
+vip_request(vip_message_t *snd_pkt) {
+  coap_endpoint_parse(snd_pkt->dest_coap_addr, strlen(snd_pkt->dest_coap_addr), &dest_ep);
+  coap_init_message(request, COAP_TYPE_CON, COAP_POST, 0);
+  coap_set_header_uri_path(request, snd_pkt->dest_url);
+  coap_set_payload(request, snd_pkt->buffer, snd_pkt->total_len);
+
+  printf("-- AA Send coap vip[%d] packet --\n", snd_pkt->type);
+
+  coap_send_request(&callback_state, &dest_ep, request, vip_request_callback);
+}
