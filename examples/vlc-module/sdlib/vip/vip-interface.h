@@ -1,6 +1,8 @@
 #include "vip.h"
 
 typedef struct vip_entity_s vip_entity_t;
+typedef struct vip_vt_tuple vip_vt_tuple_t;
+
 
 typedef void (* vip_type_handler_t)(vip_message_t *received_pkt);
 
@@ -18,6 +20,12 @@ struct vip_entity_s {
     vip_type_handler_t vu_handler;
     vip_type_handler_t vm_handler;
     vip_type_handler_t allocate_vt_handler;
+};
+
+struct vip_vt_tuple {
+    vip_vt_tuple_t *next;
+    int vt_id;
+    int node_id;
 };
 
 

@@ -8,7 +8,7 @@
 #include "vip-interface.h"
 #include "net/netstack.h"
 
-#include "net/ipv6/uip-ds6.h"
+/* for ROOT in RPL */
 #include "contiki-net.h"
 
 /* Node ID */

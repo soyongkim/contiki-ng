@@ -64,6 +64,10 @@ static void handler_vu(vip_message_t *rcv_pkt);
 static void handler_vm(vip_message_t *rcv_pkt);
 static void allocate_vt_handler(vip_message_t *rcv_pkt);
 
+static vip_message_t snd_pkt[1];
+static uint8_t buffer[50];
+static int vt_id;
+
 /* A simple actuator example. Toggles the red led */
 RESOURCE(res_vt,
          "title=\"VT\";rt=\"Control\"",
@@ -76,7 +80,7 @@ RESOURCE(res_vt,
 /* vip type handler */
 TYPE_HANDLER(vt_type_handler, handler_beacon, handler_vrr, handler_vra, 
               handler_vrc, handler_rel, handler_ser, handler_sea, handler_sec,
-              handler_sd, handler_sda, handler_vu, handler_vm, allocate_vt_handler);
+              handler_sd, handler_sda, handler_vu, handler_vm, request_vt_id_handler);
 
 
 /* called by coap-engine proc */
@@ -165,6 +169,16 @@ handler_vm(vip_message_t *rcv_pkt) {
 }
 
 static void
-allocate_vt_handler(vip_message_t *rcv_pkt) {
-  printf("WOW %d\n", rcv_pkt->type);
+request_vt_id_handler(vip_message_t *rcv_pkt) {
+  if(!vt_id) {
+    /* pkt, type, aa-id, vt-id(my node id) */
+    vip_init_message(snd_pkt, VIP_TYPE_ALLOW, rcv_pkt->aa_id, node_id);
+    vip_set_header_total_len(snd_pkt, VIP_COMMON_HEADER_LEN);
+    vip_set_dest_ep(snd_pkt, VIP_BROADCAST_URI, "vip/aa");
+    vip_serialize_message(snd_pkt, buffer);
+    process_post(&vt_process, vt_snd_event, (void *)snd_pkt);
+  }
+  else {
+    print("already allocated with %d\n", vt_id);
+  }
 }
