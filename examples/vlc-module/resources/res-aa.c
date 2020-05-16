@@ -87,7 +87,7 @@ PERIODIC_RESOURCE(res_aa,
          res_post_handler,
          NULL,
          NULL,
-         1000,
+         5000,
          res_periodic_ad_handler);
 
 
@@ -224,6 +224,14 @@ allocate_vt_handler(vip_message_t *rcv_pkt) {
   /* rcv_pkt->vt_id is the vt's "NODE ID" */
   add_vt_id_tuple(rcv_pkt->vt_id);
   show_vt_table();
+
+  /* pkt, type, aa-id(node_id), vt-id */
+  vip_init_message(snd_pkt, VIP_TYPE_ALLOW, node_id, vt_cnt);
+  vip_set_header_total_len(snd_pkt, VIP_COMMON_HEADER_LEN);
+  vip_set_dest_ep(snd_pkt, VIP_BROADCAST_URI, "vip/vt");
+
+  vip_serialize_message(snd_pkt, buffer);
+  process_post(&aa_process, aa_snd_event, (void *)snd_pkt);
 }
 
 

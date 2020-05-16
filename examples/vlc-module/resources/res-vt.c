@@ -170,7 +170,7 @@ handler_vm(vip_message_t *rcv_pkt) {
 
 static void
 request_vt_id_handler(vip_message_t *rcv_pkt) {
-  if(!vt_id) {
+  if(!vt_id && !rcv_pkt->vt_id) {
     /* pkt, type, aa-id, vt-id(my node id) */
     vip_init_message(snd_pkt, VIP_TYPE_ALLOW, rcv_pkt->aa_id, node_id);
     vip_set_header_total_len(snd_pkt, VIP_COMMON_HEADER_LEN);
@@ -179,6 +179,11 @@ request_vt_id_handler(vip_message_t *rcv_pkt) {
     process_post(&vt_process, vt_snd_event, (void *)snd_pkt);
   }
   else {
-    printf("already allocated with %d\n", vt_id);
+    if(!vt_id) {
+      vt_id = rcv_pkt->vt_id;
+      printf("[%d] is allocated\n", vt_id);
+    }else {
+      printf("Already allocated with %d\n", vt_id);
+    }
   }
 }
