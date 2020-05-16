@@ -78,11 +78,11 @@ PROCESS_THREAD(aa_process, ev, data)
         coap_endpoint_parse(snd_pkt->dest_coap_addr, strlen(snd_pkt->dest_coap_addr), &dest_ep);
 
         /* First, set our v6 global */
-        uip_ip6addr_copy(&addr, default_prefix);
-        uip_ds6_set_addr_iid(&addr, &uip_lladdr);
-        uip_ds6_addr_add(&addr, 0, ADDR_AUTOCONF);
-        uip_create_linklocal_allnodes_mcast(&addr);
-        dest_ep.ipaddr = addr;
+        // uip_ip6addr_copy(&addr, default_prefix);
+        // uip_ds6_set_addr_iid(&addr, &uip_lladdr);
+        // uip_ds6_addr_add(&addr, 0, ADDR_AUTOCONF);
+        // uip_create_linklocal_allnodes_mcast(&addr);
+        // dest_ep.ipaddr = addr;
 
         coap_init_message(request, COAP_TYPE_CON, COAP_POST, 0);
         coap_set_header_uri_path(request, snd_pkt->dest_url);
