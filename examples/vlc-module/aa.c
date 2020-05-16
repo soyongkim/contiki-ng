@@ -35,9 +35,6 @@ static coap_callback_request_state_t callback_state;
 static coap_endpoint_t dest_ep;
 static coap_message_t request[1];
 
-
-static uip_ipaddr_t addr;
-
 PROCESS(aa_process, "AA");
 AUTOSTART_PROCESSES(&aa_process);
 
