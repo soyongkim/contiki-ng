@@ -9,6 +9,7 @@
 #include "net/netstack.h"
 
 #include "net/ipv6/uip-ds6.h"
+#include "contiki-net.h"
 
 /* Node ID */
 #include "sys/node-id.h"
@@ -50,6 +51,7 @@ PROCESS_THREAD(aa_process, ev, data)
   aa_rcv_event = process_alloc_event();
   aa_snd_event = process_alloc_event();
 
+  NETSTACK_ROUTING.root_start();
   /*
    * Bind the resources to their Uri-Path.
    * WARNING: Activating twice only means alternate path, not two instances!
