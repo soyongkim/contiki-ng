@@ -99,7 +99,7 @@ TYPE_HANDLER(aa_type_handler, handler_beacon, handler_vrr, handler_vra,
 
 void
 add_vt_id_tuple(int node_id) {
-  vip_vt_tuple_t new_tuple;
+  vip_vt_tuple_t *new_tuple = malloc(sizeof(vip_vt_tuple_t))
   new_tuple.node_id = node_id;
   new_tuple.vt_id = vt_cnt;
   list_add(vt_table, new_tuple);
@@ -108,6 +108,7 @@ add_vt_id_tuple(int node_id) {
 void
 remove_vt_id_tuple(vip_vt_tuple_t* tuple) {
   list_remove(vt_table, tuple);
+  free(tuple);
 }
 
 int
