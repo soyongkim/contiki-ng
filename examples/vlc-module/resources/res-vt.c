@@ -71,7 +71,7 @@ static uint8_t buffer[50];
 static char set_uri[50];
 static int vt_id, aa_id;
 
-static char uplink_id[50] = {"ISL_TEST_UPLINK_ID"};
+static char uplink_id[50];
 
 /* A simple actuator example. Toggles the red led */
 PERIODIC_RESOURCE(res_vt,
@@ -122,22 +122,16 @@ handler_beacon(vip_message_t *rcv_pkt) {
 /* beaconing */
 static void
 beaconing() {
-  printf("test...\n");
-  vip_init_message(snd_pkt, VIP_TYPE_BEACON, aa_id, vt_id);
-  make_coap_uri(set_uri, node_id);
-  vip_set_dest_ep(snd_pkt, set_uri, VIP_VR_URL);
-  vip_set_type_header_uplink_id(snd_pkt, uplink_id);
-  vip_serialize_message(snd_pkt, buffer);
   /* if the vt is complete to register to aa, start beaconing */
   if(aa_id) {
     printf("Beaconing...\n");
-
+    /* you have to comfirm that the type field is fulled */
     vip_init_message(snd_pkt, VIP_TYPE_BEACON, aa_id, vt_id);
     make_coap_uri(set_uri, node_id);
     vip_set_dest_ep(snd_pkt, set_uri, VIP_VR_URL);
     vip_set_type_header_uplink_id(snd_pkt, uplink_id);
     vip_serialize_message(snd_pkt, buffer);
-    //process_post(&vt_process, vt_snd_event, (void *)snd_pkt);
+    process_post(&vt_process, vt_snd_event, (void *)snd_pkt);
   }
 }
 
@@ -200,18 +194,27 @@ handler_vm(vip_message_t *rcv_pkt) {
 
 static void
 request_vt_id_handler(vip_message_t *rcv_pkt) {
-  if(!vt_id && !rcv_pkt->vt_id) {
+  /* broadcast ad pkt */
+  if(!rcv_pkt->vt_id) {
+    /* if vt was already registered, ignore ad pkt */
+    if(vt_id)
+      return;
+
+    /* send ack pkt for ad pkt */
     /* pkt, type, aa-id, vt-id(my node id) */
-    aa_id = rcv_pkt->aa_id;
-    // vip_init_message(snd_pkt, VIP_TYPE_ALLOW, rcv_pkt->aa_id, node_id);
-    // vip_set_dest_ep(snd_pkt, VIP_BROADCAST_URI, VIP_AA_URL);
-    // vip_serialize_message(snd_pkt, buffer);
-    // rocess_post(&vt_process, vt_snd_event, (void *)snd_pkt);
+    vip_init_message(snd_pkt, VIP_TYPE_ALLOW, rcv_pkt->aa_id, node_id);
+    make_coap_uri(set_uri, aa_id);
+    vip_set_dest_ep(snd_pkt, set_uri, VIP_AA_URL);
+    vip_serialize_message(snd_pkt, buffer);
+    process_post(&vt_process, vt_snd_event, (void *)snd_pkt);
   }
   else {
     if(!vt_id) {
-      vt_id = node_id;
-      printf("[%d] is allocated\n", vt_id);
+      vt_id = rcv_pkt->vt_id;
+      aa_id = rcv_pkt->aa_id;
+      strcpy(rcv_pkt->uplink_id, uplink_id);
+      printf("vt-[%d] is allocated by aa-[%d]\n", vt_id, aa_id);
+      printf("uplink-id is [%s]\n", uplink_id);
     } else {
       printf("Already allocated with %d\n", vt_id);
     }

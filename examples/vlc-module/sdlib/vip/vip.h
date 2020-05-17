@@ -46,6 +46,7 @@ void vip_parse_SD(vip_message_t *message);
 void vip_parse_SDA(vip_message_t *message);
 void vip_parse_VU(vip_message_t *message);
 void vip_parse_VM(vip_message_t *message);
+void vip_payload_test(vip_message_t * message);
 
 
 
@@ -74,5 +75,4 @@ int vip_set_type_header_vr_seq_num(vip_message_t *message, uint32_t vr_seq_numbe
 int vip_get_type_header_vg_seq_num(vip_message_t *message, uint32_t *vg_seq_number);
 int vip_set_type_header_vg_seq_num(vip_message_t *message, uint32_t vg_seq_number);
 
-int vip_get_payload(vip_message_t *message, const uint8_t **payload);
-int vip_set_payload(vip_message_t *message, const void *payload, size_t payload_len);
+int vip_set_payload(vip_message_t *message, void *payload, size_t payload_len);

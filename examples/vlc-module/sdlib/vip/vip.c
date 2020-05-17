@@ -468,6 +468,14 @@ vip_parse_VM(vip_message_t *vip_pkt)
     memcpy(vip_pkt->payload, offset, vip_pkt->total_len - (VIP_COMMON_HEADER_LEN + 12));
 }
 
+void
+vip_payload_test(vip_message_t *vip_pkt) {
+    uint8_t *offset = vip_pkt->buffer + VIP_COMMON_HEADER_LEN;
+    vip_pkt->uplink_id = (char *)malloc((vip_pkt->total_len) - VIP_COMMON_HEADER_LEN + 1);
+    memcpy(vip_pkt->uplink_id, (char *)offset, (vip_pkt->total_len) - VIP_COMMON_HEADER_LEN + 1);
+    vip_pkt->uplink_id[(vip_pkt->total_len) - VIP_COMMON_HEADER_LEN + 1] = '\0';
+}
+
 /* Data Configure */
 int
 vip_set_header_total_len(vip_message_t *vip_pkt, uint32_t total_len) {
@@ -496,3 +504,9 @@ vip_set_dest_ep(vip_message_t *vip_pkt, char *dest_addr, char *dest_url) {
     return 1;
 }
 
+int 
+vip_set_payload(vip_message_t *vip_pkt, void *payload, size_t payload_len) {
+    vip_pkt->payload = payload;
+    vip_pkt->payload_len = payload_len;
+    return 1;
+}

@@ -72,14 +72,12 @@ static void allocate_vt_handler(vip_message_t *rcv_pkt);
 /* make vt table which administrate the vt id */
 LIST(vt_table);
 
-
+/* for snd-pkt */
 static vip_message_t snd_pkt[1];
 static uint8_t buffer[50];
 static char set_uri[50];
 
-/* for vt allocaton */
-static int vt_cnt;
-
+static char uplink_id[50] = {"ISL_AA_UPLINK_ID"};
 
 /* A simple actuator example. Toggles the red led */
 PERIODIC_RESOURCE(res_aa,
@@ -170,7 +168,7 @@ handler_vra(vip_message_t *rcv_pkt) {
   /* forward to va */
   vip_init_message(snd_pkt, VIP_TYPE_VRA, rcv_pkt->aa_id, rcv_pkt->vt_id);
   make_coap_uri(set_uri, VIP_VG_ID);
-  vip_set_dest_ep(snd_pkt, set_uri, "/vip/vg");
+  vip_set_dest_ep(snd_pkt, set_uri, VIP_VG_URL);
   vip_serialize_message(snd_pkt, buffer);
 
   printf("forward to vg(%d)\n", VIP_VG_ID);
@@ -224,17 +222,16 @@ handler_vm(vip_message_t *rcv_pkt) {
 
 static void
 allocate_vt_handler(vip_message_t *rcv_pkt) {
-  // update vt count for new allocated vt
-  vt_cnt++;
-  printf("Allocate VT ID[%d]\n", vt_cnt);
-
   /* rcv_pkt->vt_id is the vt's "NODE ID" */
   add_vt_id_tuple(rcv_pkt->vt_id);
   show_vt_table();
 
-  /* pkt, type, aa-id(node_id), vt-id */
-  vip_init_message(snd_pkt, VIP_TYPE_ALLOW, node_id, vt_cnt);
-  vip_set_dest_ep(snd_pkt, VIP_BROADCAST_URI, "vip/vt");
+  /* pkt, type, aa-id(node_id), vt-id(target vt's node id) */
+  vip_init_message(snd_pkt, VIP_TYPE_ALLOW, node_id, rcv_pkt->vt_id);
+  make_coap_uri(set_uri, rcv_pkt->vt_id);
+  vip_set_dest_ep(snd_pkt, set_uri, VIP_VT_URL);
+
+  vip_set_payload(snd_pkt, (void *)uplink_id, strlen(uplink_id));
 
   vip_serialize_message(snd_pkt, buffer);
   process_post(&aa_process, aa_snd_event, (void *)snd_pkt);
