@@ -63,8 +63,10 @@ vip_route(vip_message_t *vip_pkt, vip_entity_t *type_handler) {
         type_handler->vu_handler(vip_pkt);
         break;
     case VIP_TYPE_ALLOW:
-        if(vip_pkt->total_len > 8)
+        if(vip_pkt->total_len > 8) {
+            printf("payload!\n");
             vip_payload_test(vip_pkt);
+        }
         type_handler->allocate_vt_handler(vip_pkt);
     } 
 }

@@ -234,6 +234,7 @@ allocate_vt_handler(vip_message_t *rcv_pkt) {
   vip_set_payload(snd_pkt, (void *)uplink_id, strlen(uplink_id));
 
   vip_serialize_message(snd_pkt, buffer);
+  printf("total? %d\n", snd_pkt->total_len);
   process_post(&aa_process, aa_snd_event, (void *)snd_pkt);
 }
 
