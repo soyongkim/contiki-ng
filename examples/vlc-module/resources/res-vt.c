@@ -49,6 +49,7 @@
 #include <string.h>
 
 static void res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset);
+static void beconing(void);
 
 static void handler_beacon(vip_message_t *rcv_pkt);
 static void handler_vrr(vip_message_t *rcv_pkt);
@@ -69,12 +70,14 @@ static uint8_t buffer[50];
 static int vt_id, aa_id;
 
 /* A simple actuator example. Toggles the red led */
-RESOURCE(res_vt,
+PERIODIC_RESOURCE(res_vt,
          "title=\"VT\";rt=\"Control\"",
          NULL,
          res_post_handler,
          NULL,
-         NULL);
+         NULL,
+         5000,
+         beconing);
 
 
 /* vip type handler */
@@ -104,11 +107,27 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
   process_post(&vt_process, vt_rcv_event, (void *)vip_pkt);
 }
 
+/* handler for beacon type pkt */
 static void
 handler_beacon(vip_message_t *rcv_pkt) {
   printf("I'm beacon handler [%s]\n", rcv_pkt->uplink_id);
   
 }
+
+/* beaconing */
+static void
+beconing() {
+  /* if the vt is complete to register to aa, start beaconing */
+  if(aa_id) {
+    printf("Beaconing...\n");
+
+    vip_init_message(snd_pkt, VIP_TYPE_BEACON, aa_id, vt_id);
+    vip_set_dest_ep(snd_pkt, VIP_BROADCAST_URI, "vip/vr");
+    vip_serialize_message(snd_pkt, buffer);
+    process_post(&aa_process, aa_snd_event, (void *)snd_pkt);
+  }
+}
+
 
 
 static void
@@ -172,7 +191,6 @@ request_vt_id_handler(vip_message_t *rcv_pkt) {
     /* pkt, type, aa-id, vt-id(my node id) */
     aa_id = rcv_pkt->aa_id;
     vip_init_message(snd_pkt, VIP_TYPE_ALLOW, rcv_pkt->aa_id, node_id);
-    vip_set_header_total_len(snd_pkt, VIP_COMMON_HEADER_LEN);
     vip_set_dest_ep(snd_pkt, VIP_BROADCAST_URI, "vip/aa");
     vip_serialize_message(snd_pkt, buffer);
     process_post(&vt_process, vt_snd_event, (void *)snd_pkt);

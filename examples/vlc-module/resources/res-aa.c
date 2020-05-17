@@ -42,6 +42,7 @@
 #include "vip-interface.h"
 #include "lib/list.h"
 #include "aa.h"
+#include "cooja_addr.h"
 
 /* Node ID */
 #include "sys/node-id.h"
@@ -74,10 +75,10 @@ LIST(vt_table);
 
 static vip_message_t snd_pkt[1];
 static uint8_t buffer[50];
+static char set_uri[50];
 
 /* for vt allocaton */
 static int vt_cnt;
-
 
 
 /* A simple actuator example. Toggles the red led */
@@ -166,7 +167,14 @@ handler_vrr(vip_message_t *rcv_pkt) {
 
 static void
 handler_vra(vip_message_t *rcv_pkt) {
+  /* forward to va */
+  vip_init_message(snd_pkt, VIP_TYPE_VRA, rcv_pkt->aa_id, rcv_pkt->vt_id);
+  make_coap_uri(set_uri, VIP_VG_ID);
+  vip_set_dest_ep(snd_pkt, set_uri, "/vip/vg");
+  vip_serialize_message(snd_pkt, buffer);
 
+  printf("forward to vg(%d)\n", VIP_VG_ID);
+  process_post(&aa_process, aa_snd_event, (void *)snd_pkt);
 }
 
 static void
@@ -226,7 +234,6 @@ allocate_vt_handler(vip_message_t *rcv_pkt) {
 
   /* pkt, type, aa-id(node_id), vt-id */
   vip_init_message(snd_pkt, VIP_TYPE_ALLOW, node_id, vt_cnt);
-  vip_set_header_total_len(snd_pkt, VIP_COMMON_HEADER_LEN);
   vip_set_dest_ep(snd_pkt, VIP_BROADCAST_URI, "vip/vt");
 
   vip_serialize_message(snd_pkt, buffer);
@@ -238,14 +245,11 @@ static void
 res_periodic_ad_handler(void)
 {
   // vt 등록을 위한 첫 트랜잭션의 시작
-  printf("This is AA Periodic AD handler\n");
+  printf("Advertise...\n");
 
   /* pkt, type, aa-id(node_id), vt-id */
   vip_init_message(snd_pkt, VIP_TYPE_ALLOW, node_id, 0);
-  vip_set_header_total_len(snd_pkt, VIP_COMMON_HEADER_LEN);
   vip_set_dest_ep(snd_pkt, VIP_BROADCAST_URI, "vip/vt");
-
-  printf("test addr: %s/%s\n", snd_pkt->dest_coap_addr, snd_pkt->dest_url);
 
   vip_serialize_message(snd_pkt, buffer);
   process_post(&aa_process, aa_snd_event, (void *)snd_pkt);

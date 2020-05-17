@@ -11,9 +11,18 @@
 #define VIP_SERVICE_ID_LEN 4
 #define VIP_PAYLOAD_LEN_POSITION 8
 
+/* for test, vg-id is fixed by 1 */
+#define VIP_VG_ID 1
 
 #define VIP_ERROR 0
 #define VIP_NO_ERROR 1
+
+/* vip url */
+#define VIP_VG_URL "vip/vg"
+#define VIP_AA_URL "vip/aa"
+#define VIP_VT_URL "vip/vt"
+#define VIP_VR_URL "vip/vr"
+
 
 #define VIP_BROADCAST_URI "coap://[ff02::1]"
 
