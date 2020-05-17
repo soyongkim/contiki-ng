@@ -71,6 +71,8 @@ static uint8_t buffer[50];
 static char set_uri[50];
 static int vt_id, aa_id;
 
+static char uplink_id[50] = {"ISL_TEST_UPLINK_ID"};
+
 /* A simple actuator example. Toggles the red led */
 PERIODIC_RESOURCE(res_vt,
          "title=\"VT\";rt=\"Control\"",
@@ -122,16 +124,18 @@ static void
 beaconing() {
   printf("test...\n");
   vip_init_message(snd_pkt, VIP_TYPE_BEACON, aa_id, vt_id);
-  //make_coap_uri(set_uri, node_id);
+  make_coap_uri(set_uri, node_id);
   vip_set_dest_ep(snd_pkt, set_uri, VIP_VR_URL);
+  vip_set_type_header_uplink_id(uplink_id);
   vip_serialize_message(snd_pkt, buffer);
   /* if the vt is complete to register to aa, start beaconing */
   if(aa_id) {
     printf("Beaconing...\n");
 
     vip_init_message(snd_pkt, VIP_TYPE_BEACON, aa_id, vt_id);
-    //make_coap_uri(set_uri, node_id);
+    make_coap_uri(set_uri, node_id);
     vip_set_dest_ep(snd_pkt, set_uri, VIP_VR_URL);
+    vip_set_type_header_uplink_id(uplink_id);
     vip_serialize_message(snd_pkt, buffer);
     //process_post(&vt_process, vt_snd_event, (void *)snd_pkt);
   }
