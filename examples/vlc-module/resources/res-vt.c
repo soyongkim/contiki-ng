@@ -121,6 +121,10 @@ handler_beacon(vip_message_t *rcv_pkt) {
 static void
 beaconing() {
   printf("test...\n");
+  vip_init_message(snd_pkt, VIP_TYPE_BEACON, aa_id, vt_id);
+  //make_coap_uri(set_uri, node_id);
+  vip_set_dest_ep(snd_pkt, set_uri, VIP_VR_URL);
+  vip_serialize_message(snd_pkt, buffer);
   /* if the vt is complete to register to aa, start beaconing */
   if(aa_id) {
     printf("Beaconing...\n");
