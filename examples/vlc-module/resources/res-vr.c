@@ -111,7 +111,7 @@ handler_beacon(vip_message_t *rcv_pkt) {
     /* Recent Received vt, aa id */
     vip_init_message(snd_pkt, VIP_TYPE_VRR, aa_id, vt_id);
     make_coap_uri(set_uri, node_id);
-    vip_set_dest_ep(snd_pkt, set_uri, VIP_VR_ID);
+    vip_set_dest_ep(snd_pkt, set_uri, VIP_AA_URL);
     printf("make uri:%s\n", set_uri);
 
     vip_serialize_message(snd_pkt, buffer);
@@ -135,7 +135,7 @@ handler_vrr(vip_message_t *rcv_pkt) {
 
 static void
 handler_vra(vip_message_t *rcv_pkt) {
-
+  vr_id = rcv_pkt->vr_id;
 }
 
 static void

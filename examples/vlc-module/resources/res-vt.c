@@ -122,7 +122,7 @@ beconing() {
     printf("Beaconing...\n");
 
     vip_init_message(snd_pkt, VIP_TYPE_BEACON, aa_id, vt_id);
-    vip_set_dest_ep(snd_pkt, VIP_BROADCAST_URI, "vip/vr");
+    vip_set_dest_ep(snd_pkt, VIP_BROADCAST_URI, VIP_VR_URL);
     vip_serialize_message(snd_pkt, buffer);
     process_post(&vt_process, vt_snd_event, (void *)snd_pkt);
   }
