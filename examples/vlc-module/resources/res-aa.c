@@ -88,7 +88,7 @@ PERIODIC_RESOURCE(res_aa,
          res_post_handler,
          NULL,
          NULL,
-         60000,
+         30000,
          res_periodic_ad_handler);
 
 

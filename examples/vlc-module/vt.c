@@ -85,7 +85,7 @@ PROCESS_THREAD(vt_process, ev, data)
    * WARNING: Activating twice only means alternate path, not two instances!
    * All static variables are the same for each URI path.
    */
-  coap_activate_resource(&res_vt, "vip/vt");
+  coap_activate_resource(&res_vt, VIP_VT_URL);
 
   vip_message_t *rcv_pkt, *snd_pkt;
 

@@ -50,7 +50,7 @@
 #include <string.h>
 
 static void res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset);
-static void beconing(void);
+static void beaconing(void);
 
 static void handler_beacon(vip_message_t *rcv_pkt);
 static void handler_vrr(vip_message_t *rcv_pkt);
@@ -79,7 +79,8 @@ PERIODIC_RESOURCE(res_vt,
          NULL,
          NULL,
          5000,
-         beconing);
+         beaconing);
+
 
 
 /* vip type handler */
@@ -118,7 +119,7 @@ handler_beacon(vip_message_t *rcv_pkt) {
 
 /* beaconing */
 static void
-beconing() {
+beaconing() {
   printf("test...");
   /* if the vt is complete to register to aa, start beaconing */
   if(aa_id) {

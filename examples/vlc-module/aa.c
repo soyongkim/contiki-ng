@@ -22,7 +22,7 @@ static void vip_request(vip_message_t *snd_pkt);
  * Resources to be activated need to be imported through the extern keyword.
  * The build system automatically compiles the resources in the corresponding sub-directory.
  */
-extern coap_resource_t res_hello, res_aa;
+extern coap_resource_t res_aa;
 extern vip_entity_t aa_type_handler;
 
 /* test event process */
@@ -52,8 +52,7 @@ PROCESS_THREAD(aa_process, ev, data)
    * WARNING: Activating twice only means alternate path, not two instances!
    * All static variables are the same for each URI path.
    */
-  coap_activate_resource(&res_aa, "vip/aa");
-  coap_activate_resource(&res_hello, "test/hello");
+  coap_activate_resource(&res_aa, VIP_AA_URL);
 
   /* vip packet */
   vip_message_t *rcv_pkt, *snd_pkt;
