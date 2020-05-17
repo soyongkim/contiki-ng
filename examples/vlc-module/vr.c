@@ -33,7 +33,7 @@ static coap_callback_request_state_t callback_state;
 static coap_endpoint_t dest_ep;
 static coap_message_t request[1];
 
-PROCESS(aa_process, "VR");
+PROCESS(vr_process, "VR");
 AUTOSTART_PROCESSES(&vr_process);
 
 PROCESS_THREAD(vr_process, ev, data)
