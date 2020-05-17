@@ -120,7 +120,7 @@ handler_beacon(vip_message_t *rcv_pkt) {
 /* beaconing */
 static void
 beaconing() {
-  printf("test...");
+  printf("test...\n");
   /* if the vt is complete to register to aa, start beaconing */
   if(aa_id) {
     printf("Beaconing...\n");
