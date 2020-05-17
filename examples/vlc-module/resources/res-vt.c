@@ -212,9 +212,9 @@ request_vt_id_handler(vip_message_t *rcv_pkt) {
     if(!vt_id) {
       vt_id = rcv_pkt->vt_id;
       aa_id = rcv_pkt->aa_id;
-      strcpy(rcv_pkt->uplink_id, uplink_id);
+      strcpy(uplink_id, rcv_pkt->uplink_id);
       printf("vt-[%d] is allocated by aa-[%d]\n", vt_id, aa_id);
-      printf("uplink-id is [%s]\n", rcv_pkt->uplink_id);
+      printf("uplink-id is [%s]\n", uplink_id);
     } else {
       printf("Already allocated with %d\n", vt_id);
     }

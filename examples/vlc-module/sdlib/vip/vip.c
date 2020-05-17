@@ -474,6 +474,7 @@ vip_payload_test(vip_message_t *vip_pkt) {
     vip_pkt->uplink_id = (char *)malloc((vip_pkt->total_len) - VIP_COMMON_HEADER_LEN + 1);
     memcpy(vip_pkt->uplink_id, (char *)offset, (vip_pkt->total_len) - VIP_COMMON_HEADER_LEN + 1);
     vip_pkt->uplink_id[(vip_pkt->total_len) - VIP_COMMON_HEADER_LEN + 1] = '\0';
+    /* CHECK WHY Uplink id is non */
 }
 
 /* Data Configure */
