@@ -41,6 +41,7 @@
 #include "coap-callback-api.h"
 #include "vip-interface.h"
 #include "vt.h"
+#include "cooja_addr.h"
 
 /* Node ID */
 #include "sys/node-id.h"
@@ -67,6 +68,7 @@ static void request_vt_id_handler(vip_message_t *rcv_pkt);
 
 static vip_message_t snd_pkt[1];
 static uint8_t buffer[50];
+static char set_uri[50];
 static int vt_id, aa_id;
 
 /* A simple actuator example. Toggles the red led */
@@ -122,9 +124,10 @@ beconing() {
     printf("Beaconing...\n");
 
     vip_init_message(snd_pkt, VIP_TYPE_BEACON, aa_id, vt_id);
-    vip_set_dest_ep(snd_pkt, VIP_BROADCAST_URI, VIP_VR_URL);
+    make_coap_uri(set_uri, node_id);
+    vip_set_dest_ep(snd_pkt, set_uri, VIP_VR_URL);
     vip_serialize_message(snd_pkt, buffer);
-    process_post(&vt_process, vt_snd_event, (void *)snd_pkt);
+    //process_post(&vt_process, vt_snd_event, (void *)snd_pkt);
   }
 }
 
@@ -190,16 +193,16 @@ request_vt_id_handler(vip_message_t *rcv_pkt) {
   if(!vt_id && !rcv_pkt->vt_id) {
     /* pkt, type, aa-id, vt-id(my node id) */
     aa_id = rcv_pkt->aa_id;
-    vip_init_message(snd_pkt, VIP_TYPE_ALLOW, rcv_pkt->aa_id, node_id);
-    vip_set_dest_ep(snd_pkt, VIP_BROADCAST_URI, VIP_AA_URL);
-    vip_serialize_message(snd_pkt, buffer);
-    // process_post(&vt_process, vt_snd_event, (void *)snd_pkt);
+    // vip_init_message(snd_pkt, VIP_TYPE_ALLOW, rcv_pkt->aa_id, node_id);
+    // vip_set_dest_ep(snd_pkt, VIP_BROADCAST_URI, VIP_AA_URL);
+    // vip_serialize_message(snd_pkt, buffer);
+    // rocess_post(&vt_process, vt_snd_event, (void *)snd_pkt);
   }
   else {
     if(!vt_id) {
       vt_id = node_id;
       printf("[%d] is allocated\n", vt_id);
-    }else {
+    } else {
       printf("Already allocated with %d\n", vt_id);
     }
   }

@@ -138,21 +138,19 @@ int vip_serialize_message(vip_message_t *vip_pkt, uint8_t *buffer)
         break;
     }
 
-    printf("before payload\n");
     /* serialize paylaod */
     offset = vip_pkt->buffer + total_len;
     if(vip_pkt->payload_len) {
         memmove(offset, vip_pkt->payload, vip_pkt->payload_len);
         total_len += vip_pkt->payload_len;
     }
-     printf("midlle payload\n");
 
     /* serialize total length */
     vip_pkt->total_len = total_len;
     vip_pkt->buffer[1] = (uint8_t)(vip_pkt->total_len >> 16);
     vip_pkt->buffer[2] = (uint8_t)(vip_pkt->total_len >> 8);
     vip_pkt->buffer[3] = (uint8_t)(vip_pkt->total_len);
-  printf("after payload\n");
+
     return total_len;
 }
 
