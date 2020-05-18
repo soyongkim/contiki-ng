@@ -61,7 +61,9 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
         
   /* check whether the rcv_pkt is beacon type or not */
   /* if not, ignore the rcv_pkt */
-  if(vip_pkt->type == VIP_TYPE_BEACON || vip_pkt->vr_id == vr_id) {
+  if(vip_pkt->type == VIP_TYPE_BEACON || 
+      ((vip_pkt->type == VIP_TYPE_VRA) && !vr_id) ||
+        vip_pkt->vr_id == vr_id) {
     process_post(&vr_process, vr_rcv_event, (void *)vip_pkt);
   }
 }
