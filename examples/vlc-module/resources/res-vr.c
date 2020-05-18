@@ -30,6 +30,7 @@ static vip_message_t snd_pkt[1];
 static uint8_t buffer[50];
 static char set_uri[50];
 static int vr_id, aa_id, vt_id;
+static int allocate_mutex;
 
 /* A simple actuator example. Toggles the red led */
 RESOURCE(res_vr,
@@ -74,7 +75,8 @@ is_my_pkt(int rcv_vr_id) {
 static void
 handler_beacon(vip_message_t *rcv_pkt) {
   /* check handover */
-  if(aa_id != rcv_pkt->aa_id || vt_id != rcv_pkt->vt_id) {
+  if(!allocate_mutex && (aa_id != rcv_pkt->aa_id || vt_id != rcv_pkt->vt_id)) {
+    allocate_mutex = 1;
     printf("Received [%s] from aa(%d)\n", rcv_pkt->uplink_id, rcv_pkt->aa_id);
 
     /* update aa_id, vt_id */
@@ -109,6 +111,7 @@ handler_vra(vip_message_t *rcv_pkt) {
   if(!vr_id || is_my_pkt(rcv_pkt->vr_id)) {
       vr_id = rcv_pkt->vr_id;
       printf("My ID is %d\n", vr_id);
+      allocate_mutex = 0;
   }
 }
 
