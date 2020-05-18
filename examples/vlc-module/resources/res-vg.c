@@ -111,7 +111,7 @@ allocate_vr_id(vip_message_t *rcv_pkt) {
     mutex_try_lock(&m);
     vr_id_pool++;
     /* for vra pkt */
-    vip_set_type_header_vr_id(vr_id_pool);
+    vip_set_type_header_vr_id(rcv_pkt, vr_id_pool);
     /* add new vr tuple */
     add_vr_tuple(vr_id_pool, rcv_pkt->aa_id, rcv_pkt->vt_id);
     printf("vr_id_pool:%d\n", vr_id_pool);
@@ -174,7 +174,7 @@ handler_vrr(vip_message_t *rcv_pkt) {
         
         printf("service serialize:%d\n", service_num);
         vip_set_service_list(snd_pkt, input_service, service_num);
-        
+
         vip_serialize_message(snd_pkt, buffer);
 
         process_post(&vg_process, vg_snd_event, (void *)snd_pkt);
