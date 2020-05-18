@@ -138,13 +138,12 @@ beaconing() {
 
 static void
 handler_vrr(vip_message_t *rcv_pkt) {
-  vip_set_dest_ep(rcv_pkt, VIP_BROADCAST_URI, VIP_VR_URL);
-  process_post(&vt_process, vt_snd_event, (void *)rcv_pkt);
 }
 
 static void
 handler_vra(vip_message_t *rcv_pkt) {
-
+  vip_set_dest_ep(rcv_pkt, VIP_BROADCAST_URI, VIP_VR_URL);
+  process_post(&vt_process, vt_snd_event, (void *)rcv_pkt);
 }
 
 static void
