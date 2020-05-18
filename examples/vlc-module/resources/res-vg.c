@@ -122,7 +122,7 @@ handover_vr(int vr_id, int last_aa_id, int last_vt_id) {
     vip_vr_vg_tuple_t *c;
     for(c = list_head(vr_state_table); c != NULL; c = c->next) {
         if(c->vr_id == vr_id) {
-            print("Handover aa[%d]vt[%d] -> aa[%d]vt[%d]\n", c->last_aa_id, c->last_vt_id, last_aa_id, last_vt_id);
+            printf("Handover aa[%d]vt[%d] -> aa[%d]vt[%d]\n", c->last_aa_id, c->last_vt_id, last_aa_id, last_vt_id);
             if(c->last_aa_id != aa_id) {
                 is_aa_change = 1;
                 c->last_aa_id = aa_id;
