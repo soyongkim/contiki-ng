@@ -184,7 +184,10 @@ int
 vip_serialize_VRA(vip_message_t *vip_pkt)
 {
     uint8_t *offset = vip_pkt->buffer + VIP_COMMON_HEADER_LEN;
-
+    unsigned int index = 0;
+    index = vip_int_serialize(index, VIP_VR_ID_LEN, offset, vip_pkt->vr_id);
+    offset += index;
+    
     uint16_t current_position;
     for (current_position = 0; current_position < vip_pkt->service_num; current_position++)
     {

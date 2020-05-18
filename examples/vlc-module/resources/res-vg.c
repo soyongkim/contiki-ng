@@ -155,6 +155,7 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
 
 static void 
 res_event_handler(void) {
+  printf("Init vg service..\n");
   init_service();
 }
 
@@ -172,6 +173,7 @@ handler_vrr(vip_message_t *rcv_pkt) {
         vip_set_dest_ep(snd_pkt, set_uri, VIP_AA_URL);
         vip_serialize_message(snd_pkt, buffer);
         
+        printf("service serialize:%d\n", service_num);
         vip_set_service_list(rcv_pkt, input_service, service_num);
 
         process_post(&vg_process, vg_snd_event, (void *)snd_pkt);
