@@ -31,7 +31,6 @@ static void handler_vm(vip_message_t *rcv_pkt);
 static vip_message_t snd_pkt[1];
 static uint8_t buffer[50];
 static char set_uri[50];
-static int vr_id, aa_id, vt_id;
 static int service_num;
 static int vr_id_pool;
 static char* input_service[50];
