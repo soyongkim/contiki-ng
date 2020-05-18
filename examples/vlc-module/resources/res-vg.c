@@ -34,7 +34,7 @@ static char set_uri[50];
 static int service_num;
 static int vr_id_pool;
 static char* input_service[50];
-//static mutex_t m;
+static mutex_t m;
 LIST(vg_service_table);
 LIST(vr_state_table);
 
