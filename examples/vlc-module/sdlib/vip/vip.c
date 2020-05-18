@@ -52,6 +52,11 @@ int vip_int_serialize(unsigned int cur_offset, unsigned int space, uint8_t *buff
     return cur_offset;
 }
 
+int 
+vip_memset_int(uint8_t *buffer, unsigned int space, uint32_t value) {
+    memset(buffer, value, space);
+}
+
 uint32_t
 vip_parse_int_option(uint8_t *bytes, size_t length)
 {
@@ -184,9 +189,13 @@ int
 vip_serialize_VRA(vip_message_t *vip_pkt)
 {
     uint8_t *offset = vip_pkt->buffer + VIP_COMMON_HEADER_LEN;
-    unsigned int index = 0;
-    index = vip_int_serialize(index, VIP_VR_ID_LEN, offset, vip_pkt->vr_id);
-    offset += index;
+    // unsigned int index = 0;
+    // index = vip_int_serialize(index, VIP_VR_ID_LEN, offset, vip_pkt->vr_id);
+    // offset += index;
+    
+    vip_memset_int(offset, 4, vip_pkt->vr_id);
+
+
 
     // uint16_t current_position;
     // for (current_position = 0; current_position < vip_pkt->service_num; current_position++)
@@ -196,7 +205,7 @@ vip_serialize_VRA(vip_message_t *vip_pkt)
     // }
 
     //return (vip_pkt->service_num)*15;
-    return index;
+    return 4;
 }
 
 int
@@ -371,6 +380,7 @@ vip_parse_VRA(vip_message_t *vip_pkt)
 
     vip_pkt->vr_id = vip_parse_int_option(offset, 4);
     offset += 4;
+    printf("parse vra:%d\n", vip_pkt->vr_id);
 
     // /* parsing service */
     // for (uint32_t current_position = 0; current_position < vip_pkt->service_num; current_position++) {
