@@ -180,7 +180,7 @@ handler_vrr(vip_message_t *rcv_pkt) {
       vip_init_message(snd_pkt, VIP_TYPE_VRA, rcv_pkt->aa_id, rcv_pkt->vt_id);
 
       /* for vra pkt */
-      vip_set_type_header_vr_id(rcv_pkt, vr_id_pool);
+      vip_set_type_header_vr_id(snd_pkt, vr_id_pool);
       /* add new vr tuple */
       add_vr_tuple(vr_id_pool, rcv_pkt->aa_id, rcv_pkt->vt_id);
       printf("vr_id_pool:%d\n", vr_id_pool);
