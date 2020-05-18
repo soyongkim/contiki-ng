@@ -189,11 +189,11 @@ vip_serialize_VRA(vip_message_t *vip_pkt)
     uint16_t current_position;
     for (current_position = 0; current_position < vip_pkt->service_num; current_position++)
     {
-        index = vip_int_serialize(index, VIP_SERVICE_ID_LEN, offset, vip_pkt->service_id[current_position]);
-        offset += index;
+        memcpy(offset, vip_pkt->service_list[current_position], 15);
+        offset += 15;
     }
 
-    return (vip_pkt->service_num)*VIP_SERVICE_ID_LEN;
+    return (vip_pkt->service_num)*15;
 }
 
 int
@@ -226,7 +226,7 @@ vip_serialize_SER(vip_message_t *vip_pkt)
 
     index = vip_int_serialize(index, VIP_VR_ID_LEN, offset, vip_pkt->vr_id);
     offset += index;
-    index = vip_int_serialize(index, VIP_SERVICE_ID_LEN, offset, vip_pkt->service_id[0]);
+    index = vip_int_serialize(index, VIP_SERVICE_ID_LEN, offset, vip_pkt->service_id);
     offset += index;
     index = vip_int_serialize(index, VIP_SEQ_LEN, offset, vip_pkt->vr_seq_number);
 
@@ -241,7 +241,7 @@ vip_serialize_SEA(vip_message_t *vip_pkt)
 
     index = vip_int_serialize(index, VIP_VR_ID_LEN, offset, vip_pkt->vr_id);
     offset += index;
-    index = vip_int_serialize(index, VIP_SERVICE_ID_LEN, offset, vip_pkt->service_id[0]);
+    index = vip_int_serialize(index, VIP_SERVICE_ID_LEN, offset, vip_pkt->service_id);
     offset += index;
     index = vip_int_serialize(index, VIP_SEQ_LEN, offset, vip_pkt->vg_seq_number);
 
@@ -263,7 +263,7 @@ vip_serialize_SD(vip_message_t *vip_pkt)
 
     index = vip_int_serialize(index, VIP_VR_ID_LEN, offset, vip_pkt->vr_id);
     offset += index;
-    index = vip_int_serialize(index, VIP_SERVICE_ID_LEN, offset, vip_pkt->service_id[0]);
+    index = vip_int_serialize(index, VIP_SERVICE_ID_LEN, offset, vip_pkt->service_id);
     offset += index;
     index = vip_int_serialize(index, VIP_SEQ_LEN, offset, vip_pkt->vg_seq_number);
 
@@ -278,7 +278,7 @@ vip_serialize_SDA(vip_message_t *vip_pkt)
 
     index = vip_int_serialize(index, VIP_VR_ID_LEN, offset, vip_pkt->vr_id);
     offset += index;
-    index = vip_int_serialize(index, VIP_SERVICE_ID_LEN, offset, vip_pkt->service_id[0]);
+    index = vip_int_serialize(index, VIP_SERVICE_ID_LEN, offset, vip_pkt->service_id);
     offset += index;
     index = vip_int_serialize(index, VIP_SEQ_LEN, offset, vip_pkt->vr_seq_number);
 
@@ -304,7 +304,7 @@ vip_serialize_VM(vip_message_t *vip_pkt)
 
     index = vip_int_serialize(index, VIP_VR_ID_LEN, offset, vip_pkt->vr_id);
     offset += index;
-    index = vip_int_serialize(index, VIP_SERVICE_ID_LEN, offset, vip_pkt->service_id[0]);
+    index = vip_int_serialize(index, VIP_SERVICE_ID_LEN, offset, vip_pkt->service_id);
     offset += index;
     index = vip_int_serialize(index, VIP_SEQ_LEN, offset, vip_pkt->vg_seq_number);
 
@@ -401,7 +401,7 @@ vip_parse_SER(vip_message_t *vip_pkt)
     uint8_t *offset = vip_pkt->buffer + VIP_COMMON_HEADER_LEN;
 
     vip_pkt->vr_id = vip_parse_int_option(offset, 4);
-    
+
     offset += 4;
     vip_pkt->service_id = vip_parse_int_option(offset, 4);
     offset += 4;
