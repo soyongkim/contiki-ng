@@ -108,6 +108,7 @@ handler_vrr(vip_message_t *rcv_pkt) {
 
 static void
 handler_vra(vip_message_t *rcv_pkt) {
+  printf("Test vr id is %d\n", vr_id);
   if(!vr_id || is_my_pkt(rcv_pkt->vr_id)) {
       vr_id = rcv_pkt->vr_id;
       printf("My ID is %d\n", vr_id);
