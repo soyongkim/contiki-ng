@@ -14,6 +14,7 @@
 #include <string.h>
 
 static void res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset);
+static void res_event_handler(void);
 
 static void handler_vrr(vip_message_t *rcv_pkt);
 static void handler_vra(vip_message_t *rcv_pkt);
@@ -39,12 +40,13 @@ LIST(vg_service_table);
 LIST(vr_state_table);
 
 /* A simple actuator example. Toggles the red led */
-RESOURCE(res_vg,
+EVENT_RESOURCE(res_vg,
          "title=\"VG\";rt=\"Control\"",
          NULL,
          res_post_handler,
          NULL,
-         NULL);
+         NULL,
+         res_event_handler);
 
 
 /* vip type handler */
@@ -151,6 +153,13 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
   process_post(&vg_process, vg_rcv_event, (void *)vip_pkt);
 }
 
+static void 
+res_event_handler(void) {
+  init_service();
+}
+
+
+
 static void
 handler_vrr(vip_message_t *rcv_pkt) {
     /* case that vr is not allocated */
@@ -162,6 +171,8 @@ handler_vrr(vip_message_t *rcv_pkt) {
         make_coap_uri(set_uri, rcv_pkt->aa_id);
         vip_set_dest_ep(snd_pkt, set_uri, VIP_AA_URL);
         vip_serialize_message(snd_pkt, buffer);
+        
+        vip_set_service_list(rcv_pkt, input_service, service_num);
 
         process_post(&vg_process, vg_snd_event, (void *)snd_pkt);
     }

@@ -56,11 +56,11 @@ PROCESS_THREAD(vg_process, ev, data)
    */
   coap_activate_resource(&res_vg, VIP_VG_URL);
   
-  /* test */
-  init_service();
-
   /* vip packet */
   vip_message_t *rcv_pkt, *snd_pkt;
+
+  /* init vg service list */
+  res_vg.trigger();
 
   /* Define application-specific events here. */
   while(1) {

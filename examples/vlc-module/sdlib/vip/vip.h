@@ -76,3 +76,5 @@ int vip_get_type_header_vg_seq_num(vip_message_t *message, uint32_t *vg_seq_numb
 int vip_set_type_header_vg_seq_num(vip_message_t *message, uint32_t vg_seq_number);
 
 int vip_set_payload(vip_message_t *message, void *payload, size_t payload_len);
+
+int vip_set_service_list(vip_message_t *vip_pkt, char **service_list, size_t service_num);
