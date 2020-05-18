@@ -187,13 +187,13 @@ vip_serialize_VRA(vip_message_t *vip_pkt)
     unsigned int index = 0;
     index = vip_int_serialize(index, VIP_VR_ID_LEN, offset, vip_pkt->vr_id);
     offset += index;
-    
-    uint16_t current_position;
-    for (current_position = 0; current_position < vip_pkt->service_num; current_position++)
-    {
-        memcpy(offset, vip_pkt->service_list[current_position], 15);
-        offset += 15;
-    }
+
+    // uint16_t current_position;
+    // for (current_position = 0; current_position < vip_pkt->service_num; current_position++)
+    // {
+    //     memcpy(offset, vip_pkt->service_list[current_position], 15);
+    //     offset += 15;
+    // }
 
     return (vip_pkt->service_num)*15;
 }
