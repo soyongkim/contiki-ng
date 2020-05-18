@@ -192,9 +192,12 @@ vip_serialize_VRA(vip_message_t *vip_pkt)
     // unsigned int index = 0;
     // index = vip_int_serialize(index, VIP_VR_ID_LEN, offset, vip_pkt->vr_id);
     // offset += index;
-    
-    vip_memset_int(offset, 4, vip_pkt->vr_id);
-
+    printf("serialize vrid:%d\n",vip_pkt->vr_id);
+    //vip_memset_int(offset, 4, vip_pkt->vr_id);
+    offset[0] = (uint8_t)(vip_pkt->vr_id >> 24);
+    offset[1] = (uint8_t)(vip_pkt->vr_id >> 16);
+    offset[2] = (uint8_t)(vip_pkt->vr_id >> 8);
+    offset[3] = (uint8_t)(vip_pkt->vr_id);
 
 
     // uint16_t current_position;
