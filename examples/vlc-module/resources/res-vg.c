@@ -109,11 +109,21 @@ allocate_vr_id(vip_message_t *rcv_pkt) {
     mutex_t m;
     mutex_try_lock(&m);
     vr_id_pool++;
+    vip_init_message(snd_pkt, VIP_TYPE_VRA, rcv_pkt->aa_id, rcv_pkt->vt_id);
+
     /* for vra pkt */
     vip_set_type_header_vr_id(rcv_pkt, vr_id_pool);
     /* add new vr tuple */
     add_vr_tuple(vr_id_pool, rcv_pkt->aa_id, rcv_pkt->vt_id);
     printf("vr_id_pool:%d\n", vr_id_pool);
+
+    make_coap_uri(set_uri, rcv_pkt->aa_id);
+    vip_set_dest_ep(snd_pkt, set_uri, VIP_AA_URL);
+        
+    printf("service serialize:%d\n", service_num);
+    vip_set_service_list(snd_pkt, input_service, service_num);
+
+    vip_serialize_message(snd_pkt, buffer);
     mutex_unlock(&m);
 }
 
@@ -164,18 +174,8 @@ static void
 handler_vrr(vip_message_t *rcv_pkt) {
     /* case that vr is not allocated */
     if(!rcv_pkt->vr_id) {
-        vip_init_message(snd_pkt, VIP_TYPE_VRA, rcv_pkt->aa_id, rcv_pkt->vt_id);
         /* process concurrent reqeust problem from VRs */
         allocate_vr_id(rcv_pkt);
-
-        make_coap_uri(set_uri, rcv_pkt->aa_id);
-        vip_set_dest_ep(snd_pkt, set_uri, VIP_AA_URL);
-        
-        printf("service serialize:%d\n", service_num);
-        vip_set_service_list(snd_pkt, input_service, service_num);
-
-        vip_serialize_message(snd_pkt, buffer);
-
         process_post(&vg_process, vg_snd_event, (void *)snd_pkt);
     }
     else {
