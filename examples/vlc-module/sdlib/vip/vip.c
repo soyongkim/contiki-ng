@@ -52,7 +52,7 @@ int vip_int_serialize(unsigned int cur_offset, unsigned int space, uint8_t *buff
     return cur_offset;
 }
 
-int 
+void
 vip_memset_int(uint8_t *buffer, unsigned int space, uint32_t value) {
     memset(buffer, value, space);
 }
