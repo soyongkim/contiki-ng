@@ -372,14 +372,14 @@ vip_parse_VRA(vip_message_t *vip_pkt)
     vip_pkt->vr_id = vip_parse_int_option(offset, 4);
     offset += 4;
 
-    /* parsing service */
-    for (uint32_t current_position = 0; current_position < vip_pkt->service_num; current_position++) {
-        /* 꼼수 : 일단 미리 넣어둔 id만큼 15바이트씩만 읽도록 하자 */
-        vip_pkt->service_list[current_position] = malloc(sizeof(char)*15);
-        memset(vip_pkt->service_list[current_position], 0, 15);
-        memcpy(vip_pkt->service_list[current_position], offset, 15);
-        offset += 15;
-    }
+    // /* parsing service */
+    // for (uint32_t current_position = 0; current_position < vip_pkt->service_num; current_position++) {
+    //     /* 꼼수 : 일단 미리 넣어둔 id만큼 15바이트씩만 읽도록 하자 */
+    //     vip_pkt->service_list[current_position] = malloc(sizeof(char)*15);
+    //     memset(vip_pkt->service_list[current_position], 0, 15);
+    //     memcpy(vip_pkt->service_list[current_position], offset, 15);
+    //     offset += 15;
+    // }
 }
 
 void 
