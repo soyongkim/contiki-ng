@@ -64,7 +64,9 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
 
 bool
 is_my_pkt(int rcv_vr_id) {
-  rcv_vr_id == vr_id? true : false;
+  if(rcv_vr_id == vr_id)
+    return true;
+  return false;
 }
 
 
