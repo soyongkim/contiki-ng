@@ -58,15 +58,16 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
      printf("vip_pkt have problem\n");
      return;
   }
-        
-  /* check whether the rcv_pkt is beacon type or not */
-  /* if not, ignore the rcv_pkt */
-  if(vip_pkt->type == VIP_TYPE_BEACON || 
-      ((vip_pkt->type == VIP_TYPE_VRA) && !vr_id) ||
-        vip_pkt->vr_id == vr_id) {
-    process_post(&vr_process, vr_rcv_event, (void *)vip_pkt);
-  }
+  
+  process_post(&vr_process, vr_rcv_event, (void *)vip_pkt);
 }
+
+bool
+is_my_pkt(int rcv_vr_id) {
+  rcv_vr_id == vr_id? true : false;
+}
+
+
 
 static void
 handler_beacon(vip_message_t *rcv_pkt) {
@@ -103,8 +104,10 @@ handler_vrr(vip_message_t *rcv_pkt) {
 
 static void
 handler_vra(vip_message_t *rcv_pkt) {
-  vr_id = rcv_pkt->vr_id;
-  printf("My ID is %d\n", vr_id);
+  if(!vr_id || is_my_pkt(rcv_pkt->vr_id)) {
+      vr_id = rcv_pkt->vr_id;
+      printf("My ID is %d\n", vr_id);
+  }
 }
 
 static void
