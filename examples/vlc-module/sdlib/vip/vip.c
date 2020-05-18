@@ -195,7 +195,8 @@ vip_serialize_VRA(vip_message_t *vip_pkt)
     //     offset += 15;
     // }
 
-    return (vip_pkt->service_num)*15;
+    //return (vip_pkt->service_num)*15;
+    return index;
 }
 
 int
