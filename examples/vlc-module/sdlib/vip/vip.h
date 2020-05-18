@@ -14,8 +14,9 @@ typedef struct {
     /* type specific header */
     char* uplink_id;
     uint32_t vr_id;
-    uint16_t service_num;
-    uint32_t service_id[VIP_MAX_SERVICE];
+    uint32_t service_id;
+    uint32_t service_num;
+    char** service_list;
     uint32_t vr_seq_number;
     uint32_t vg_seq_number;
 
@@ -47,7 +48,6 @@ void vip_parse_SDA(vip_message_t *message);
 void vip_parse_VU(vip_message_t *message);
 void vip_parse_VM(vip_message_t *message);
 void vip_payload_test(vip_message_t * message);
-
 
 
 /* Data configure */

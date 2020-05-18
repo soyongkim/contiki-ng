@@ -63,7 +63,6 @@ PROCESS_THREAD(vr_process, ev, data)
 
       if(ev == vr_rcv_event) {
         rcv_pkt = (vip_message_t *)data;
-        printf("type is %d\n", rcv_pkt->type);
 
         // 여기서 route를 실행해야함 aa 프로세스가 route해서 보내야함
         vip_route(rcv_pkt, &vr_type_handler);

@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "aa.h"
+#include "vg.h"
 #include "coap-engine.h"
 #include "coap-callback-api.h"
 #include "vip-interface.h"
@@ -22,36 +22,42 @@ static void vip_request(vip_message_t *snd_pkt);
  * Resources to be activated need to be imported through the extern keyword.
  * The build system automatically compiles the resources in the corresponding sub-directory.
  */
-extern coap_resource_t res_aa;
-extern vip_entity_t aa_type_handler;
+extern coap_resource_t res_vg;
+extern vip_entity_t vg_type_handler;
 
 /* test event process */
-process_event_t aa_rcv_event, aa_snd_event;
+process_event_t vg_rcv_event, vg_snd_event;
 
 /* for send packet */
 static coap_callback_request_state_t callback_state;
 static coap_endpoint_t dest_ep;
 static coap_message_t request[1];
 
-PROCESS(aa_process, "AA");
-AUTOSTART_PROCESSES(&aa_process);
 
-PROCESS_THREAD(aa_process, ev, data)
+PROCESS(vg_process, "VG");
+AUTOSTART_PROCESSES(&vg_process);
+
+PROCESS_THREAD(vg_process, ev, data)
 {
   PROCESS_BEGIN();
   PROCESS_PAUSE();
 
+  /* you must make this node first on cooja. so set the node id to 1 */
   printf("Node ID is %d\n", node_id);
 
-  aa_rcv_event = process_alloc_event();
-  aa_snd_event = process_alloc_event();
-  
+  vg_rcv_event = process_alloc_event();
+  vg_snd_event = process_alloc_event();
+
+  NETSTACK_ROUTING.root_start();
   /*
    * Bind the resources to their Uri-Path.
    * WARNING: Activating twice only means alternate path, not two instances!
    * All static variables are the same for each URI path.
    */
-  coap_activate_resource(&res_aa, VIP_AA_URL);
+  coap_activate_resource(&res_vg, VIP_VG_URL);
+  
+  /* test */
+  init_service();
 
   /* vip packet */
   vip_message_t *rcv_pkt, *snd_pkt;
@@ -60,19 +66,17 @@ PROCESS_THREAD(aa_process, ev, data)
   while(1) {
       PROCESS_WAIT_EVENT();
 
-      if(ev == aa_rcv_event) {
+      if(ev == vg_rcv_event) {
         rcv_pkt = (vip_message_t *)data;
         printf("type is %d\n", rcv_pkt->type);
 
         // 여기서 route를 실행해야함 aa 프로세스가 route해서 보내야함
-        vip_route(rcv_pkt, &aa_type_handler);
+        vip_route(rcv_pkt, &vg_type_handler);
       }
-      else if(ev == aa_snd_event) {
+      else if(ev == vg_snd_event) {
         snd_pkt = (vip_message_t *)data;
         vip_request(snd_pkt);
       }
-
-      printf("EVENT!\n");
   }
 
   PROCESS_END();
@@ -80,7 +84,7 @@ PROCESS_THREAD(aa_process, ev, data)
 
 static void
 vip_request_callback(coap_callback_request_state_t *callback_state) {
-  printf("AA CoAP Response Handler\n");
+  printf("VG CoAP Response Handler\n");
   //printf("CODE:%d\n", callback_state->state.response->code);
 }
 
@@ -92,7 +96,7 @@ vip_request(vip_message_t *snd_pkt) {
   coap_set_header_uri_path(request, snd_pkt->dest_url);
   coap_set_payload(request, snd_pkt->buffer, snd_pkt->total_len);
 
-  printf("-- AA Send coap vip[%d] packet --\n", snd_pkt->type);
+  printf("-- Send coap vip[%d] packet --\n", snd_pkt->type);
 
   coap_send_request(&callback_state, &dest_ep, request, vip_request_callback);
 }

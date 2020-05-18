@@ -2,6 +2,7 @@
 
 typedef struct vip_entity_s vip_entity_t;
 typedef struct vip_vt_tuple vip_vt_tuple_t;
+typedef struct vip_vr_vg_tuple vip_vr_vg_tuple_t;
 
 
 typedef void (* vip_type_handler_t)(vip_message_t *received_pkt);
@@ -25,6 +26,15 @@ struct vip_entity_s {
 struct vip_vt_tuple {
     vip_vt_tuple_t *next;
     int vt_id;
+};
+
+struct vip_vr_vg_tuple {
+    vip_vr_vg_tuple_t *next;
+    int vr_id;
+    int last_vt_id;
+    int last_aa_id;
+    int *current_service_list;
+    int *vg_seq_list;
 };
 
 

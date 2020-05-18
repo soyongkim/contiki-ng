@@ -127,8 +127,7 @@ beaconing() {
     printf("Beaconing...\n");
     /* you have to comfirm that the type field is fulled */
     vip_init_message(snd_pkt, VIP_TYPE_BEACON, aa_id, vt_id);
-    make_coap_uri(set_uri, node_id);
-    vip_set_dest_ep(snd_pkt, set_uri, VIP_VR_URL);
+    vip_set_dest_ep(snd_pkt, VIP_BROADCAST_URI, VIP_VR_URL);
     vip_set_type_header_uplink_id(snd_pkt, uplink_id);
     vip_serialize_message(snd_pkt, buffer);
     process_post(&vt_process, vt_snd_event, (void *)snd_pkt);
@@ -139,7 +138,8 @@ beaconing() {
 
 static void
 handler_vrr(vip_message_t *rcv_pkt) {
-
+  vip_set_dest_ep(rcv_pkt, VIP_BROADCAST_URI, VIP_VR_URL);
+  process_post(&vt_process, vt_snd_event, (void *)rcv_pkt);
 }
 
 static void
@@ -214,6 +214,7 @@ request_vt_id_handler(vip_message_t *rcv_pkt) {
       aa_id = rcv_pkt->aa_id;
       strcpy(uplink_id, rcv_pkt->uplink_id);
       printf("vt-[%d] is allocated by aa-[%d]\n", vt_id, aa_id);
+      
       printf("uplink-id is [%s]\n", uplink_id);
     } else {
       printf("Already allocated with %d\n", vt_id);

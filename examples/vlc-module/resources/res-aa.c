@@ -130,7 +130,6 @@ void show_vt_table() {
   }
 }
 
-
 /* called by coap-engine proc */
 static void
 res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset)
@@ -139,13 +138,10 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
   // printf("LEN:%d\n", request->payload_len);
 
   static vip_message_t vip_pkt[1];
-  if (vip_parse_common_header(vip_pkt, request->payload, request->payload_len) == VIP_NO_ERROR)
-  {
-    printf("VIP: NO ERROR\n");
-  }
-  else
+  if (vip_parse_common_header(vip_pkt, request->payload, request->payload_len) != VIP_NO_ERROR)
   {
     printf("VIP: Not VIP Packet\n");
+    return;
   }
 
   process_post(&aa_process, aa_rcv_event, (void *)vip_pkt);
@@ -160,24 +156,27 @@ handler_beacon(vip_message_t *rcv_pkt) {
 
 static void
 handler_vrr(vip_message_t *rcv_pkt) {
+  /* forward to vt */
+  make_coap_uri(set_uri, rcv_pkt->vt_id);
+  vip_set_dest_ep(rcv_pkt, set_uri, VIP_VT_URL);
 
+  printf("forward to vt(%d)\n", rcv_pkt->vt_id);
+  process_post(&aa_process, aa_snd_event, (void *)rcv_pkt);
 }
 
 static void
 handler_vra(vip_message_t *rcv_pkt) {
-  /* forward to va */
-  vip_init_message(snd_pkt, VIP_TYPE_VRA, rcv_pkt->aa_id, rcv_pkt->vt_id);
+  /* forward to vg */
   make_coap_uri(set_uri, VIP_VG_ID);
-  vip_set_dest_ep(snd_pkt, set_uri, VIP_VG_URL);
-  vip_serialize_message(snd_pkt, buffer);
+  vip_set_dest_ep(rcv_pkt, set_uri, VIP_VG_URL);
 
   printf("forward to vg(%d)\n", VIP_VG_ID);
-  process_post(&aa_process, aa_snd_event, (void *)snd_pkt);
+  process_post(&aa_process, aa_snd_event, (void *)rcv_pkt);
 }
 
 static void
 handler_vrc(vip_message_t *rcv_pkt) {
-
+  
 }
 
 static void
@@ -234,7 +233,7 @@ allocate_vt_handler(vip_message_t *rcv_pkt) {
   vip_set_payload(snd_pkt, (void *)uplink_id, strlen(uplink_id));
 
   vip_serialize_message(snd_pkt, buffer);
-  printf("total? %d\n", snd_pkt->total_len);
+  //printf("total? %d\n", snd_pkt->total_len);
   process_post(&aa_process, aa_snd_event, (void *)snd_pkt);
 }
 
@@ -247,7 +246,7 @@ res_periodic_ad_handler(void)
 
   /* pkt, type, aa-id(node_id), vt-id */
   vip_init_message(snd_pkt, VIP_TYPE_ALLOW, node_id, 0);
-  vip_set_dest_ep(snd_pkt, VIP_BROADCAST_URI, "vip/vt");
+  vip_set_dest_ep(snd_pkt, VIP_BROADCAST_URI, VIP_VT_URL);
 
   vip_serialize_message(snd_pkt, buffer);
   process_post(&aa_process, aa_snd_event, (void *)snd_pkt);
