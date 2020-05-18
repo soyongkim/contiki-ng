@@ -99,13 +99,12 @@ handler_beacon(vip_message_t *rcv_pkt) {
 
 static void
 handler_vrr(vip_message_t *rcv_pkt) {
-  vr_id = rcv_pkt->vr_id;
-  printf("My ID is %d\n", vr_id);
 }
 
 static void
 handler_vra(vip_message_t *rcv_pkt) {
-
+  vr_id = rcv_pkt->vr_id;
+  printf("My ID is %d\n", vr_id);
 }
 
 static void
