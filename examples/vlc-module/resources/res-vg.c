@@ -34,7 +34,7 @@ static char set_uri[50];
 static int service_num;
 static int vr_id_pool;
 static char* input_service[50];
-
+static mutex_t m;
 LIST(vg_service_table);
 LIST(vr_state_table);
 
@@ -106,7 +106,6 @@ init_service() {
 
 void
 allocate_vr_id(vip_message_t *rcv_pkt) {
-    mutex_t m;
     mutex_try_lock(&m);
     vr_id_pool++;
     vip_init_message(snd_pkt, VIP_TYPE_VRA, rcv_pkt->aa_id, rcv_pkt->vt_id);
