@@ -123,6 +123,7 @@ allocate_vr_id(vip_message_t *rcv_pkt) {
     vip_set_service_list(snd_pkt, input_service, service_num);
 
     vip_serialize_message(snd_pkt, buffer);
+    process_post(&vg_process, vg_snd_event, (void *)snd_pkt);
     mutex_unlock(&m);
 }
 
@@ -193,7 +194,7 @@ handler_vrr(vip_message_t *rcv_pkt) {
 
       // vip_serialize_message(snd_pkt, buffer);
 
-      process_post(&vg_process, vg_snd_event, (void *)snd_pkt);
+      //process_post(&vg_process, vg_snd_event, (void *)snd_pkt);
     }
     else {
         /* case handover */
