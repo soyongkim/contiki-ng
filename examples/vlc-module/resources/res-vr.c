@@ -12,6 +12,7 @@
 #include <string.h>
 
 static void res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset);
+static void res_event_handler(void);
 
 static void handler_beacon(vip_message_t *rcv_pkt);
 static void handler_vrr(vip_message_t *rcv_pkt);
@@ -23,28 +24,28 @@ static void handler_sea(vip_message_t *rcv_pkt);
 static void handler_sec(vip_message_t *rcv_pkt);
 static void handler_sd(vip_message_t *rcv_pkt);
 static void handler_sda(vip_message_t *rcv_pkt);
-static void handler_vu(vip_message_t *rcv_pkt);
-static void handler_vm(vip_message_t *rcv_pkt);
 
 static vip_message_t snd_pkt[1];
 static uint8_t buffer[50];
 static char set_uri[50];
 static int vr_id, aa_id, vt_id;
 static int allocate_mutex;
+static int published_nonce;
 
 /* A simple actuator example. Toggles the red led */
-RESOURCE(res_vr,
+EVENT_RESOURCE(res_vr,
          "title=\"vr\";rt=\"Control\"",
          NULL,
          res_post_handler,
          NULL,
-         NULL);
+         NULL,
+         res_event_handler);
 
 
 /* vip type handler */
 TYPE_HANDLER(vr_type_handler, handler_beacon, handler_vrr, handler_vra, 
               handler_vrc, handler_rel, handler_ser, handler_sea, handler_sec,
-              handler_sd, handler_sda, handler_vu, handler_vm, NULL);
+              handler_sd, handler_sda, NULL);
 
 
 /* called by coap-engine proc */
@@ -71,7 +72,6 @@ is_my_pkt(int rcv_vr_id) {
 }
 
 
-
 static void
 handler_beacon(vip_message_t *rcv_pkt) {
   /* check handover */
@@ -94,7 +94,7 @@ handler_beacon(vip_message_t *rcv_pkt) {
 
     vip_serialize_message(snd_pkt, buffer);
 
-    process_post(&vr_process, vr_snd_event, (void *)snd_pkt);
+    process_post(&vr_process, vr_get_event, (void *)snd_pkt);
   }
   else {
     printf("Ignore same beacon message..\n");
@@ -108,7 +108,6 @@ handler_vrr(vip_message_t *rcv_pkt) {
 
 static void
 handler_vra(vip_message_t *rcv_pkt) {
-  printf("Test vr id is %d\n", vr_id);
   if(!vr_id || is_my_pkt(rcv_pkt->vr_id)) {
       vr_id = rcv_pkt->vr_id;
       printf("My ID is %d\n", vr_id);
@@ -151,12 +150,8 @@ handler_sda(vip_message_t *rcv_pkt) {
 
 }
 
-static void
-handler_vu(vip_message_t *rcv_pkt) {
-
-}
-
-static void
-handler_vm(vip_message_t *rcv_pkt) {
+static void 
+res_event_handler(void) {
+  
 
 }

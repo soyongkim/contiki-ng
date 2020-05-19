@@ -16,7 +16,7 @@
 
 /* using coap callback api */
 static void vip_request_callback(coap_callback_request_state_t *callback_state);
-static void vip_request(vip_message_t *snd_pkt);
+static void vip_request(vip_message_t *snd_pkt, coap_method_t rest_type);
 
 /*
  * Resources to be activated need to be imported through the extern keyword.
@@ -26,7 +26,7 @@ extern coap_resource_t res_vr;
 extern vip_entity_t vr_type_handler;
 
 /* test event process */
-process_event_t vr_rcv_event, vr_snd_event;
+process_event_t vr_rcv_event, vr_snd_event, vr_get_event;
 
 /* for send packet */
 static coap_callback_request_state_t callback_state;
@@ -69,10 +69,12 @@ PROCESS_THREAD(vr_process, ev, data)
       }
       else if(ev == vr_snd_event) {
         snd_pkt = (vip_message_t *)data;
-        vip_request(snd_pkt);
+        vip_request(snd_pkt, COAP_POST);
       }
-
-      printf("EVENT!\n");
+      else if(ev == vr_get_event) {
+        snd_pkt = (vip_message_t *)data;
+        vip_request(snd_pkt, COAP_GET);
+      }
   }
 
   PROCESS_END();
@@ -80,15 +82,20 @@ PROCESS_THREAD(vr_process, ev, data)
 
 static void
 vip_request_callback(coap_callback_request_state_t *callback_state) {
-  printf("AA CoAP Response Handler\n");
+  //printf("AA CoAP Response Handler\n");
   //printf("CODE:%d\n", callback_state->state.response->code);
+
+  if(!callback_state->state.response) {
+    int nonce = vip_parse_int_option(callback_state->state.response->payload, 4);
+    printf("Nonce:%d\n", nonce);
+  }
 }
 
 static void
-vip_request(vip_message_t *snd_pkt) {
+vip_request(vip_message_t *snd_pkt, coap_method_t rest_type) {
   /* set vip endpoint */
   coap_endpoint_parse(snd_pkt->dest_coap_addr, strlen(snd_pkt->dest_coap_addr), &dest_ep);
-  coap_init_message(request, COAP_TYPE_CON, COAP_POST, 0);
+  coap_init_message(request, COAP_TYPE_CON, rest_type, 0);
   coap_set_header_uri_path(request, snd_pkt->dest_url);
   coap_set_payload(request, snd_pkt->buffer, snd_pkt->total_len);
 

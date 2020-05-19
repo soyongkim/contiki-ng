@@ -62,8 +62,6 @@ static void handler_sea(vip_message_t *rcv_pkt);
 static void handler_sec(vip_message_t *rcv_pkt);
 static void handler_sd(vip_message_t *rcv_pkt);
 static void handler_sda(vip_message_t *rcv_pkt);
-static void handler_vu(vip_message_t *rcv_pkt);
-static void handler_vm(vip_message_t *rcv_pkt);
 static void request_vt_id_handler(vip_message_t *rcv_pkt);
 
 static vip_message_t snd_pkt[1];
@@ -88,7 +86,7 @@ PERIODIC_RESOURCE(res_vt,
 /* vip type handler */
 TYPE_HANDLER(vt_type_handler, handler_beacon, handler_vrr, handler_vra, 
               handler_vrc, handler_rel, handler_ser, handler_sea, handler_sec,
-              handler_sd, handler_sda, handler_vu, handler_vm, request_vt_id_handler);
+              handler_sd, handler_sda, request_vt_id_handler);
 
 
 /* called by coap-engine proc */
@@ -178,16 +176,6 @@ handler_sd(vip_message_t *rcv_pkt) {
 
 static void
 handler_sda(vip_message_t *rcv_pkt) {
-
-}
-
-static void
-handler_vu(vip_message_t *rcv_pkt) {
-
-}
-
-static void
-handler_vm(vip_message_t *rcv_pkt) {
 
 }
 

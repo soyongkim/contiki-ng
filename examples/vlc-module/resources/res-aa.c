@@ -43,6 +43,7 @@
 #include "lib/list.h"
 #include "aa.h"
 #include "cooja_addr.h"
+#include "os/sys/mutex.h"
 
 /* Node ID */
 #include "sys/node-id.h"
@@ -51,6 +52,7 @@
 #include <string.h>
 
 static void res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset);
+static void res_get_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset);
 static void res_periodic_ad_handler(void);
 
 static void handler_beacon(vip_message_t *rcv_pkt);
@@ -63,8 +65,6 @@ static void handler_sea(vip_message_t *rcv_pkt);
 static void handler_sec(vip_message_t *rcv_pkt);
 static void handler_sd(vip_message_t *rcv_pkt);
 static void handler_sda(vip_message_t *rcv_pkt);
-static void handler_vu(vip_message_t *rcv_pkt);
-static void handler_vm(vip_message_t *rcv_pkt);
 static void allocate_vt_handler(vip_message_t *rcv_pkt);
 
 #define SERVER_EP "coap://[fe80::201:1:1:1]"
@@ -76,6 +76,9 @@ LIST(vt_table);
 static vip_message_t snd_pkt[1];
 static uint8_t buffer[50];
 static char set_uri[50];
+
+static int nonce_pool[65000];
+static mutex_t p, e;
 
 static char uplink_id[50] = {"ISL_AA_UPLINK_ID"};
 
@@ -93,7 +96,40 @@ PERIODIC_RESOURCE(res_aa,
 /* vip type handler */
 TYPE_HANDLER(aa_type_handler, handler_beacon, handler_vrr, handler_vra, 
               handler_vrc, handler_rel, handler_ser, handler_sea, handler_sec,
-              handler_sd, handler_sda, handler_vu, handler_vm, allocate_vt_handler);
+              handler_sd, handler_sda, allocate_vt_handler);
+
+int
+publish_nonce() {
+  int nonce = 0;
+  mutex_try_lock(&p);
+  /* publish nonce_pool */
+  for(int i=0; i<65000; i++) {
+    if(!nonce_pool[i]) {
+      nonce_pool[i] = 1;
+      nonce = i;
+      break;
+    }
+  }
+  mutex_unlock(&p);
+  return nonce;
+}
+
+
+int expire_nonce() {
+  int nonce = 0;
+  mutex_try_lock(&e);
+  /* expire nonce_pool */
+  for(int i=0; i<65000; i++) {
+    if(nonce_pool[i]) {
+      nonce_pool[i] = 0;
+      nonce = i;
+      break;
+    }
+  }
+  mutex_unlock(&e);
+  return nonce;
+}
+
 
 
 void
@@ -144,6 +180,17 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
     return;
   }
 
+  /* Publish nonce for vr */
+  if(vip_pkt->type == VIP_TYPE_VRR && !vip_pkt->vr_id) {
+    int nonce = publish_nonce();
+    memcpy(buffer, nonce, 4);
+    
+    coap_set_header_content_format(response, TEXT_PLAIN); /* text/plain is the default, hence this option could be omitted. */
+    coap_set_header_etag(response, 4, 1);
+    coap_set_payload(response, buffer, 4);
+  }
+
+
   process_post(&aa_process, aa_rcv_event, (void *)vip_pkt);
 }
 
@@ -166,9 +213,11 @@ handler_vrr(vip_message_t *rcv_pkt) {
 
 static void
 handler_vra(vip_message_t *rcv_pkt) {
+  int published_nonce = expire_nonce();
   /* forward to vt */
   make_coap_uri(set_uri, rcv_pkt->vt_id);
   vip_set_dest_ep(rcv_pkt, set_uri, VIP_VT_URL);
+  vip_set_type_header_nonce(rcv_pkt, published_nonce);
 
   printf("forward to vt(%d)\n", rcv_pkt->vt_id);
   process_post(&aa_process, aa_snd_event, (void *)rcv_pkt);
@@ -206,16 +255,6 @@ handler_sd(vip_message_t *rcv_pkt) {
 
 static void
 handler_sda(vip_message_t *rcv_pkt) {
-
-}
-
-static void
-handler_vu(vip_message_t *rcv_pkt) {
-
-}
-
-static void
-handler_vm(vip_message_t *rcv_pkt) {
 
 }
 

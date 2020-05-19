@@ -54,14 +54,6 @@ vip_route(vip_message_t *vip_pkt, vip_entity_t *type_handler) {
         vip_parse_SDA(vip_pkt);
         type_handler->sda_handler(vip_pkt);
         break;
-    case VIP_TYPE_VU:
-        vip_parse_VU(vip_pkt);
-        type_handler->vu_handler(vip_pkt);
-        break;
-    case VIP_TYPE_VM:
-        vip_parse_VM(vip_pkt);
-        type_handler->vu_handler(vip_pkt);
-        break;
     case VIP_TYPE_ALLOW:
         if(vip_pkt->total_len > 8) {
             printf("payload!\n");

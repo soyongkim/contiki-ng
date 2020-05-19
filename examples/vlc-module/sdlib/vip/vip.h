@@ -1,6 +1,9 @@
 #include "net/ipv6/uip.h"
 #include "vip-constants.h"
 
+typedef struct vip_vt_tuple vip_vt_tuple_t;
+typedef struct vip_vr_session_tuple vip_vr_session_tuple_t;
+
 /* message struct */
 typedef struct {
     uint8_t *buffer;
@@ -14,18 +17,40 @@ typedef struct {
     /* type specific header */
     char* uplink_id;
     uint32_t vr_id;
-    uint32_t service_id;
-    uint32_t service_num;
-    char** service_list;
+    uint32_t session_id;
     uint32_t vr_seq_number;
     uint32_t vg_seq_number;
 
     uint32_t payload_len;
     uint8_t *payload;
 
+    /* for allocation vt */
+    uint32_t nonce;
+
     /* for target handler */
     char *dest_coap_addr, *dest_url;
 } vip_message_t;
+
+
+struct vip_vt_tuple {
+    vip_vt_tuple_t *next;
+    int vt_id;
+};
+
+
+typedef struct vip_session_info {
+    int session_id;
+    int vg_seq;
+    int vr_seq;
+    uint8_t *recent_vg_data;
+} vip_session_info_t;
+
+
+struct vip_vr_session_tuple {
+    vip_session_info_t* session_info;
+    vip_session_info_t recent_session_info;
+};
+
 
 /* Interface for vip-pkt Serializaion */
 void vip_init_message(vip_message_t *message, uint8_t type, uint16_t aa_id, uint16_t vt_id);
@@ -45,8 +70,6 @@ void vip_parse_SEA(vip_message_t *message);
 void vip_parse_SEC(vip_message_t *message);
 void vip_parse_SD(vip_message_t *message);
 void vip_parse_SDA(vip_message_t *message);
-void vip_parse_VU(vip_message_t *message);
-void vip_parse_VM(vip_message_t *message);
 void vip_payload_test(vip_message_t * message);
 
 
@@ -65,6 +88,7 @@ int vip_set_type_header_uplink_id(vip_message_t *message, char *uplink_id);
 
 int vip_get_type_header_vr_id(vip_message_t *message, uint32_t *vr_id);
 int vip_set_type_header_vr_id(vip_message_t *message, uint32_t vr_id);
+int vip_set_type_header_nonce(vip_message_t *message, uint32_t nonce);
 
 int vip_get_type_header_service_id(vip_message_t *message, uint32_t **service_id, uint16_t service_num_len);
 int vip_set_type_header_service_id(vip_message_t *message, uint32_t *service_id, uint16_t service_num_len);

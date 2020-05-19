@@ -25,18 +25,17 @@ static void handler_sea(vip_message_t *rcv_pkt);
 static void handler_sec(vip_message_t *rcv_pkt);
 static void handler_sd(vip_message_t *rcv_pkt);
 static void handler_sda(vip_message_t *rcv_pkt);
-static void handler_vu(vip_message_t *rcv_pkt);
-static void handler_vm(vip_message_t *rcv_pkt);
 
 static vip_message_t snd_pkt[1];
 static uint8_t buffer[50];
 static char set_uri[50];
-static int service_num;
-static int vr_id_pool;
-static char* input_service[50];
 static mutex_t m;
-LIST(vg_service_table);
-LIST(vr_state_table);
+
+/* vr session_array */
+/* array index is "VR-ID" */
+static vip_vr_session_tuple_t session_arr[65000];
+/* vr id pool */
+static int vr_id_pool[65000];
 
 /* A simple actuator example. Toggles the red led */
 EVENT_RESOURCE(res_vg,
@@ -51,76 +50,49 @@ EVENT_RESOURCE(res_vg,
 /* vip type handler */
 TYPE_HANDLER(vg_type_handler, NULL, handler_vrr, handler_vra, 
               handler_vrc, handler_rel, handler_ser, handler_sea, handler_sec,
-              handler_sd, handler_sda, handler_vu, handler_vm, NULL);
-
-/* check service num */
-void
-add_vr_tuple(int vr_id, int last_aa_id, int last_vt_id) {
-  vip_vr_vg_tuple_t *new_tuple = malloc(sizeof(vip_vr_vg_tuple_t));
-  int *cur_service_list = malloc(sizeof(int)*5000);
-  int *vg_seq_list = malloc(sizeof(int)*5000);
-
-  new_tuple->vr_id = vr_id;
-  new_tuple->last_aa_id = last_aa_id;
-  new_tuple->last_vt_id = last_vt_id;
-  new_tuple->current_service_list = cur_service_list;
-  new_tuple->vg_seq_list = vg_seq_list;
-
-  list_add(vr_state_table, new_tuple);
-}
-
-void
-remove_vr_tuple(vip_vr_vg_tuple_t* tuple) {
-  list_remove(vr_state_table, tuple);
-  free(tuple->current_service_list);
-  free(tuple->vg_seq_list);
-  free(tuple);
-}
-
-void
-add_service_list(char *service_id) {
-    vip_service_tuple_t *new_tuple = malloc(sizeof(vip_service_tuple_t));
-    new_tuple->service_index = ++service_num;
-    new_tuple->service_id = service_id;
-    list_add(vg_service_table, new_tuple);
-}
-
-void
-remove_service_list(vip_service_tuple_t *tuple) {
-    list_remove(vr_state_table, tuple);
-}
+              handler_sd, handler_sda, NULL);
 
 
-void
-init_service() {
-    input_service[0] = "First_Service";
-    input_service[1] = "Second_Service";
-    input_service[2] = "Third_Service";
-    input_service[3] = "Forth_Service";
-    input_service[4] = "Fifth_Service";
 
-    for(int i=0; i<5; i++) {
-      add_service_list(input_service[i]);
+int
+find_new_vr_id() {
+  for(int i=1; i<65000; i++) {
+    if(!vr_id_pool[i]) {
+      vr_id_pool[i] = 1;
+      return i;
     }
+  }
+
+  return 0;
 }
+
+
+
+int
+add_session_info(int vr_id, int session_id, int vg_seq, int vr_seq) {
+  session_arr[vr_id].session_info->session_id = session_id;
+  session_arr[vr_id].session_info->vg_seq = vg_seq;
+  session_arr[vr_id].session_info->vr_seq = vr_seq;
+}
+
+/* if vr request new session, update last session info */
+void
+save_session_info(int vr_id, int session_id, int vg_seq, int vr_seq, uint8_t *data) {
+
+}
+
 
 void
 allocate_vr_id(vip_message_t *rcv_pkt) {
     mutex_try_lock(&m);
-    vr_id_pool++;
     vip_init_message(snd_pkt, VIP_TYPE_VRA, rcv_pkt->aa_id, rcv_pkt->vt_id);
 
     /* for vra pkt */
-    vip_set_type_header_vr_id(snd_pkt, vr_id_pool);
-    /* add new vr tuple */
-    add_vr_tuple(vr_id_pool, rcv_pkt->aa_id, rcv_pkt->vt_id);
-    printf("vr_id_pool:%d\n", vr_id_pool);
+    vip_set_type_header_vr_id(snd_pkt, find_new_vr_id());
+    vip_set_type_header_nonce(snd_pkt, 0);
 
     make_coap_uri(set_uri, rcv_pkt->aa_id);
     vip_set_dest_ep(snd_pkt, set_uri, VIP_AA_URL);
-        
-    printf("service serialize:%d\n", service_num);
-    vip_set_service_list(snd_pkt, input_service, service_num);
 
     vip_serialize_message(snd_pkt, buffer);
     process_post(&vg_process, vg_snd_event, (void *)snd_pkt);
@@ -128,22 +100,8 @@ allocate_vr_id(vip_message_t *rcv_pkt) {
 }
 
 int
-handover_vr(int vr_id, int last_aa_id, int last_vt_id) {
-    int is_aa_change = 0;
-    vip_vr_vg_tuple_t *c;
-    for(c = list_head(vr_state_table); c != NULL; c = c->next) {
-        if(c->vr_id == vr_id) {
-            printf("Handover aa[%d]vt[%d] -> aa[%d]vt[%d]\n", c->last_aa_id, c->last_vt_id, last_aa_id, last_vt_id);
-            if(c->last_aa_id != last_aa_id) {
-                is_aa_change = 1;
-                c->last_aa_id = last_aa_id;
-            }
-            c->last_vt_id = last_vt_id;
-            break;
-        }
-    }
+handover_vr(int vr_id) {
 
-    return is_aa_change;
 }
 
 /* called by coap-engine proc */
@@ -164,8 +122,7 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
 
 static void 
 res_event_handler(void) {
-  printf("Init vg service..\n");
-  init_service();
+  printf("Init VG..\n");
 }
 
 
@@ -176,43 +133,22 @@ handler_vrr(vip_message_t *rcv_pkt) {
     if(!rcv_pkt->vr_id) {
       /* process concurrent reqeust problem from VRs */
       allocate_vr_id(rcv_pkt);
-
-      // vr_id_pool++;
-      // vip_init_message(snd_pkt, VIP_TYPE_VRA, rcv_pkt->aa_id, rcv_pkt->vt_id);
-
-      // /* for vra pkt */
-      // vip_set_type_header_vr_id(snd_pkt, vr_id_pool);
-      // /* add new vr tuple */
-      // add_vr_tuple(vr_id_pool, rcv_pkt->aa_id, rcv_pkt->vt_id);
-      // printf("vr_id_pool:%d\n", vr_id_pool);
-
-      // make_coap_uri(set_uri, rcv_pkt->aa_id);
-      // vip_set_dest_ep(snd_pkt, set_uri, VIP_AA_URL);
-
-      // printf("service serialize:%d\n", service_num);
-      // vip_set_service_list(snd_pkt, input_service, service_num);
-
-      // vip_serialize_message(snd_pkt, buffer);
-
-      //process_post(&vg_process, vg_snd_event, (void *)snd_pkt);
     }
     else {
         /* case handover */
-        /* case aa handover */
-        if(handover_vr(rcv_pkt->vr_id, rcv_pkt->aa_id, rcv_pkt->vt_id)) {
-            /* Send vu */
-            printf("Send VU\n");
-        }
+        
     }
 }
 
 static void
 handler_vra(vip_message_t *rcv_pkt) {
+
+
 }
 
 static void
 handler_vrc(vip_message_t *rcv_pkt) {
-
+  /* Allocate the vr-id */
 }
 
 static void
@@ -242,15 +178,5 @@ handler_sd(vip_message_t *rcv_pkt) {
 
 static void
 handler_sda(vip_message_t *rcv_pkt) {
-
-}
-
-static void
-handler_vu(vip_message_t *rcv_pkt) {
-
-}
-
-static void
-handler_vm(vip_message_t *rcv_pkt) {
 
 }
