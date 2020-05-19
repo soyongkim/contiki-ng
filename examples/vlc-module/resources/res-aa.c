@@ -52,7 +52,6 @@
 #include <string.h>
 
 static void res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset);
-static void res_get_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset);
 static void res_periodic_ad_handler(void);
 
 static void handler_beacon(vip_message_t *rcv_pkt);
@@ -187,7 +186,6 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
     response->payload_len = 4;
     
     coap_set_header_content_format(response, TEXT_PLAIN); /* text/plain is the default, hence this option could be omitted. */
-    coap_set_header_etag(response, 4, 1);
     coap_set_payload(response, buffer, 4);
   }
 
