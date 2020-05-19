@@ -68,7 +68,7 @@ find_new_vr_id() {
 
 
 
-int
+void
 add_session_info(int vr_id, int session_id, int vg_seq, int vr_seq) {
   session_arr[vr_id].session_info->session_id = session_id;
   session_arr[vr_id].session_info->vg_seq = vg_seq;
@@ -99,7 +99,7 @@ allocate_vr_id(vip_message_t *rcv_pkt) {
     mutex_unlock(&m);
 }
 
-int
+void
 handover_vr(int vr_id) {
 
 }
