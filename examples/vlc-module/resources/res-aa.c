@@ -182,6 +182,7 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
   /* Publish nonce for vr */
   if(vip_pkt->type == VIP_TYPE_VRR && !vip_pkt->vr_id) {
     int nonce = publish_nonce();
+    printf("pub:%d\n", nonce);
     char res_payload[50];
     sprintf(res_payload, "%d", nonce);
     
