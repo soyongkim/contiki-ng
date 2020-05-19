@@ -16,7 +16,7 @@
 
 /* using coap callback api */
 static void vip_request_callback(coap_callback_request_state_t *callback_state);
-static void vip_request(vip_message_t *snd_pkt, coap_method_t rest_type);
+static void vip_request(vip_message_t *snd_pkt);
 
 /*
  * Resources to be activated need to be imported through the extern keyword.
@@ -26,7 +26,7 @@ extern coap_resource_t res_vr;
 extern vip_entity_t vr_type_handler;
 
 /* test event process */
-process_event_t vr_rcv_event, vr_snd_event, vr_get_event;
+process_event_t vr_rcv_event, vr_snd_event;
 
 /* for send packet */
 static coap_callback_request_state_t callback_state;
@@ -71,10 +71,6 @@ PROCESS_THREAD(vr_process, ev, data)
         snd_pkt = (vip_message_t *)data;
         vip_request(snd_pkt, COAP_POST);
       }
-      else if(ev == vr_get_event) {
-        snd_pkt = (vip_message_t *)data;
-        vip_request(snd_pkt, COAP_GET);
-      }
   }
 
   PROCESS_END();
@@ -90,10 +86,10 @@ vip_request_callback(coap_callback_request_state_t *callback_state) {
 }
 
 static void
-vip_request(vip_message_t *snd_pkt, coap_method_t rest_type) {
+vip_request(vip_message_t *snd_pkt) {
   /* set vip endpoint */
   coap_endpoint_parse(snd_pkt->dest_coap_addr, strlen(snd_pkt->dest_coap_addr), &dest_ep);
-  coap_init_message(request, COAP_TYPE_CON, rest_type, 0);
+  coap_init_message(request, COAP_TYPE_CON, COAP_POST, 0);
   coap_set_header_uri_path(request, snd_pkt->dest_url);
   coap_set_payload(request, snd_pkt->buffer, snd_pkt->total_len);
 

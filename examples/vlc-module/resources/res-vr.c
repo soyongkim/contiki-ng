@@ -94,7 +94,7 @@ handler_beacon(vip_message_t *rcv_pkt) {
 
     vip_serialize_message(snd_pkt, buffer);
 
-    process_post(&vr_process, vr_get_event, (void *)snd_pkt);
+    process_post(&vr_process, vr_snd_event, (void *)snd_pkt);
   }
   else {
     printf("Ignore same beacon message..\n");
