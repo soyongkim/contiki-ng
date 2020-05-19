@@ -55,7 +55,7 @@ struct vip_vr_session_tuple {
 /* Interface for vip-pkt Serializaion */
 void vip_init_message(vip_message_t *message, uint8_t type, uint16_t aa_id, uint16_t vt_id);
 int vip_serialize_message(vip_message_t *message, uint8_t *buffer);
-int vip_int_serialize(unsigned int cur_offset, unsigned int space, uint8_t *buffer, uint32_t value)
+int vip_int_serialize(unsigned int cur_offset, unsigned int space, uint8_t *buffer, uint32_t value);
 int vip_set_dest_ep(vip_message_t *message, char *dest_addr, char *dest_url);
 
 /* Parse the vip-pkt on vip-interface.c */

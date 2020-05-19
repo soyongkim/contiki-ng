@@ -2,7 +2,6 @@
 
 typedef struct vip_entity_s vip_entity_t;
 
-
 typedef void (* vip_type_handler_t)(vip_message_t *received_pkt);
 
 struct vip_entity_s {
