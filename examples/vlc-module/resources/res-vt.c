@@ -190,8 +190,7 @@ request_vt_id_handler(vip_message_t *rcv_pkt) {
     /* send ack pkt for ad pkt */
     /* pkt, type, aa-id, vt-id(my node id) */
     vip_init_message(snd_pkt, VIP_TYPE_ALLOW, rcv_pkt->aa_id, node_id);
-    make_coap_uri(set_uri, rcv_pkt->aa_id);
-    vip_set_dest_ep(snd_pkt, set_uri, VIP_AA_URL);
+    vip_set_ep_cooja(snd_pkt, node_id, rcv_pkt->aa_id, VIP_AA_URL);
     vip_serialize_message(snd_pkt, buffer);
     process_post(&vt_process, vt_snd_event, (void *)snd_pkt);
   }
