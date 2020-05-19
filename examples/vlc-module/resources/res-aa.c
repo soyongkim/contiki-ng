@@ -183,6 +183,9 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
     printf("pub:%d\n", nonce);
     printf("Request uri-host:%s\n", request->uri_host);
     printf("Request uri-path:%s\n", request->uri_path);
+
+    printf("Response uri-host:%s\n", response->uri_host);
+    printf("Respone uri-path:%s\n", response->uri_path);
     char res_payload[50];
     sprintf(res_payload, "%d", nonce);
     
