@@ -162,8 +162,11 @@ int
 vip_serialize_beacon(vip_message_t *vip_pkt)
 {
     uint8_t *offset = vip_pkt->buffer + VIP_COMMON_HEADER_LEN;
+    unsigned int index = 0;
+    index += vip_int_serialize(index, 4, offset, vip_pkt->vr_id);
+    offset += index;
     vip_serialize_array(offset, (uint8_t *)(vip_pkt->uplink_id), strlen(vip_pkt->uplink_id));
-    return strlen(vip_pkt->uplink_id);
+    return 4 + strlen(vip_pkt->uplink_id);
 }
 
 int
@@ -315,6 +318,8 @@ vip_parse_beacon(vip_message_t *vip_pkt)
 {
     /* Start from common header's end */
     uint8_t *offset = vip_pkt->buffer + VIP_COMMON_HEADER_LEN;
+    vip_pkt->vr_id = vip_parse_int_option(offset, 4);
+    offset += 4;
 
     /* parsing uplink_id */
     vip_pkt->uplink_id = (char *)malloc((vip_pkt->total_len) - VIP_COMMON_HEADER_LEN + 1);

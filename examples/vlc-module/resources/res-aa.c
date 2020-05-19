@@ -66,8 +66,6 @@ static void handler_sd(vip_message_t *rcv_pkt);
 static void handler_sda(vip_message_t *rcv_pkt);
 static void allocate_vt_handler(vip_message_t *rcv_pkt);
 
-#define SERVER_EP "coap://[fe80::201:1:1:1]"
-
 /* make vt table which administrate the vt id */
 LIST(vt_table);
 
@@ -118,7 +116,7 @@ int expire_nonce() {
   int nonce = 0;
   mutex_try_lock(&e);
   /* expire nonce_pool */
-  for(int i=0; i<65000; i++) {
+  for(int i=1; i<65000; i++) {
     if(nonce_pool[i]) {
       nonce_pool[i] = 0;
       nonce = i;
@@ -183,6 +181,8 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
   if(vip_pkt->type == VIP_TYPE_VRR && !vip_pkt->vr_id) {
     int nonce = publish_nonce();
     printf("pub:%d\n", nonce);
+    printf("Request uri-host:%s\n", request->uri_host);
+    printf("Request uri-path:%s\n", request->uri_path);
     char res_payload[50];
     sprintf(res_payload, "%d", nonce);
     
