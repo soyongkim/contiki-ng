@@ -69,7 +69,7 @@ PROCESS_THREAD(vr_process, ev, data)
       }
       else if(ev == vr_snd_event) {
         snd_pkt = (vip_message_t *)data;
-        vip_request(snd_pkt, COAP_POST);
+        vip_request(snd_pkt);
       }
   }
 
