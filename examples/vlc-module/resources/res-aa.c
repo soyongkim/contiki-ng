@@ -286,6 +286,7 @@ res_periodic_ad_handler(void)
   /* pkt, type, aa-id(node_id), vt-id */
   vip_init_message(snd_pkt, VIP_TYPE_ALLOW, node_id, 0);
   vip_set_dest_ep(snd_pkt, VIP_BROADCAST_URI, VIP_VT_URL);
+  snd_pkt->src_coap_addr = "test";
 
   vip_serialize_message(snd_pkt, buffer);
   process_post(&aa_process, aa_snd_event, (void *)snd_pkt);
