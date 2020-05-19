@@ -27,7 +27,6 @@ static void handler_sda(vip_message_t *rcv_pkt);
 
 static vip_message_t snd_pkt[1];
 static uint8_t buffer[50];
-static char set_uri[50];
 static int vr_id, aa_id, vt_id;
 static int allocate_mutex;
 //static int published_nonce;

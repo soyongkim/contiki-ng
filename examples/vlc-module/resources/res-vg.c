@@ -28,12 +28,11 @@ static void handler_sda(vip_message_t *rcv_pkt);
 
 static vip_message_t snd_pkt[1];
 static uint8_t buffer[50];
-static char set_uri[50];
 static mutex_t m;
 
 /* vr session_array */
 /* array index is "VR-ID" */
-static vip_vr_session_tuple_t session_arr[65000];
+//static vip_vr_session_tuple_t session_arr[65000];
 /* vr id pool */
 static int vr_id_pool[65000];
 

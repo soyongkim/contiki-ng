@@ -66,7 +66,6 @@ static void request_vt_id_handler(vip_message_t *rcv_pkt);
 
 static vip_message_t snd_pkt[1];
 static uint8_t buffer[50];
-static char set_uri[50];
 static int vt_id, aa_id;
 
 static char uplink_id[50];

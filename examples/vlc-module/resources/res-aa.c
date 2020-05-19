@@ -72,7 +72,6 @@ LIST(vt_table);
 /* for snd-pkt */
 static vip_message_t snd_pkt[1];
 static uint8_t buffer[50];
-static char set_uri[50];
 
 static int nonce_pool[65000];
 static mutex_t p, e;
@@ -268,8 +267,7 @@ allocate_vt_handler(vip_message_t *rcv_pkt) {
 
   /* pkt, type, aa-id(node_id), vt-id(target vt's node id) */
   vip_init_message(snd_pkt, VIP_TYPE_ALLOW, node_id, rcv_pkt->vt_id);
-  make_coap_uri(set_uri, rcv_pkt->vt_id);
-  vip_set_dest_ep(snd_pkt, set_uri, VIP_VT_URL);
+  vip_set_ep_cooja(snd_pkt, node_id, rcv_pkt->vt_id, VIP_VT_URL);
 
   vip_set_payload(snd_pkt, (void *)uplink_id, strlen(uplink_id));
 
