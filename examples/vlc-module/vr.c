@@ -91,11 +91,11 @@ vip_request(vip_message_t *snd_pkt) {
   /* set vip endpoint */
   coap_endpoint_parse(snd_pkt->dest_coap_addr, strlen(snd_pkt->dest_coap_addr), &dest_ep);
   coap_init_message(request, COAP_TYPE_CON, COAP_POST, 0);
-  coap_set_header_uri_path(request, snd_pkt->dest_url);
-  coap_set_header_uri_host(request, "TEST");
+  coap_set_header_uri_path(request, snd_pkt->dest_path);
+  coap_set_header_uri_host(request, snd_pkt->src_coap_addr);
   coap_set_payload(request, snd_pkt->buffer, snd_pkt->total_len);
 
-  printf("-- VR Send coap vip[%d] packet --\n", snd_pkt->type);
+  printf("-- Send coap vip[%d] packet --\n", snd_pkt->type);
 
   coap_send_request(&callback_state, &dest_ep, request, vip_request_callback);
 }

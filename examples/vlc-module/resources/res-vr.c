@@ -86,8 +86,7 @@ handler_beacon(vip_message_t *rcv_pkt) {
     /* Recent Received vt-id, aa-id */
     vip_init_message(snd_pkt, VIP_TYPE_VRR, aa_id, vt_id);
     /* send to new aa */
-    make_coap_uri(set_uri, aa_id);
-    vip_set_dest_ep(snd_pkt, set_uri, VIP_AA_URL);
+    vip_set_ep_cooja(snd_pkt, node_id, aa_id, VIP_AA_URL);
 
     /* set vr id to 0. it's mean not allocated*/
     vip_set_type_header_vr_id(snd_pkt, 0);

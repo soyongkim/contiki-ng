@@ -208,8 +208,7 @@ handler_beacon(vip_message_t *rcv_pkt) {
 static void
 handler_vrr(vip_message_t *rcv_pkt) {
   /* forward to vg */
-  make_coap_uri(set_uri, VIP_VG_ID);
-  vip_set_dest_ep(rcv_pkt, set_uri, VIP_VG_URL);
+  vip_set_ep_cooja(snd_pkt, node_id, VIP_VG_ID, VIP_VT_URL);
 
   printf("forward to vg(%d)\n", VIP_VG_ID);
   process_post(&aa_process, aa_snd_event, (void *)rcv_pkt);
@@ -219,8 +218,7 @@ static void
 handler_vra(vip_message_t *rcv_pkt) {
   int published_nonce = expire_nonce();
   /* forward to vt */
-  make_coap_uri(set_uri, rcv_pkt->vt_id);
-  vip_set_dest_ep(rcv_pkt, set_uri, VIP_VT_URL);
+  vip_set_ep_cooja(snd_pkt, node_id, rcv_pkt->vt_id, VIP_VT_URL);
   vip_set_type_header_nonce(rcv_pkt, published_nonce);
 
   printf("forward to vt(%d)\n", rcv_pkt->vt_id);

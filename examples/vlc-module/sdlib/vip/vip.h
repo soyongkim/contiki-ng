@@ -28,7 +28,7 @@ typedef struct {
     uint32_t nonce;
 
     /* for target handler */
-    char *dest_coap_addr, *dest_url;
+    char *src_coap_addr, *dest_coap_addr, *dest_path;
 } vip_message_t;
 
 
@@ -47,8 +47,8 @@ typedef struct vip_session_info {
 
 
 struct vip_vr_session_tuple {
-    vip_session_info_t* session_info;
-    vip_session_info_t recent_session_info;
+    vip_session_info_t** session_info;
+    vip_session_info_t* recent_session_info;
 };
 
 
@@ -57,6 +57,8 @@ void vip_init_message(vip_message_t *message, uint8_t type, uint16_t aa_id, uint
 int vip_serialize_message(vip_message_t *message, uint8_t *buffer);
 int vip_int_serialize(unsigned int cur_offset, unsigned int space, uint8_t *buffer, uint32_t value);
 int vip_set_dest_ep(vip_message_t *message, char *dest_addr, char *dest_url);
+/* for cooja, make uri from node id */
+void vip_set_ep_cooja(vip_message_t *message, int src_node_id, int dest_node_id, char *path);
 
 /* Parse the vip-pkt on vip-interface.c */
 int vip_parse_common_header(vip_message_t *message, uint8_t *data, uint16_t data_len);

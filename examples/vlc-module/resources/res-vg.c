@@ -70,9 +70,7 @@ find_new_vr_id() {
 
 void
 add_session_info(int vr_id, int session_id, int vg_seq, int vr_seq) {
-  session_arr[vr_id].session_info->session_id = session_id;
-  session_arr[vr_id].session_info->vg_seq = vg_seq;
-  session_arr[vr_id].session_info->vr_seq = vr_seq;
+
 }
 
 /* if vr request new session, update last session info */
@@ -91,8 +89,7 @@ allocate_vr_id(vip_message_t *rcv_pkt) {
     vip_set_type_header_vr_id(snd_pkt, find_new_vr_id());
     vip_set_type_header_nonce(snd_pkt, 0);
 
-    make_coap_uri(set_uri, rcv_pkt->aa_id);
-    vip_set_dest_ep(snd_pkt, set_uri, VIP_AA_URL);
+    vip_set_ep_cooja(snd_pkt, node_id, rcv_pkt->aa_id, VIP_AA_URL);
 
     vip_serialize_message(snd_pkt, buffer);
     process_post(&vg_process, vg_snd_event, (void *)snd_pkt);

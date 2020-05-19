@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <inttypes.h>
 #include "sys/cc.h"
-#include "coap-blocking-api.h"
+#include "sdlib/configure_cooja/cooja_addr.h"
 
 #include "vip.h"
 
@@ -452,10 +452,18 @@ vip_set_type_header_nonce(vip_message_t *vip_pkt, uint32_t nonce) {
 }
 
 int 
-vip_set_dest_ep(vip_message_t *vip_pkt, char *dest_addr, char *dest_url) {
+vip_set_dest_ep(vip_message_t *vip_pkt, char *dest_addr, char *dest_path) {
     vip_pkt->dest_coap_addr = dest_addr;
-    vip_pkt->dest_url = dest_url;
+    vip_pkt->dest_path = dest_path;
     return 1;
+}
+
+void 
+vip_set_ep_cooja(vip_message_t *vip_pkt, int src_node_id, int dest_node_id, char *path)
+{
+    make_coap_uri(vip_pkt->src_coap_addr, src_node_id);
+    make_coap_uri(vip_pkt->dest_coap_addr, src_node_id);
+    vip_pkt->dest_path = path;
 }
 
 int 
