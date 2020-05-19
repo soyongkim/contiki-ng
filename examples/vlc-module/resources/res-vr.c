@@ -30,7 +30,7 @@ static uint8_t buffer[50];
 static char set_uri[50];
 static int vr_id, aa_id, vt_id;
 static int allocate_mutex;
-static int published_nonce;
+//static int published_nonce;
 
 /* A simple actuator example. Toggles the red led */
 EVENT_RESOURCE(res_vr,
@@ -152,6 +152,6 @@ handler_sda(vip_message_t *rcv_pkt) {
 
 static void 
 res_event_handler(void) {
-  
+
 
 }
