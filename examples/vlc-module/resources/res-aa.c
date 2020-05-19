@@ -183,7 +183,8 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
   /* Publish nonce for vr */
   if(vip_pkt->type == VIP_TYPE_VRR && !vip_pkt->vr_id) {
     int nonce = publish_nonce();
-    memcpy(buffer, nonce, 4);
+    vip_int_serialize(0, 4, response->payload, nonce);
+    response->payload_len = 4;
     
     coap_set_header_content_format(response, TEXT_PLAIN); /* text/plain is the default, hence this option could be omitted. */
     coap_set_header_etag(response, 4, 1);
