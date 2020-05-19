@@ -461,7 +461,8 @@ vip_set_dest_ep(vip_message_t *vip_pkt, char *dest_addr, char *dest_path) {
 void 
 vip_set_ep_cooja(vip_message_t *vip_pkt, int src_node_id, int dest_node_id, char *path)
 {
-    char src_coap_addr[50], dest_coap_addr[50];
+    static char src_coap_addr[50];
+    static char dest_coap_addr[50];
     make_coap_uri(src_coap_addr, src_node_id);
     make_coap_uri(dest_coap_addr, dest_node_id);
 
