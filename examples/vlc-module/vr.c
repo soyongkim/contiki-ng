@@ -85,7 +85,7 @@ vip_request_callback(coap_callback_request_state_t *callback_state) {
   coap_request_state_t *state = &callback_state->state;
 
   if(state->status == COAP_REQUEST_STATUS_RESPONSE) {
-      printf("CODE:%d\n", state->response->code);
+      printf("CODE:%d Payload_Len:%d\n", state->response->code, state->response->payload_len);
   }
 }
 
