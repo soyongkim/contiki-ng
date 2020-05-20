@@ -206,10 +206,10 @@ handler_beacon(vip_message_t *rcv_pkt) {
 static void
 handler_vrr(vip_message_t *rcv_pkt) {
   if(!rcv_pkt->vr_id) {
-      allocation_vr(rcv_pkt->vr_id);
+      allocation_vr(rcv_pkt);
   }
   else {
-    handover_vr(rcv_pkt->vr_id);
+    handover_vr(rcv_pkt);
   }
 }
 
