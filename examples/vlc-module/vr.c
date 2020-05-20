@@ -67,7 +67,8 @@ PROCESS_THREAD(vr_process, ev, data)
       }
       else if(ev == vr_snd_event) {
         snd_pkt = (vip_message_t *)data;
-        vip_request(snd_pkt);
+        printf("Test: %s | %s\n", snd_pkt->dest_coap_addr, snd_pkt->src_coap_addr);
+        //vip_request(snd_pkt);
       }
   }
 
