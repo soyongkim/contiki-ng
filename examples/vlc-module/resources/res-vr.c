@@ -89,9 +89,8 @@ handler_beacon(vip_message_t *rcv_pkt) {
     vip_init_message(snd_pkt, VIP_TYPE_VRR, aa_id, vt_id, 0);
     /* send to new aa */
     vip_set_ep_cooja(snd_pkt, src_addr, node_id, dest_addr, aa_id, VIP_AA_URL);
-
-    // /* set vr id to 0. it's mean not allocated*/
-    // vip_serialize_message(snd_pkt, buffer);
+    /* set vr id to 0. it's mean not allocated*/
+    vip_serialize_message(snd_pkt, buffer);
 
     // process_post(&vr_process, vr_snd_event, (void *)snd_pkt);
   }
