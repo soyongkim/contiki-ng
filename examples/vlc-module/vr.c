@@ -81,7 +81,8 @@ vip_request_callback(coap_callback_request_state_t *callback_state) {
 
   if(state->status == COAP_REQUEST_STATUS_RESPONSE) {
       printf("CODE:%d Payload_Len:%d\n", state->response->code, state->response->payload_len);
-      printf("Path:%s\n", state->response->uri_path);
+      if(state->request)
+        printf("Path:%s\n", state->request->uri_path);
 
   }
 }
