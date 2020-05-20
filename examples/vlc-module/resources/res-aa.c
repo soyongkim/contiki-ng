@@ -192,6 +192,10 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
     return;
   }
 
+  printf("POST:Req addr:%s\n", request->uri_host);
+
+
+
   process_post(&aa_process, aa_rcv_event, (void *)vip_pkt);
   printf("after post\n");
 }
