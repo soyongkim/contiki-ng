@@ -70,7 +70,6 @@ make_coap_uri(char *src_coap_addr, int node_id) {
     strcat(coap_uri, forth);
     strcat(coap_uri, "]");
 
-    printf("RES:%s\n", coap_uri);
     strcpy(src_coap_addr, coap_uri);    
   }
 }

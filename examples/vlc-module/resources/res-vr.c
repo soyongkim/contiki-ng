@@ -78,7 +78,6 @@ handler_beacon(vip_message_t *rcv_pkt) {
   /* check handover */
   if(!allocate_mutex && (aa_id != rcv_pkt->aa_id || vt_id != rcv_pkt->vt_id)) {
     allocate_mutex = 1;
-    printf("Received [%s] from aa(%d)\n", rcv_pkt->uplink_id, rcv_pkt->aa_id);
 
     /* update aa_id, vt_id */
     aa_id = rcv_pkt->aa_id;
@@ -91,7 +90,6 @@ handler_beacon(vip_message_t *rcv_pkt) {
 
     /* set vr id to 0. it's mean not allocated*/
     vip_set_type_header_vr_id(snd_pkt, 0);
-
     vip_serialize_message(snd_pkt, buffer);
 
     process_post(&vr_process, vr_snd_event, (void *)snd_pkt);

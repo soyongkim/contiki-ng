@@ -52,7 +52,6 @@
 static void res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset);
 static void beaconing(void);
 
-static void handler_beacon(vip_message_t *rcv_pkt);
 static void handler_vrr(vip_message_t *rcv_pkt);
 static void handler_vra(vip_message_t *rcv_pkt);
 static void handler_vrc(vip_message_t *rcv_pkt);
@@ -85,7 +84,7 @@ PERIODIC_RESOURCE(res_vt,
 
 
 /* vip type handler */
-TYPE_HANDLER(vt_type_handler, handler_beacon, handler_vrr, handler_vra, 
+TYPE_HANDLER(vt_type_handler, NULL, handler_vrr, handler_vra, 
               handler_vrc, handler_rel, handler_ser, handler_sea, handler_sec,
               handler_sd, handler_sda, request_vt_id_handler);
 
@@ -106,16 +105,7 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
   {
     printf("VIP: Not VIP Packet\n");
   }
-
-  printf("aa-id:%d | vt-id:%d\n", vip_pkt->aa_id, vip_pkt->vt_id);
   process_post(&vt_process, vt_rcv_event, (void *)vip_pkt);
-}
-
-/* handler for beacon type pkt */
-static void
-handler_beacon(vip_message_t *rcv_pkt) {
-  printf("I'm beacon handler [%s]\n", rcv_pkt->uplink_id);
-  
 }
 
 /* beaconing */
@@ -194,8 +184,6 @@ request_vt_id_handler(vip_message_t *rcv_pkt) {
     vip_init_message(snd_pkt, VIP_TYPE_ALLOW, rcv_pkt->aa_id, node_id);
     vip_set_ep_cooja(snd_pkt, src_addr, node_id, dest_addr, rcv_pkt->aa_id, VIP_AA_URL);
     vip_serialize_message(snd_pkt, buffer);
-
-    printf("test:%s | %s\n", snd_pkt->src_coap_addr, snd_pkt->dest_coap_addr);
 
     process_post(&vt_process, vt_snd_event, (void *)snd_pkt);
   }
