@@ -92,7 +92,7 @@ handler_beacon(vip_message_t *rcv_pkt) {
     /* set vr id to 0. it's mean not allocated*/
     vip_serialize_message(snd_pkt, buffer);
 
-    // process_post(&vr_process, vr_snd_event, (void *)snd_pkt);
+    process_post(&vr_process, vr_snd_event, (void *)snd_pkt);
   }
   else {
     printf("Ignore same beacon message..\n");
