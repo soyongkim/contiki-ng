@@ -315,6 +315,7 @@ void
 vip_parse_VRR(vip_message_t *vip_pkt)
 {
     uint8_t *offset = vip_pkt->buffer + VIP_COMMON_HEADER_LEN;
+    vip_pkt->nonce = vip_parse_int_option(offset, 4);
 }
 
 void 
@@ -328,12 +329,14 @@ void
 vip_parse_VRC(vip_message_t *vip_pkt)
 {
     uint8_t *offset = vip_pkt->buffer + VIP_COMMON_HEADER_LEN;
+    vip_pkt->nonce = vip_parse_int_option(offset, 4);
 }
 
 void 
 vip_parse_REL(vip_message_t *vip_pkt)
 {
     uint8_t *offset = vip_pkt->buffer + VIP_COMMON_HEADER_LEN;
+    vip_pkt->nonce = vip_parse_int_option(offset, 4);
 }
 
 void 
