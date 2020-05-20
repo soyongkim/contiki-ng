@@ -87,10 +87,10 @@ int vip_serialize_message(vip_message_t *vip_pkt, uint8_t *buffer)
     vip_pkt->buffer[6] = (uint8_t)(vip_pkt->vt_id >> 8);
     vip_pkt->buffer[7] = (uint8_t)(vip_pkt->vt_id);
 
-    vip_pkt->buffer[8] = (uint8_t)(vip_pkt->vt_id >> 24);
-    vip_pkt->buffer[9] = (uint8_t)(vip_pkt->vt_id >> 16);
-    vip_pkt->buffer[10] = (uint8_t)(vip_pkt->vt_id >> 8);
-    vip_pkt->buffer[11] = (uint8_t)(vip_pkt->vt_id);
+    vip_pkt->buffer[8] = (uint8_t)(vip_pkt->vr_id >> 24);
+    vip_pkt->buffer[9] = (uint8_t)(vip_pkt->vr_id >> 16);
+    vip_pkt->buffer[10] = (uint8_t)(vip_pkt->vr_id >> 8);
+    vip_pkt->buffer[11] = (uint8_t)(vip_pkt->vr_id);
 
     // total_len += vip_int_serialize(total_len, 1, offset, vip_pkt->type);
 
