@@ -4,11 +4,6 @@
 typedef struct vip_vt_tuple vip_vt_tuple_t;
 typedef struct vip_vr_session_tuple vip_vr_session_tuple_t;
 
-
-/* for making coap_address using node-id */
-static char src_coap_addr[50];
-static char dest_coap_addr[50];
-
 /* message struct */
 typedef struct {
     uint8_t *buffer;

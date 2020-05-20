@@ -6,10 +6,14 @@
 #include <inttypes.h>
 #include "sys/cc.h"
 #include "sdlib/configure_cooja/cooja_addr.h"
-
 #include "vip.h"
-
 #include "sys/node-id.h"
+
+
+/* for making coap_address using node-id */
+static char src_coap_addr[50];
+static char dest_coap_addr[50];
+
 
 /* Serialize Type Specific Header */
 int vip_serialize_beacon(vip_message_t *message);
