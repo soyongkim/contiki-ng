@@ -46,7 +46,6 @@ PROCESS_THREAD(vr_process, ev, data)
   vr_rcv_event = process_alloc_event();
   vr_snd_event = process_alloc_event();
 
-  NETSTACK_ROUTING.root_start();
   /*
    * Bind the resources to their Uri-Path.
    * WARNING: Activating twice only means alternate path, not two instances!
@@ -63,7 +62,6 @@ PROCESS_THREAD(vr_process, ev, data)
 
       if(ev == vr_rcv_event) {
         rcv_pkt = (vip_message_t *)data;
-
         // 여기서 route를 실행해야함 aa 프로세스가 route해서 보내야함
         vip_route(rcv_pkt, &vr_type_handler);
       }
@@ -78,12 +76,12 @@ PROCESS_THREAD(vr_process, ev, data)
 
 static void
 vip_request_callback(coap_callback_request_state_t *callback_state) {
-  coap_request_state_t *state = &callback_state->state;
+  // coap_request_state_t *state = &callback_state->state;
 
-  if(state->status == COAP_REQUEST_STATUS_RESPONSE) {
-      printf("CODE:%d Payload_Len:%d\n", state->response->code, state->response->payload_len);
-      printf("Payload:%s\n", state->response->payload);
-  }
+  // if(state->status == COAP_REQUEST_STATUS_RESPONSE) {
+  //     //printf("CODE:%d Payload_Len:%d\n", state->response->code, state->response->payload_len);
+  //     //printf("Payload:%s\n", state->response->payload);
+  // }
 }
 
 static void
@@ -94,8 +92,6 @@ vip_request(vip_message_t *snd_pkt) {
   coap_set_header_uri_path(request, snd_pkt->dest_path);
   coap_set_header_uri_host(request, snd_pkt->src_coap_addr);
   coap_set_payload(request, snd_pkt->buffer, snd_pkt->total_len);
-
-  printf("-- Send coap vip[%d] packet --\n", snd_pkt->type);
 
   coap_send_request(&callback_state, &dest_ep, request, vip_request_callback);
 }

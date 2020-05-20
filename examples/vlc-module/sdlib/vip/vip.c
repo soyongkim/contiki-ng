@@ -72,21 +72,29 @@ vip_parse_int_option(uint8_t *bytes, size_t length)
 int vip_serialize_message(vip_message_t *vip_pkt, uint8_t *buffer)
 {
     uint8_t *offset;
-    int total_len;
+    int total_len = 0;
 
     /* Initialize */
     vip_pkt->buffer = buffer;
+    offset = vip_pkt->buffer;
 
     /* set common header fields without total len*/
-    vip_pkt->buffer[0] = vip_pkt->type;
+    // vip_pkt->buffer[0] = vip_pkt->type;
 
-    vip_pkt->buffer[4] = (uint8_t)(vip_pkt->aa_id >> 8);
-    vip_pkt->buffer[5] = (uint8_t)(vip_pkt->aa_id);
+    // vip_pkt->buffer[4] = (uint8_t)(vip_pkt->aa_id >> 8);
+    // vip_pkt->buffer[5] = (uint8_t)(vip_pkt->aa_id);
 
-    vip_pkt->buffer[6] = (uint8_t)(vip_pkt->vt_id >> 8);
-    vip_pkt->buffer[7] = (uint8_t)(vip_pkt->vt_id);
+    // vip_pkt->buffer[6] = (uint8_t)(vip_pkt->vt_id >> 8);
+    // vip_pkt->buffer[7] = (uint8_t)(vip_pkt->vt_id);
 
-    total_len = VIP_COMMON_HEADER_LEN;
+    total_len += vip_int_serialize(total_len, 1, offset, vip_pkt->type);
+
+    /* for total_length field */
+    total_len += 3;
+
+    total_len += vip_int_serialize(total_len, 2, offset, vip_pkt->aa_id);
+    total_len += vip_int_serialize(total_len, 2, offset, vip_pkt->vt_id);
+    total_len += vip_int_serialize(total_len, 4, offset, vip_pkt->vr_id);
 
     /* set Type Specific Fields */
     switch (vip_pkt->type)
@@ -95,21 +103,9 @@ int vip_serialize_message(vip_message_t *vip_pkt, uint8_t *buffer)
         /* code */
         total_len += vip_serialize_beacon(vip_pkt);
         break;
-    case VIP_TYPE_VRR:
-        /* code */
-        total_len += vip_serialize_VRR(vip_pkt);
-        break;
     case VIP_TYPE_VRA:
         /* code */
         total_len += vip_serialize_VRA(vip_pkt);
-        break;
-    case VIP_TYPE_VRC:
-        /* code */
-        total_len += vip_serialize_VRC(vip_pkt);
-        break;
-    case VIP_TYPE_REL:
-        /* code */
-        total_len += vip_serialize_REL(vip_pkt);
         break;
     case VIP_TYPE_SER:
         /* code */
@@ -160,11 +156,8 @@ int
 vip_serialize_beacon(vip_message_t *vip_pkt)
 {
     uint8_t *offset = vip_pkt->buffer + VIP_COMMON_HEADER_LEN;
-    unsigned int index = 0;
-    index += vip_int_serialize(index, 4, offset, vip_pkt->vr_id);
-    offset += index;
     vip_serialize_array(offset, (uint8_t *)(vip_pkt->uplink_id), strlen(vip_pkt->uplink_id));
-    return 4 + strlen(vip_pkt->uplink_id);
+    return strlen(vip_pkt->uplink_id);
 }
 
 int
@@ -183,7 +176,6 @@ vip_serialize_VRA(vip_message_t *vip_pkt)
 {
     uint8_t *offset = vip_pkt->buffer + VIP_COMMON_HEADER_LEN;
     unsigned int index = 0;
-    index += vip_int_serialize(index, 4, offset, vip_pkt->vr_id);
     index += vip_int_serialize(index, 4, offset, vip_pkt->nonce);
 
     printf("Serialize VR-ID:%d | Nonce:%d\n",vip_pkt->vr_id, vip_pkt->nonce);
@@ -224,7 +216,6 @@ vip_serialize_SER(vip_message_t *vip_pkt)
     uint8_t *offset = vip_pkt->buffer + VIP_COMMON_HEADER_LEN;
     unsigned int index = 0;
 
-    index += vip_int_serialize(index, 4, offset, vip_pkt->vr_id);
     index += vip_int_serialize(index, 4, offset, vip_pkt->session_id);
     index += vip_int_serialize(index, 4, offset, vip_pkt->vr_seq_number);
 
@@ -237,7 +228,6 @@ vip_serialize_SEA(vip_message_t *vip_pkt)
     uint8_t *offset = vip_pkt->buffer + VIP_COMMON_HEADER_LEN;
     unsigned int index = 0;
 
-    index += vip_int_serialize(index, 4, offset, vip_pkt->vr_id);
     index += vip_int_serialize(index, 4, offset, vip_pkt->session_id);
     index += vip_int_serialize(index, 4, offset, vip_pkt->vg_seq_number);
 
@@ -250,7 +240,6 @@ vip_serialize_SEC(vip_message_t *vip_pkt)
     uint8_t *offset = vip_pkt->buffer + VIP_COMMON_HEADER_LEN;
     unsigned int index = 0;
 
-    index += vip_int_serialize(index, 4, offset, vip_pkt->vr_id);
     index += vip_int_serialize(index, 4, offset, vip_pkt->session_id);
     index += vip_int_serialize(index, 4, offset, vip_pkt->vg_seq_number);
 
@@ -263,7 +252,6 @@ vip_serialize_SD(vip_message_t *vip_pkt)
     uint8_t *offset = vip_pkt->buffer + VIP_COMMON_HEADER_LEN;
     unsigned int index = 0;
 
-    index += vip_int_serialize(index, VIP_VR_ID_LEN, offset, vip_pkt->vr_id);
     index += vip_int_serialize(index, VIP_SERVICE_ID_LEN, offset, vip_pkt->session_id);
     index += vip_int_serialize(index, VIP_SEQ_LEN, offset, vip_pkt->vg_seq_number);
 
@@ -276,7 +264,6 @@ vip_serialize_SDA(vip_message_t *vip_pkt)
     uint8_t *offset = vip_pkt->buffer + VIP_COMMON_HEADER_LEN;
     unsigned int index = 0;
 
-    index += vip_int_serialize(index, VIP_VR_ID_LEN, offset, vip_pkt->vr_id);
     index += vip_int_serialize(index, VIP_SERVICE_ID_LEN, offset, vip_pkt->session_id);
     index += vip_int_serialize(index, VIP_SEQ_LEN, offset, vip_pkt->vr_seq_number);
 
