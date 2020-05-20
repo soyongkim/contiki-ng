@@ -55,14 +55,14 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
 {
   printf("Received\n");
 
-  // static vip_message_t vip_pkt[1];
-  // if (vip_parse_common_header(vip_pkt, request->payload, request->payload_len) != VIP_NO_ERROR)
-  // {
-  //    printf("vip_pkt have problem\n");
-  //    return;
-  // }
+  static vip_message_t vip_pkt[1];
+  if (vip_parse_common_header(vip_pkt, request->payload, request->payload_len) != VIP_NO_ERROR)
+  {
+     printf("vip_pkt have problem\n");
+     return;
+  }
   
-  // process_post(&vr_process, vr_rcv_event, (void *)vip_pkt);
+  //process_post(&vr_process, vr_rcv_event, (void *)vip_pkt);
 }
 
 bool
