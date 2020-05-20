@@ -9,12 +9,6 @@
 #include "vip.h"
 #include "sys/node-id.h"
 
-
-/* for making coap_address using node-id */
-static char src_coap_addr[50];
-static char dest_coap_addr[50];
-
-
 /* Serialize Type Specific Header */
 int vip_serialize_beacon(vip_message_t *message);
 int vip_serialize_VRR(vip_message_t *message);
@@ -464,17 +458,12 @@ vip_set_dest_ep(vip_message_t *vip_pkt, char *dest_addr, char *dest_path) {
 
 
 void 
-vip_set_ep_cooja(vip_message_t *vip_pkt, int src_node_id, int dest_node_id, char *path)
+vip_set_ep_cooja(vip_message_t *vip_pkt, char* src_addr, int src_id, char* dest_addr, int dest_id, char *path)
 {
-    make_coap_uri(src_coap_addr, src_node_id);
-
-    if(!dest_node_id)
-        strcpy(dest_coap_addr, VIP_BROADCAST_URI);
-    else
-        make_coap_uri(dest_coap_addr, dest_node_id);
-
-    vip_pkt->src_coap_addr = src_coap_addr;
-    vip_pkt->dest_coap_addr = dest_coap_addr;
+    make_coap_uri(src_addr, src_id);
+    make_coap_uri(dest_addr, dest_id);
+    vip_pkt->src_coap_addr = src_addr;
+    vip_pkt->dest_coap_addr = dest_addr;
     vip_pkt->dest_path = path;
 }
 

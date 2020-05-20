@@ -28,6 +28,9 @@ static void handler_sda(vip_message_t *rcv_pkt);
 
 static vip_message_t snd_pkt[1];
 static uint8_t buffer[50];
+static char src_addr[50], dest_addr[50];
+
+
 static mutex_t m;
 
 /* vr session_array */
@@ -88,7 +91,7 @@ allocate_vr_id(vip_message_t *rcv_pkt) {
     vip_set_type_header_vr_id(snd_pkt, find_new_vr_id());
     vip_set_type_header_nonce(snd_pkt, 0);
 
-    vip_set_ep_cooja(snd_pkt, node_id, rcv_pkt->aa_id, VIP_AA_URL);
+    vip_set_ep_cooja(snd_pkt, src_addr, node_id, dest_addr, rcv_pkt->aa_id, VIP_AA_URL);
 
     vip_serialize_message(snd_pkt, buffer);
     process_post(&vg_process, vg_snd_event, (void *)snd_pkt);

@@ -49,23 +49,28 @@ cooja_mote_address(uip_ipaddr_t *dest_ipaddr, int node_id) {
 
 
 void
-make_coap_uri(char *src_coap_uri, int node_id) {
-  char coap_uri[25] = "coap://[fe80::";
-  char first[4], second[4], third[4], forth[4];
+make_coap_uri(char *src_coap_addr, int node_id) {
+  if(!node_id) {
+      strcpy(src_coap_addr, BROADCAST_COAP_ADDR);
+  }
+  else {
+    char coap_uri[25] = "coap://[fe80::";
+    char first[4], second[4], third[4], forth[4];
 
-  sprintf(first, "%d", 200 + node_id);
-  strcat(coap_uri, first);
-  strcat(coap_uri, ":");
-  sprintf(second, "%d", node_id);
-  strcat(coap_uri, second);
-  strcat(coap_uri, ":");
-  sprintf(third, "%d", node_id);
-  strcat(coap_uri, third);
-  strcat(coap_uri, ":");
-  sprintf(forth, "%d", node_id);
-  strcat(coap_uri, forth);
-  strcat(coap_uri, "]");
+    sprintf(first, "%d", 200 + node_id);
+    strcat(coap_uri, first);
+    strcat(coap_uri, ":");
+    sprintf(second, "%d", node_id);
+    strcat(coap_uri, second);
+    strcat(coap_uri, ":");
+    sprintf(third, "%d", node_id);
+    strcat(coap_uri, third);
+    strcat(coap_uri, ":");
+    sprintf(forth, "%d", node_id);
+    strcat(coap_uri, forth);
+    strcat(coap_uri, "]");
 
-  printf("RES:%s\n", coap_uri);
-  strcpy(src_coap_uri, coap_uri);
+    printf("RES:%s\n", coap_uri);
+    strcpy(src_coap_addr, coap_uri);    
+  }
 }

@@ -67,6 +67,8 @@ static void request_vt_id_handler(vip_message_t *rcv_pkt);
 static vip_message_t snd_pkt[1];
 static uint8_t buffer[50];
 static int vt_id, aa_id;
+static char src_addr[50], dest_addr[50];
+
 
 static char uplink_id[50];
 
@@ -124,8 +126,8 @@ beaconing() {
     printf("Beaconing...\n");
     /* you have to comfirm that the type field is fulled */
     vip_init_message(snd_pkt, VIP_TYPE_BEACON, aa_id, vt_id);
-    vip_set_dest_ep(snd_pkt, VIP_BROADCAST_URI, VIP_VR_URL);
-    snd_pkt->src_coap_addr = "test";
+    vip_set_ep_cooja(snd_pkt, src_addr, node_id, dest_addr, 0, VIP_VT_URL);
+
     vip_set_type_header_vr_id(snd_pkt, 0);
     vip_set_type_header_uplink_id(snd_pkt, uplink_id);
     vip_serialize_message(snd_pkt, buffer);
@@ -189,9 +191,8 @@ request_vt_id_handler(vip_message_t *rcv_pkt) {
       return;
 
     /* send ack pkt for ad pkt */
-    /* pkt, type, aa-id, vt-id(my node id) */
     vip_init_message(snd_pkt, VIP_TYPE_ALLOW, rcv_pkt->aa_id, node_id);
-    vip_set_ep_cooja(snd_pkt, node_id, rcv_pkt->aa_id, VIP_AA_URL);
+    vip_set_ep_cooja(snd_pkt, src_addr, node_id, dest_addr, rcv_pkt->aa_id, VIP_AA_URL);
     vip_serialize_message(snd_pkt, buffer);
 
     printf("test:%s | %s\n", snd_pkt->src_coap_addr, snd_pkt->dest_coap_addr);
@@ -204,7 +205,6 @@ request_vt_id_handler(vip_message_t *rcv_pkt) {
       aa_id = rcv_pkt->aa_id;
       strcpy(uplink_id, rcv_pkt->uplink_id);
       printf("vt-[%d] is allocated by aa-[%d]\n", vt_id, aa_id);
-      
       printf("uplink-id is [%s]\n", uplink_id);
     } else {
       printf("Already allocated with %d\n", vt_id);

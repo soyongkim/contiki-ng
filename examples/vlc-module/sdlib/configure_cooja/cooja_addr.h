@@ -1,7 +1,7 @@
 #include "net/ipv6/uip.h"
 
 #define BROADCAST 0
-
+#define BROADCAST_COAP_ADDR "coap://[ff02::1]" 
 /**
  * 목적지를 원하는 노드로 바꾸기
  */

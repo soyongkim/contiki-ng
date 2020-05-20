@@ -72,6 +72,8 @@ LIST(vt_table);
 /* for snd-pkt */
 static vip_message_t snd_pkt[1];
 static uint8_t buffer[50];
+static char src_addr[50], dest_addr[50];
+
 
 static int nonce_pool[65000];
 static mutex_t p, e;
@@ -207,7 +209,7 @@ handler_beacon(vip_message_t *rcv_pkt) {
 static void
 handler_vrr(vip_message_t *rcv_pkt) {
   /* forward to vg */
-  vip_set_ep_cooja(snd_pkt, node_id, VIP_VG_ID, VIP_VT_URL);
+  vip_set_ep_cooja(snd_pkt, src_addr, node_id, dest_addr, VIP_VG_ID, VIP_VT_URL);
 
   printf("forward to vg(%d)\n", VIP_VG_ID);
   process_post(&aa_process, aa_snd_event, (void *)rcv_pkt);
@@ -217,7 +219,7 @@ static void
 handler_vra(vip_message_t *rcv_pkt) {
   int published_nonce = expire_nonce();
   /* forward to vt */
-  vip_set_ep_cooja(snd_pkt, node_id, rcv_pkt->vt_id, VIP_VT_URL);
+  vip_set_ep_cooja(snd_pkt, src_addr, node_id, dest_addr, rcv_pkt->vt_id, VIP_VT_URL);
   vip_set_type_header_nonce(rcv_pkt, published_nonce);
 
   printf("forward to vt(%d)\n", rcv_pkt->vt_id);
@@ -267,7 +269,7 @@ allocate_vt_handler(vip_message_t *rcv_pkt) {
 
   /* pkt, type, aa-id(node_id), vt-id(target vt's node id) */
   vip_init_message(snd_pkt, VIP_TYPE_ALLOW, node_id, rcv_pkt->vt_id);
-  vip_set_ep_cooja(snd_pkt, node_id, rcv_pkt->vt_id, VIP_VT_URL);
+  vip_set_ep_cooja(snd_pkt, src_addr, node_id, dest_addr, rcv_pkt->vt_id, VIP_VT_URL);
 
   vip_set_payload(snd_pkt, (void *)uplink_id, strlen(uplink_id));
 
@@ -285,7 +287,7 @@ res_periodic_ad_handler(void)
 
   /* pkt, type, aa-id(node_id), vt-id */
   vip_init_message(snd_pkt, VIP_TYPE_ALLOW, node_id, 0);
-  vip_set_ep_cooja(snd_pkt, node_id, 0, VIP_VT_URL);
+  vip_set_ep_cooja(snd_pkt, src_addr, node_id, dest_addr, 0, VIP_VT_URL);
   vip_serialize_message(snd_pkt, buffer);
 
   printf("Addr %s / %s\n", snd_pkt->src_coap_addr, snd_pkt->dest_coap_addr);
