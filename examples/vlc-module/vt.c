@@ -110,8 +110,12 @@ PROCESS_THREAD(vt_process, ev, data)
 
 static void
 vip_request_callback(coap_callback_request_state_t *callback_state) {
-  printf("vt_callback\n");
-  //printf("CODE:%d\n", callback_state->state.response->code);
+  coap_request_state_t *state = &callback_state->state;
+
+  if(state->status == COAP_REQUEST_STATUS_RESPONSE) {
+      printf("CODE:%d Payload_Len:%d\n", state->response->code, state->response->payload_len);
+      //printf("Payload:%s\n", state->response->payload);
+  }
 }
 
 static void
@@ -120,7 +124,7 @@ vip_request(vip_message_t *snd_pkt) {
   coap_endpoint_parse(snd_pkt->dest_coap_addr, strlen(snd_pkt->dest_coap_addr), &dest_ep);
   coap_init_message(request, COAP_TYPE_CON, COAP_POST, 0);
   coap_set_header_uri_path(request, snd_pkt->dest_path);
-  coap_set_header_uri_host(request, snd_pkt->src_coap_addr);
+  //coap_set_header_uri_host(request, snd_pkt->src_coap_addr);
   coap_set_payload(request, snd_pkt->buffer, snd_pkt->total_len);
 
   printf("-- Send coap vip[%d] packet --\n", snd_pkt->type);

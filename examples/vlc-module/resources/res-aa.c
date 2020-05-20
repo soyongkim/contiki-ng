@@ -178,24 +178,6 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
     return;
   }
 
-  /* Publish nonce for vr */
-  if(vip_pkt->type == VIP_TYPE_VRR && !vip_pkt->vr_id) {
-    int nonce = publish_nonce();
-    printf("pub:%d\n", nonce);
-    printf("Request uri-host:%s\n", request->uri_host);
-    printf("Request uri-path:%s\n", request->uri_path);
-
-    printf("Response uri-host:%s\n", response->uri_host);
-    printf("Response uri-path:%s\n", response->uri_path);
-
-    char res_payload[50];
-    sprintf(res_payload, "%d", nonce);
-    
-    coap_set_status_code(response, CONTENT_2_05);
-    coap_set_payload(response, res_payload, strlen(res_payload));
-  }
-
-
   process_post(&aa_process, aa_rcv_event, (void *)vip_pkt);
 }
 
@@ -268,7 +250,7 @@ allocate_vt_handler(vip_message_t *rcv_pkt) {
   show_vt_table();
 
   /* pkt, type, aa-id(node_id), vt-id(target vt's node id) */
-  vip_init_message(snd_pkt, VIP_TYPE_ALLOW, node_id, rcv_pkt->vt_id);
+  vip_init_message(snd_pkt, VIP_TYPE_ALLOW, node_id, rcv_pkt->vt_id, 0);
   vip_set_ep_cooja(snd_pkt, src_addr, node_id, dest_addr, rcv_pkt->vt_id, VIP_VT_URL);
 
   vip_set_payload(snd_pkt, (void *)uplink_id, strlen(uplink_id));
@@ -286,7 +268,7 @@ res_periodic_ad_handler(void)
   printf("Advertise...\n");
 
   /* pkt, type, aa-id(node_id), vt-id */
-  vip_init_message(snd_pkt, VIP_TYPE_ALLOW, node_id, 0);
+  vip_init_message(snd_pkt, VIP_TYPE_ALLOW, node_id, 0, 0);
   vip_set_ep_cooja(snd_pkt, src_addr, node_id, dest_addr, 0, VIP_VT_URL);
   vip_serialize_message(snd_pkt, buffer);
 

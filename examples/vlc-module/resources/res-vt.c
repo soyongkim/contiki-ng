@@ -115,10 +115,9 @@ beaconing() {
   if(aa_id) {
     printf("Beaconing...\n");
     /* you have to comfirm that the type field is fulled */
-    vip_init_message(snd_pkt, VIP_TYPE_BEACON, aa_id, vt_id);
+    vip_init_message(snd_pkt, VIP_TYPE_BEACON, aa_id, vt_id, 0);
     vip_set_ep_cooja(snd_pkt, src_addr, vt_id, dest_addr, 0, VIP_VR_URL);
 
-    vip_set_type_header_vr_id(snd_pkt, 0);
     vip_set_type_header_uplink_id(snd_pkt, uplink_id);
     vip_serialize_message(snd_pkt, buffer);
     process_post(&vt_process, vt_snd_event, (void *)snd_pkt);
@@ -181,7 +180,7 @@ request_vt_id_handler(vip_message_t *rcv_pkt) {
       return;
 
     /* send ack pkt for ad pkt */
-    vip_init_message(snd_pkt, VIP_TYPE_ALLOW, rcv_pkt->aa_id, node_id);
+    vip_init_message(snd_pkt, VIP_TYPE_ALLOW, rcv_pkt->aa_id, node_id, 0);
     vip_set_ep_cooja(snd_pkt, src_addr, node_id, dest_addr, rcv_pkt->aa_id, VIP_AA_URL);
     vip_serialize_message(snd_pkt, buffer);
 

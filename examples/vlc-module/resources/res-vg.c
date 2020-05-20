@@ -85,10 +85,9 @@ save_session_info(int vr_id, int session_id, int vg_seq, int vr_seq, uint8_t *da
 void
 allocate_vr_id(vip_message_t *rcv_pkt) {
     mutex_try_lock(&m);
-    vip_init_message(snd_pkt, VIP_TYPE_VRA, rcv_pkt->aa_id, rcv_pkt->vt_id);
+    vip_init_message(snd_pkt, VIP_TYPE_VRA, rcv_pkt->aa_id, rcv_pkt->vt_id, find_new_vr_id());
 
     /* for vra pkt */
-    vip_set_type_header_vr_id(snd_pkt, find_new_vr_id());
     vip_set_type_header_nonce(snd_pkt, 0);
 
     vip_set_ep_cooja(snd_pkt, src_addr, node_id, dest_addr, rcv_pkt->aa_id, VIP_AA_URL);

@@ -24,14 +24,15 @@ int vip_serialize_VU(vip_message_t *message);
 int vip_serialize_VM(vip_message_t *message);
 int serialize_no_type(vip_message_t *message);
 
-void vip_init_message(vip_message_t *message, uint8_t type,
-                      uint16_t aa_id, uint16_t vt_id)
+void vip_init_message(vip_message_t *vip_pkt, uint8_t type,
+                      uint16_t aa_id, uint16_t vt_id, uint32_t vr_id)
 {
-    memset(message, 0, sizeof(vip_message_t));
+    memset(vip_pkt, 0, sizeof(vip_message_t));
 
-    message->type = type;
-    message->aa_id = aa_id;
-    message->vt_id = vt_id;
+    vip_pkt->type = type;
+    vip_pkt->aa_id = aa_id;
+    vip_pkt->vt_id = vt_id;
+    vip_pkt->vr_id = vr_id;
 }
 
 int vip_int_serialize(unsigned int cur_offset, unsigned int space, uint8_t *buffer, uint32_t value)
