@@ -111,6 +111,9 @@ int vip_serialize_message(vip_message_t *vip_pkt, uint8_t *buffer)
         /* code */
         total_len += vip_serialize_beacon(vip_pkt);
         break;
+    case VIP_TYPE_VRR:
+        total_len += vip_serialize_VRA(vip_pkt);
+        break;
     case VIP_TYPE_VRA:
         /* code */
         total_len += vip_serialize_VRA(vip_pkt);
@@ -135,8 +138,6 @@ int vip_serialize_message(vip_message_t *vip_pkt, uint8_t *buffer)
         /* code */
         total_len += vip_serialize_SDA(vip_pkt);
         break;
-    default:
-        printf("No Specific Type\n");
     }
 
     /* serialize paylaod */
@@ -173,12 +174,7 @@ vip_serialize_beacon(vip_message_t *vip_pkt)
 int
 vip_serialize_VRR(vip_message_t *vip_pkt)
 {
-    uint8_t *offset = vip_pkt->buffer + VIP_COMMON_HEADER_LEN;
-    unsigned int index = 0;
-
-    index += vip_int_serialize(index, VIP_VR_ID_LEN, offset, vip_pkt->vr_id);
-
-    return index;
+    return 0;
 }
 
 int
