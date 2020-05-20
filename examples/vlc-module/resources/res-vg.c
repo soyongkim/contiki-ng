@@ -48,13 +48,10 @@ EVENT_RESOURCE(res_vg,
          NULL,
          res_event_handler);
 
-
 /* vip type handler */
 TYPE_HANDLER(vg_type_handler, NULL, handler_vrr, handler_vra, 
               handler_vrc, handler_rel, handler_ser, handler_sea, handler_sec,
               handler_sd, handler_sda, NULL);
-
-
 
 int
 find_new_vr_id() {
@@ -67,8 +64,6 @@ find_new_vr_id() {
 
   return 0;
 }
-
-
 
 void
 add_session_info(int vr_id, int session_id, int vg_seq, int vr_seq) {
@@ -131,10 +126,6 @@ handler_vrr(vip_message_t *rcv_pkt) {
     if(!rcv_pkt->vr_id) {
       /* process concurrent reqeust problem from VRs */
       allocate_vr_id(rcv_pkt);
-    }
-    else {
-        /* case handover */
-        
     }
 }
 
