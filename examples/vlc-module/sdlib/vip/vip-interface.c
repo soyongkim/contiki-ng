@@ -18,7 +18,6 @@ vip_route(vip_message_t *vip_pkt, vip_entity_t *type_handler) {
         break;
     case VIP_TYPE_VRR:
         /* code */
-        vip_parse_VRR(vip_pkt);
         type_handler->vrr_handler(vip_pkt);
         break;
     case VIP_TYPE_VRA:
@@ -26,11 +25,9 @@ vip_route(vip_message_t *vip_pkt, vip_entity_t *type_handler) {
         type_handler->vra_handler(vip_pkt);
         break;
     case VIP_TYPE_VRC:
-        vip_parse_VRC(vip_pkt);
         type_handler->vrc_handler(vip_pkt);
         break;
     case VIP_TYPE_REL:
-        vip_parse_REL(vip_pkt);
         type_handler->rel_handler(vip_pkt);
         break;
     case VIP_TYPE_SER:
@@ -55,8 +52,7 @@ vip_route(vip_message_t *vip_pkt, vip_entity_t *type_handler) {
         type_handler->sda_handler(vip_pkt);
         break;
     case VIP_TYPE_ALLOW:
-        if(vip_pkt->total_len > 8) {
-            printf("payload!\n");
+        if(vip_pkt->total_len > VIP_COMMON_HEADER_LEN) {
             vip_payload_test(vip_pkt);
         }
         type_handler->allocate_vt_handler(vip_pkt);

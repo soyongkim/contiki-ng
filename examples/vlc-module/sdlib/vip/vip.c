@@ -294,6 +294,7 @@ vip_parse_common_header(vip_message_t *vip_pkt, uint8_t *data, uint16_t data_len
     offset += 2;
     vip_pkt->vt_id = vip_parse_int_option(offset, 2);
     offset += 2;
+    vip_pkt->vr_id = vip_parse_int_option(offset, 4);
 
     return VIP_NO_ERROR;
 }
@@ -303,8 +304,6 @@ vip_parse_beacon(vip_message_t *vip_pkt)
 {
     /* Start from common header's end */
     uint8_t *offset = vip_pkt->buffer + VIP_COMMON_HEADER_LEN;
-    vip_pkt->vr_id = vip_parse_int_option(offset, 4);
-    offset += 4;
 
     /* parsing uplink_id */
     vip_pkt->uplink_id = (char *)malloc((vip_pkt->total_len) - VIP_COMMON_HEADER_LEN + 1);
@@ -316,17 +315,12 @@ void
 vip_parse_VRR(vip_message_t *vip_pkt)
 {
     uint8_t *offset = vip_pkt->buffer + VIP_COMMON_HEADER_LEN;
-
-    vip_pkt->vr_id = vip_parse_int_option(offset, 4);
 }
 
 void 
 vip_parse_VRA(vip_message_t *vip_pkt)
 {
     uint8_t *offset = vip_pkt->buffer + VIP_COMMON_HEADER_LEN;
-
-    vip_pkt->vr_id = vip_parse_int_option(offset, 4);
-    offset += 4;
     vip_pkt->nonce = vip_parse_int_option(offset, 4);
 }
 
@@ -334,25 +328,18 @@ void
 vip_parse_VRC(vip_message_t *vip_pkt)
 {
     uint8_t *offset = vip_pkt->buffer + VIP_COMMON_HEADER_LEN;
-
-    vip_pkt->vr_id = vip_parse_int_option(offset, 4);
 }
 
 void 
 vip_parse_REL(vip_message_t *vip_pkt)
 {
     uint8_t *offset = vip_pkt->buffer + VIP_COMMON_HEADER_LEN;
-
-    vip_pkt->vr_id = vip_parse_int_option(offset, 4);
 }
 
 void 
 vip_parse_SER(vip_message_t *vip_pkt)
 {
     uint8_t *offset = vip_pkt->buffer + VIP_COMMON_HEADER_LEN;
-
-    vip_pkt->vr_id = vip_parse_int_option(offset, 4);
-    offset += 4;
     vip_pkt->session_id = vip_parse_int_option(offset, 4);
     offset += 4;
     vip_pkt->vr_seq_number = vip_parse_int_option(offset, 4);
@@ -362,9 +349,6 @@ void
 vip_parse_SEA(vip_message_t *vip_pkt)
 {
     uint8_t *offset = vip_pkt->buffer + VIP_COMMON_HEADER_LEN;
-
-    vip_pkt->vr_id = vip_parse_int_option(offset, 4);
-    offset += 4;
     vip_pkt->session_id = vip_parse_int_option(offset, 4);
     offset += 4;
     vip_pkt->vg_seq_number = vip_parse_int_option(offset, 4);
@@ -374,9 +358,6 @@ void
 vip_parse_SD(vip_message_t *vip_pkt)
 {
     uint8_t *offset = vip_pkt->buffer + VIP_COMMON_HEADER_LEN;
-
-    vip_pkt->vr_id = vip_parse_int_option(offset, 4);
-    offset += 4;
     vip_pkt->session_id = vip_parse_int_option(offset, 4);
     offset += 4;
     vip_pkt->vg_seq_number = vip_parse_int_option(offset, 4);
@@ -389,9 +370,6 @@ void
 vip_parse_SDA(vip_message_t *vip_pkt)
 {
     uint8_t *offset = vip_pkt->buffer + VIP_COMMON_HEADER_LEN;
-
-    vip_pkt->vr_id = vip_parse_int_option(offset, 4);
-    offset += 4;
     vip_pkt->session_id = vip_parse_int_option(offset, 4);
     offset += 4;
     vip_pkt->vr_seq_number = vip_parse_int_option(offset, 4);
