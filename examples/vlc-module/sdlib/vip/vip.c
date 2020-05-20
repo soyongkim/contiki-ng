@@ -135,6 +135,8 @@ int vip_serialize_message(vip_message_t *vip_pkt, uint8_t *buffer)
         /* code */
         total_len += vip_serialize_SDA(vip_pkt);
         break;
+    default:
+        printf("No Specific Type\n");
     }
 
     /* serialize paylaod */
