@@ -83,16 +83,18 @@ handler_beacon(vip_message_t *rcv_pkt) {
     aa_id = rcv_pkt->aa_id;
     vt_id = rcv_pkt->vt_id;
 
-    /* Recent Received vt-id, aa-id */
-    vip_init_message(snd_pkt, VIP_TYPE_VRR, aa_id, vt_id);
-    /* send to new aa */
-    vip_set_ep_cooja(snd_pkt, src_addr, node_id, dest_addr, aa_id, VIP_AA_URL);
+    printf("handler beacon\n");
 
-    /* set vr id to 0. it's mean not allocated*/
-    vip_set_type_header_vr_id(snd_pkt, 0);
-    vip_serialize_message(snd_pkt, buffer);
+    // /* Recent Received vt-id, aa-id */
+    // vip_init_message(snd_pkt, VIP_TYPE_VRR, aa_id, vt_id);
+    // /* send to new aa */
+    // vip_set_ep_cooja(snd_pkt, src_addr, node_id, dest_addr, aa_id, VIP_AA_URL);
 
-    process_post(&vr_process, vr_snd_event, (void *)snd_pkt);
+    // /* set vr id to 0. it's mean not allocated*/
+    // vip_set_type_header_vr_id(snd_pkt, 0);
+    // vip_serialize_message(snd_pkt, buffer);
+
+    // process_post(&vr_process, vr_snd_event, (void *)snd_pkt);
   }
   else {
     printf("Ignore same beacon message..\n");
