@@ -79,22 +79,27 @@ int vip_serialize_message(vip_message_t *vip_pkt, uint8_t *buffer)
     offset = vip_pkt->buffer;
 
     /* set common header fields without total len*/
-    // vip_pkt->buffer[0] = vip_pkt->type;
+    vip_pkt->buffer[0] = vip_pkt->type;
 
-    // vip_pkt->buffer[4] = (uint8_t)(vip_pkt->aa_id >> 8);
-    // vip_pkt->buffer[5] = (uint8_t)(vip_pkt->aa_id);
+    vip_pkt->buffer[4] = (uint8_t)(vip_pkt->aa_id >> 8);
+    vip_pkt->buffer[5] = (uint8_t)(vip_pkt->aa_id);
 
-    // vip_pkt->buffer[6] = (uint8_t)(vip_pkt->vt_id >> 8);
-    // vip_pkt->buffer[7] = (uint8_t)(vip_pkt->vt_id);
+    vip_pkt->buffer[6] = (uint8_t)(vip_pkt->vt_id >> 8);
+    vip_pkt->buffer[7] = (uint8_t)(vip_pkt->vt_id);
 
-    total_len += vip_int_serialize(total_len, 1, offset, vip_pkt->type);
+    vip_pkt->buffer[8] = (uint8_t)(vip_pkt->vt_id >> 24);
+    vip_pkt->buffer[9] = (uint8_t)(vip_pkt->vt_id >> 16);
+    vip_pkt->buffer[10] = (uint8_t)(vip_pkt->vt_id >> 8);
+    vip_pkt->buffer[11] = (uint8_t)(vip_pkt->vt_id);
 
-    /* for total_length field */
-    total_len += 3;
+    // total_len += vip_int_serialize(total_len, 1, offset, vip_pkt->type);
 
-    total_len += vip_int_serialize(total_len, 2, offset, vip_pkt->aa_id);
-    total_len += vip_int_serialize(total_len, 2, offset, vip_pkt->vt_id);
-    total_len += vip_int_serialize(total_len, 4, offset, vip_pkt->vr_id);
+    // /* for total_length field */
+    // total_len += 3;
+
+    // total_len += vip_int_serialize(total_len, 2, offset, vip_pkt->aa_id);
+    // total_len += vip_int_serialize(total_len, 2, offset, vip_pkt->vt_id);
+    // total_len += vip_int_serialize(total_len, 4, offset, vip_pkt->vr_id);
 
     /* set Type Specific Fields */
     switch (vip_pkt->type)
