@@ -79,8 +79,12 @@ PROCESS_THREAD(aa_process, ev, data)
 
 static void
 vip_request_callback(coap_callback_request_state_t *callback_state) {
-  printf("AA CoAP Response Handler\n");
-  //printf("CODE:%d\n", callback_state->state.response->code);
+  coap_request_state_t *state = &callback_state->state;
+
+  if(state->status == COAP_REQUEST_STATUS_RESPONSE) {
+      printf("CODE:%d Payload_Len:%d\n", state->response->code, state->response->payload_len);
+      printf("Path:%s\n", state->response->uri_path);
+  }
 }
 
 static void

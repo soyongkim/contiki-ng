@@ -124,8 +124,6 @@ beaconing() {
   }
 }
 
-
-
 static void
 handler_vrr(vip_message_t *rcv_pkt) {
 }
