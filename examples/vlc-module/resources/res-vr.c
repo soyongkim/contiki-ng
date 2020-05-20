@@ -61,6 +61,9 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
      printf("vip_pkt have problem\n");
      return;
   }
+
+  make_coap_uri(src_addr, node_id);
+  coap_set_header_uri_host(response, src_addr);
   
   process_post(&vr_process, vr_rcv_event, (void *)vip_pkt);
 }
