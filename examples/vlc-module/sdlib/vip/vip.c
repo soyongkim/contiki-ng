@@ -92,6 +92,8 @@ int vip_serialize_message(vip_message_t *vip_pkt, uint8_t *buffer)
     vip_pkt->buffer[10] = (uint8_t)(vip_pkt->vr_id >> 8);
     vip_pkt->buffer[11] = (uint8_t)(vip_pkt->vr_id);
 
+    total_len = VIP_COMMON_HEADER_LEN;
+
     // total_len += vip_int_serialize(total_len, 1, offset, vip_pkt->type);
 
     // /* for total_length field */
