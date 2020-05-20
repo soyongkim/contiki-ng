@@ -96,10 +96,26 @@ TYPE_HANDLER(aa_type_handler, handler_beacon, handler_vrr, handler_vra,
               handler_vrc, handler_rel, handler_ser, handler_sea, handler_sec,
               handler_sd, handler_sda, allocate_vt_handler);
 
+
+void
+allocation_vr(vip_message_t* rcv_pkt) {
+  mutex_try_lock(&p);
+  mutex_unlock(&p);
+}
+
+
+void
+handover_vr(vip_message_t* rcv_pkt) {
+  /* forward to vg */
+  vip_set_ep_cooja(rcv_pkt, src_addr, node_id, dest_addr, VIP_VG_ID, VIP_VT_URL);
+  printf("forward to vg(%d)\n", VIP_VG_ID);
+  process_post(&aa_process, aa_snd_event, (void *)rcv_pkt);
+}
+
+
 int
 publish_nonce() {
   int nonce = 0;
-  mutex_try_lock(&p);
   /* publish nonce_pool */
   for(int i=0; i<65000; i++) {
     if(!nonce_pool[i]) {
@@ -108,10 +124,8 @@ publish_nonce() {
       break;
     }
   }
-  mutex_unlock(&p);
   return nonce;
 }
-
 
 int expire_nonce() {
   int nonce = 0;
@@ -179,6 +193,7 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
   }
 
   process_post(&aa_process, aa_rcv_event, (void *)vip_pkt);
+  printf("after post\n");
 }
 
 static void
@@ -190,10 +205,12 @@ handler_beacon(vip_message_t *rcv_pkt) {
 
 static void
 handler_vrr(vip_message_t *rcv_pkt) {
-  /* forward to vg */
-  vip_set_ep_cooja(rcv_pkt, src_addr, node_id, dest_addr, VIP_VG_ID, VIP_VT_URL);
-  printf("forward to vg(%d)\n", VIP_VG_ID);
-  process_post(&aa_process, aa_snd_event, (void *)rcv_pkt);
+  if(!rcv_pkt->vr_id) {
+      allocation_vr(rcv_pkt->vr_id);
+  }
+  else {
+    handover_vr(rcv_pkt->vr_id);
+  }
 }
 
 static void
