@@ -194,7 +194,7 @@ handler_vrr(vip_message_t *rcv_pkt) {
   vip_set_ep_cooja(rcv_pkt, src_addr, node_id, dest_addr, VIP_VG_ID, VIP_VT_URL);
 
   printf("forward to vg(%d)\n", VIP_VG_ID);
-  process_post(&aa_process, aa_snd_event, (void *)rcv_pkt);
+  //process_post(&aa_process, aa_snd_event, (void *)rcv_pkt);
 }
 
 static void
