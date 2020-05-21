@@ -64,7 +64,6 @@ PROCESS_THREAD(aa_process, ev, data)
       if(ev == aa_rcv_event) {
         rcv_pkt = (vip_message_t *)data;
         printf("Type[%d]\n", rcv_pkt->type);
-
         vip_route(rcv_pkt, &aa_type_handler);
       }
       else if(ev == aa_snd_event) {
@@ -97,6 +96,7 @@ vip_request(vip_message_t *snd_pkt) {
   coap_set_header_uri_path(request, snd_pkt->dest_path);
   coap_set_header_uri_query(request, query);
   coap_set_payload(request, snd_pkt->buffer, snd_pkt->total_len);
+
 
   coap_send_request(&callback_state, &dest_ep, request, vip_request_callback);
 }

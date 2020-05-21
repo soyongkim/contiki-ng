@@ -51,6 +51,7 @@
 #include <inttypes.h>
 
 /* Log configuration */
+#include <stdio.h>
 #include "coap-log.h"
 #define LOG_MODULE "coap"
 #define LOG_LEVEL  LOG_LEVEL_COAP
@@ -77,7 +78,8 @@ progress_request(coap_callback_request_state_t *callback_state) {
       coap_serialize_message(request, state->transaction->message);
 
     coap_send_transaction(state->transaction);
-    LOG_DBG("Requested #%"PRIu32" (MID %u)\n", state->block_num, request->mid);
+    //LOG_DBG("Requested #%"PRIu32" (MID %u)\n", state->block_num, request->mid);
+    printf("Requested #%"PRIu32" (MID %u)\n", state->block_num, request->mid);
     return 1;
   }
   return 0;
