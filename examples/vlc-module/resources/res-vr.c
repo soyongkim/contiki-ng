@@ -30,7 +30,6 @@ static uint8_t buffer[50];
 static char src_addr[50], dest_addr[50];
 
 static int vr_id, aa_id, vt_id;
-static int allocate_mutex;
 //static int published_nonce;
 
 /* A simple actuator example. Toggles the red led */
@@ -76,9 +75,7 @@ is_my_pkt(int rcv_vr_id) {
 static void
 handler_beacon(vip_message_t *rcv_pkt) {
   /* check handover */
-  if(!allocate_mutex && (aa_id != rcv_pkt->aa_id || vt_id != rcv_pkt->vt_id)) {
-    allocate_mutex = 1;
-
+  if(aa_id != rcv_pkt->aa_id || vt_id != rcv_pkt->vt_id) {
     /* update aa_id, vt_id */
     aa_id = rcv_pkt->aa_id;
     vt_id = rcv_pkt->vt_id;
@@ -94,9 +91,6 @@ handler_beacon(vip_message_t *rcv_pkt) {
 
     process_post(&vr_process, vr_snd_event, (void *)snd_pkt);
   }
-  else {
-    printf("Ignore same beacon message..\n");
-  }
 }
 
 
@@ -111,7 +105,6 @@ handler_vra(vip_message_t *rcv_pkt) {
   if(!vr_id || is_my_pkt(rcv_pkt->vr_id)) {
       vr_id = rcv_pkt->vr_id;
       printf("My ID is %d\n", vr_id);
-      allocate_mutex = 0;
   }
 }
 
