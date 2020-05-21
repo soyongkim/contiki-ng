@@ -32,6 +32,17 @@ static char src_addr[50], dest_addr[50];
 static int vr_id, aa_id, vt_id;
 //static int published_nonce;
 
+/* for send packet */
+static coap_callback_request_state_t callback_state;
+static coap_endpoint_t dest_ep;
+static coap_message_t request[1];
+
+
+
+/* using coap callback api */
+static void vip_request_callback(coap_callback_request_state_t *callback_state);
+static void vip_request(vip_message_t *snd_pkt);
+
 /* A simple actuator example. Toggles the red led */
 EVENT_RESOURCE(res_vr,
          "title=\"vr\";rt=\"Control\"",
@@ -89,7 +100,8 @@ handler_beacon(vip_message_t *rcv_pkt) {
     /* set vr id to 0. it's mean not allocated*/
     vip_serialize_message(snd_pkt, buffer);
 
-    process_post(&vr_process, vr_snd_event, (void *)snd_pkt);
+    //process_post(&vr_process, vr_snd_event, (void *)snd_pkt);
+    vip_request(snd_pkt);
   }
 }
 
@@ -147,4 +159,30 @@ static void
 res_event_handler(void) {
 
 
+}
+
+
+static void
+vip_request_callback(coap_callback_request_state_t *res_callback_state) {
+  coap_request_state_t *state = &res_callback_state->state;
+
+  if(state->status == COAP_REQUEST_STATUS_RESPONSE) {
+      printf("CODE:%d\n", state->response->code);
+      if(state->response->code > 100) {
+          //printf("4.xx -> So.. try to retransmit\n");
+          //coap_send_request(&callback_state, &dest_ep, state->request, vip_request_callback);
+      }
+  }
+}
+
+static void
+vip_request(vip_message_t *snd_pkt) {
+  /* set vip endpoint */
+  coap_endpoint_parse(snd_pkt->dest_coap_addr, strlen(snd_pkt->dest_coap_addr), &dest_ep);
+  coap_init_message(request, COAP_TYPE_CON, COAP_POST, 0);
+  coap_set_header_uri_path(request, snd_pkt->dest_path);
+  coap_set_header_uri_query(request, query);
+  coap_set_payload(request, snd_pkt->buffer, snd_pkt->total_len);
+
+  coap_send_request(&callback_state, &dest_ep, request, vip_request_callback);
 }
