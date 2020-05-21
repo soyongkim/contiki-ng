@@ -111,9 +111,6 @@ int vip_serialize_message(vip_message_t *vip_pkt, uint8_t *buffer)
         /* code */
         total_len += vip_serialize_beacon(vip_pkt);
         break;
-    case VIP_TYPE_VRR:
-        total_len += vip_serialize_VRA(vip_pkt);
-        break;
     case VIP_TYPE_VRA:
         /* code */
         total_len += vip_serialize_VRA(vip_pkt);

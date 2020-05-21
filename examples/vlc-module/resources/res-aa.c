@@ -280,8 +280,6 @@ res_periodic_ad_handler(void)
   vip_init_message(snd_pkt, VIP_TYPE_ALLOW, node_id, 0, 0);
   vip_set_ep_cooja(snd_pkt, src_addr, node_id, dest_addr, 0, VIP_VT_URL);
   vip_serialize_message(snd_pkt, buffer);
-
-  printf("Addr %s / %s\n", snd_pkt->src_coap_addr, snd_pkt->dest_coap_addr);
   process_post(&aa_process, aa_snd_event, (void *)snd_pkt);
 }
 
