@@ -71,7 +71,7 @@ PROCESS_THREAD(aa_process, ev, data)
   PROCESS_END();
 }
 
-static void
+void
 vip_request_callback(coap_callback_request_state_t *res_callback_state) {
   coap_request_state_t *state = &res_callback_state->state;
 
@@ -84,7 +84,7 @@ vip_request_callback(coap_callback_request_state_t *res_callback_state) {
   }
 }
 
-static void
+void
 vip_request(vip_message_t *snd_pkt) {
   /* set vip endpoint */
   coap_endpoint_parse(snd_pkt->dest_coap_addr, strlen(snd_pkt->dest_coap_addr), &dest_ep);
@@ -92,6 +92,6 @@ vip_request(vip_message_t *snd_pkt) {
   coap_set_header_uri_path(request, snd_pkt->dest_path);
   coap_set_header_uri_query(request, query);
   coap_set_payload(request, snd_pkt->buffer, snd_pkt->total_len);
-  
+
   coap_send_request(&callback_state, &dest_ep, request, vip_request_callback);
 }
