@@ -42,7 +42,6 @@ PROCESS_THREAD(vr_process, ev, data)
   PROCESS_BEGIN();
   PROCESS_PAUSE();
   sprintf(query + 5, "%d", node_id);
-  printf("Query: %s\n", query);
 
 
   vr_rcv_event = process_alloc_event();

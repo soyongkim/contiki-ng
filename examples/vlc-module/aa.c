@@ -32,6 +32,7 @@ process_event_t aa_rcv_event, aa_snd_event;
 static coap_callback_request_state_t callback_state;
 static coap_endpoint_t dest_ep;
 static coap_message_t request[1];
+static char query[11] = { "?src=" };
 
 PROCESS(aa_process, "AA");
 AUTOSTART_PROCESSES(&aa_process);
@@ -41,7 +42,7 @@ PROCESS_THREAD(aa_process, ev, data)
   PROCESS_BEGIN();
   PROCESS_PAUSE();
 
-  printf("Node ID is %d\n", node_id);
+  sprintf(query + 5, "%d", node_id);
 
   aa_rcv_event = process_alloc_event();
   aa_snd_event = process_alloc_event();
@@ -94,7 +95,7 @@ vip_request(vip_message_t *snd_pkt) {
   coap_endpoint_parse(snd_pkt->dest_coap_addr, strlen(snd_pkt->dest_coap_addr), &dest_ep);
   coap_init_message(request, COAP_TYPE_CON, COAP_POST, 0);
   coap_set_header_uri_path(request, snd_pkt->dest_path);
-  coap_set_header_uri_host(request, snd_pkt->src_coap_addr);
+  coap_set_header_uri_query(request, query);
   coap_set_payload(request, snd_pkt->buffer, snd_pkt->total_len);
 
   coap_send_request(&callback_state, &dest_ep, request, vip_request_callback);
