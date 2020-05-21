@@ -4,7 +4,6 @@
 #include <string.h>
 #include "aa.h"
 #include "coap-engine.h"
-#include "coap-callback-api.h"
 #include "vip-interface.h"
 #include "net/netstack.h"
 
