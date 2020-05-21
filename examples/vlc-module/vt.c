@@ -110,12 +110,12 @@ PROCESS_THREAD(vt_process, ev, data)
 
 static void
 vip_request_callback(coap_callback_request_state_t *callback_state) {
-  coap_request_state_t *state = &callback_state->state;
+  // coap_request_state_t *state = &callback_state->state;
 
-  if(state->status == COAP_REQUEST_STATUS_RESPONSE) {
-      printf("CODE:%d Payload_Len:%d\n", state->response->code, state->response->payload_len);
-      //printf("Payload:%s\n", state->response->payload);
-  }
+  // if(state->status == COAP_REQUEST_STATUS_RESPONSE) {
+  //     printf("CODE:%d Payload_Len:%d\n", state->response->code, state->response->payload_len);
+  //     //printf("Payload:%s\n", state->response->payload);
+  // }
 }
 
 static void
