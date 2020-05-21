@@ -14,10 +14,6 @@
 /* Node ID */
 #include "sys/node-id.h"
 
-/* using coap callback api */
-static void vip_request_callback(coap_callback_request_state_t *callback_state);
-static void vip_request(vip_message_t *snd_pkt);
-
 /*
  * Resources to be activated need to be imported through the extern keyword.
  * The build system automatically compiles the resources in the corresponding sub-directory.
@@ -27,12 +23,6 @@ extern vip_entity_t aa_type_handler;
 
 /* test event process */
 process_event_t aa_rcv_event, aa_snd_event;
-
-/* for send packet */
-static coap_callback_request_state_t callback_state;
-static coap_endpoint_t dest_ep;
-static coap_message_t request[1];
-//char query[11] = { "?src=" };
 
 PROCESS(aa_process, "AA");
 AUTOSTART_PROCESSES(&aa_process);
@@ -69,34 +59,8 @@ PROCESS_THREAD(aa_process, ev, data)
       }
       else if(ev == aa_snd_event) {
         snd_pkt = (vip_message_t *)data;
-        vip_request(snd_pkt);
       }
   }
 
   PROCESS_END();
-}
-
-static void
-vip_request_callback(coap_callback_request_state_t *res_callback_state) {
-  coap_request_state_t *state = &res_callback_state->state;
-
-  if(state->status == COAP_REQUEST_STATUS_RESPONSE) {
-      printf("CODE:%d\n", state->response->code);
-      if(state->response->code > 100) {
-          //printf("4.xx -> So.. try to retransmit\n");
-          //coap_send_request(&callback_state, &dest_ep, state->request, vip_request_callback);
-      }
-  }
-}
-
-static void
-vip_request(vip_message_t *snd_pkt) {
-  /* set vip endpoint */
-  coap_endpoint_parse(snd_pkt->dest_coap_addr, strlen(snd_pkt->dest_coap_addr), &dest_ep);
-  coap_init_message(request, COAP_TYPE_CON, COAP_POST, 0);
-  coap_set_header_uri_path(request, snd_pkt->dest_path);
-  coap_set_header_uri_query(request, query);
-  coap_set_payload(request, snd_pkt->buffer, snd_pkt->total_len);
-
-  coap_send_request(&callback_state, &dest_ep, request, vip_request_callback);
 }

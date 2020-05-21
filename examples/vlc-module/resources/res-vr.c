@@ -100,7 +100,6 @@ handler_beacon(vip_message_t *rcv_pkt) {
     /* set vr id to 0. it's mean not allocated*/
     vip_serialize_message(snd_pkt, buffer);
 
-    //process_post(&vr_process, vr_snd_event, (void *)snd_pkt);
     vip_request(snd_pkt);
   }
 }
@@ -183,6 +182,6 @@ vip_request(vip_message_t *snd_pkt) {
   coap_set_header_uri_path(request, snd_pkt->dest_path);
   coap_set_header_uri_query(request, query);
   coap_set_payload(request, snd_pkt->buffer, snd_pkt->total_len);
-  printf("query:%s\n", query);
+  printf("Send from %s to %s %s\n", snd_pkt->dest_coap_addr, snd_pkt->src_coap_addr, query);
   coap_send_request(&callback_state, &dest_ep, request, vip_request_callback);
 }

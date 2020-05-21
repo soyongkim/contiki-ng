@@ -142,7 +142,7 @@ void
 allocation_vr(vip_message_t* rcv_pkt) {
   mutex_try_lock(&p);
   int nonce = publish_nonce();
-  printf("Pub %d\n", nonce);
+  printf("Pub %d / Query : %d\n", nonce, rcv_pkt->query_rcv_id);
   /* Send nonce to vr using vrr. It's possble that vr doesn't receive vrr type in main flow */
   /* use vr_id field to send the nonce */
   vip_init_message(snd_pkt, VIP_TYPE_VRR, node_id, 0, nonce);
@@ -323,5 +323,6 @@ vip_request(vip_message_t *snd_pkt) {
   coap_set_header_uri_query(request, query);
   coap_set_payload(request, snd_pkt->buffer, snd_pkt->total_len);
 
+  printf("Send from %s to %s %s\n", snd_pkt->dest_coap_addr, snd_pkt->src_coap_addr, query);
   coap_send_request(&callback_state, &dest_ep, request, vip_request_callback);
 }
