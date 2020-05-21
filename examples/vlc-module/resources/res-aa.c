@@ -173,7 +173,7 @@ static void
 res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset)
 {
   const char *src = NULL;
-  printf("Received\n");
+  printf("Received -mid:%d\n", request->mid);
 
   static vip_message_t vip_pkt[1];
   if (vip_parse_common_header(vip_pkt, request->payload, request->payload_len) != VIP_NO_ERROR)
