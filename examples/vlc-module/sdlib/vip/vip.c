@@ -299,8 +299,6 @@ vip_parse_common_header(vip_message_t *vip_pkt, uint8_t *data, uint16_t data_len
     offset += 2;
     vip_pkt->vr_id = vip_parse_int_option(offset, 4);
 
-    printf("Parsing [%d : %d : %d]\n", vip_pkt->aa_id, vip_pkt->vt_id, vip_pkt->vr_id);
-
     return VIP_NO_ERROR;
 }
 

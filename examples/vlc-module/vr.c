@@ -98,7 +98,6 @@ vip_request(vip_message_t *snd_pkt) {
   coap_set_header_uri_query(request, query);
   coap_set_payload(request, snd_pkt->buffer, snd_pkt->total_len);
 
-  printf("VR Request to %s(%d)\n", snd_pkt->dest_coap_addr, snd_pkt->type);
-
+  printf("Send[%d] from %d\n", snd_pkt->type, node_id);
   coap_send_request(&callback_state, &dest_ep, request, vip_request_callback);
 }
