@@ -76,7 +76,7 @@ static char dest_addr[50];
 static char query[11] = { "?src=" };
 
 static int nonce_pool[65000];
-static mutex_t p, e;
+//static mutex_t p, e;
 
 static char uplink_id[50] = {"ISL_AA_UPLINK_ID"};
 
@@ -125,7 +125,7 @@ publish_nonce() {
 int 
 expire_nonce() {
   int nonce = 0;
-  mutex_try_lock(&e);
+  //mutex_try_lock(&e);
   /* expire nonce_pool */
   for(int i=1; i<65000; i++) {
     if(nonce_pool[i]) {
@@ -134,13 +134,13 @@ expire_nonce() {
       break;
     }
   }
-  mutex_unlock(&e);
+  //mutex_unlock(&e);
   return nonce;
 }
 
 void
 allocation_vr(vip_message_t* rcv_pkt) {
-  mutex_try_lock(&p);
+  //mutex_try_lock(&p);
   int nonce = publish_nonce();
   printf("Pub %d / Query : %d\n", nonce, rcv_pkt->query_rcv_id);
   /* Send nonce to vr using vrr. It's possble that vr doesn't receive vrr type in main flow */
@@ -149,7 +149,7 @@ allocation_vr(vip_message_t* rcv_pkt) {
   vip_set_ep_cooja(snd_pkt, query, node_id, dest_addr, rcv_pkt->query_rcv_id, VIP_VR_URL);
   vip_serialize_message(snd_pkt, buffer);
   vip_request(snd_pkt);
-  mutex_unlock(&p);
+  //mutex_unlock(&p);
 }
 
 void
