@@ -128,7 +128,7 @@ static void
 vip_request(vip_message_t *snd_pkt) {
   /* set vip endpoint */
   coap_endpoint_parse(snd_pkt->dest_coap_addr, strlen(snd_pkt->dest_coap_addr), &dest_ep);
-  coap_init_message(request, COAP_TYPE_CON, COAP_POST, 0);
+  coap_init_message(request, COAP_TYPE_NON, COAP_POST, 0);
   coap_set_header_uri_path(request, snd_pkt->dest_path);
   coap_set_header_uri_query(request, snd_pkt->query);
   coap_set_payload(request, snd_pkt->buffer, snd_pkt->total_len);
