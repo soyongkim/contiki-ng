@@ -90,7 +90,7 @@ vip_request_callback(coap_callback_request_state_t *callback_state) {
       printf("CODE:%d\n", state->response->code);
       if(state->response->code > 100) {
           printf("4.xx -> So.. try to retransmit\n");
-          coap_send_request(&callback_state, &dest_ep, state->request, vip_request_callback);
+          coap_send_request(&callback_state, &state->request->src_ep, state->request, vip_request_callback);
       }
   }
 }
