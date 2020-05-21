@@ -54,8 +54,8 @@ make_coap_uri(char *src_coap_addr, int node_id) {
       strcpy(src_coap_addr, BROADCAST_COAP_ADDR);
   }
   else {
-    char coap_uri[25] = "coap://[fe80::";
-    char first[4], second[4], third[4], forth[4];
+    char coap_uri[30] = "coap://[fe80::";
+    char first[5], second[5], third[5], forth[5];
 
     sprintf(first, "%x", 512 + node_id);
     strcat(coap_uri, first);
@@ -70,6 +70,7 @@ make_coap_uri(char *src_coap_addr, int node_id) {
     strcat(coap_uri, forth);
     strcat(coap_uri, "]");
 
+    printf("My Addr is %s\n", coap_uri);
     strcpy(src_coap_addr, coap_uri);    
   }
 }

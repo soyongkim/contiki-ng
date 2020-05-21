@@ -7,6 +7,7 @@
 #include "coap-callback-api.h"
 #include "vip-interface.h"
 #include "net/netstack.h"
+#include "cooja_addr.h"
 
 /* for ROOT in RPL */
 #include "contiki-net.h"
@@ -34,6 +35,9 @@ static coap_endpoint_t dest_ep;
 static coap_message_t request[1];
 static char query[11] = { "?src=" };
 
+
+static char test_addr[50];
+
 PROCESS(vr_process, "VR");
 AUTOSTART_PROCESSES(&vr_process);
 
@@ -42,6 +46,8 @@ PROCESS_THREAD(vr_process, ev, data)
   PROCESS_BEGIN();
   PROCESS_PAUSE();
   sprintf(query + 5, "%d", node_id);
+
+  make_coap_uri(test_addr, node_id);
 
 
   vr_rcv_event = process_alloc_event();
