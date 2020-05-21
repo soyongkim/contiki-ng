@@ -69,8 +69,7 @@ make_coap_uri(char *src_coap_addr, int node_id) {
     sprintf(forth, "%x", node_id);
     strcat(coap_uri, forth);
     strcat(coap_uri, "]");
-
-    printf("My Addr is %s\n", coap_uri);
+    
     strcpy(src_coap_addr, coap_uri);    
   }
 }

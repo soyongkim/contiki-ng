@@ -77,7 +77,16 @@ PROCESS_THREAD(aa_process, ev, data)
 }
 
 static void
-vip_request_callback(coap_callback_request_state_t *callback_state) {
+vip_request_callback(coap_callback_request_state_t *res_callback_state) {
+  coap_request_state_t *state = &res_callback_state->state;
+
+  if(state->status == COAP_REQUEST_STATUS_RESPONSE) {
+      printf("CODE:%d\n", state->response->code);
+      if(state->response->code > 100) {
+          printf("4.xx -> So.. try to retransmit\n");
+          //coap_send_request(&callback_state, &dest_ep, state->request, vip_request_callback);
+      }
+  }
 }
 
 static void
