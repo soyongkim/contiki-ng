@@ -14,10 +14,6 @@
 /* Node ID */
 #include "sys/node-id.h"
 
-/* using coap callback api */
-static void vip_request_callback(coap_callback_request_state_t *callback_state);
-static void vip_request(vip_message_t *snd_pkt);
-
 /*
  * Resources to be activated need to be imported through the extern keyword.
  * The build system automatically compiles the resources in the corresponding sub-directory.
@@ -96,7 +92,6 @@ vip_request(vip_message_t *snd_pkt) {
   coap_set_header_uri_path(request, snd_pkt->dest_path);
   coap_set_header_uri_query(request, query);
   coap_set_payload(request, snd_pkt->buffer, snd_pkt->total_len);
-
-
+  
   coap_send_request(&callback_state, &dest_ep, request, vip_request_callback);
 }

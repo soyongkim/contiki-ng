@@ -135,7 +135,8 @@ allocation_vr(vip_message_t* rcv_pkt) {
   vip_init_message(snd_pkt, VIP_TYPE_VRR, node_id, 0, nonce);
   vip_set_ep_cooja(snd_pkt, src_addr, node_id, dest_addr, rcv_pkt->query_rcv_id, VIP_VR_URL);
   vip_serialize_message(snd_pkt, buffer);
-  process_post(&aa_process, aa_snd_event, (void *)snd_pkt);
+  //process_post(&aa_process, aa_snd_event, (void *)snd_pkt);
+  vip_request(snd_pkt);
   mutex_unlock(&p);
 }
 
@@ -182,7 +183,6 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
     return;
   }
 
-  
 
   if(coap_get_query_variable(request, "src", &src)) {
     vip_pkt->query_rcv_id = atoi(src);
