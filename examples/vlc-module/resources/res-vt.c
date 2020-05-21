@@ -70,6 +70,7 @@ static char dest_addr[50];
 static char query[11] = { "?src=" };
 
 static char uplink_id[50];
+int test_block;
 
 /* A simple actuator example. Toggles the red led */
 PERIODIC_RESOURCE(res_vt,
@@ -111,7 +112,8 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
 static void
 beaconing() {
   /* if the vt is complete to register to aa, start beaconing */
-  if(aa_id) {
+  if(aa_id && !test_block) {
+    test_block = 1;
     printf("Beaconing...\n");
     /* you have to comfirm that the type field is fulled */
     vip_init_message(snd_pkt, VIP_TYPE_BEACON, aa_id, vt_id, 0);
