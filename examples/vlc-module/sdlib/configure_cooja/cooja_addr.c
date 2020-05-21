@@ -57,16 +57,16 @@ make_coap_uri(char *src_coap_addr, int node_id) {
     char coap_uri[25] = "coap://[fe80::";
     char first[4], second[4], third[4], forth[4];
 
-    sprintf(first, "%d", 200 + node_id);
+    sprintf(first, "%x", 512 + node_id);
     strcat(coap_uri, first);
     strcat(coap_uri, ":");
-    sprintf(second, "%d", node_id);
+    sprintf(second, "%x", node_id);
     strcat(coap_uri, second);
     strcat(coap_uri, ":");
-    sprintf(third, "%d", node_id);
+    sprintf(third, "%x", node_id);
     strcat(coap_uri, third);
     strcat(coap_uri, ":");
-    sprintf(forth, "%d", node_id);
+    sprintf(forth, "%x", node_id);
     strcat(coap_uri, forth);
     strcat(coap_uri, "]");
 
