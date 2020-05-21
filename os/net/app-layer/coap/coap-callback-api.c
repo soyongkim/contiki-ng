@@ -132,6 +132,7 @@ coap_request_callback(void *callback_data, coap_message_t *response)
 
   if(state->more) {
     if((state->block_error) < COAP_MAX_ATTEMPTS) {
+      printf("Re_transmit???\n");
       progress_request(callback_state);
     } else {
       /* failure - now we give up and notify the callback */
