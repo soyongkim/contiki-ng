@@ -80,10 +80,10 @@ handler_beacon(vip_message_t *rcv_pkt) {
     aa_id = rcv_pkt->aa_id;
     vt_id = rcv_pkt->vt_id;
 
-    printf("handler beacon\n");
+    printf("Beacon\n");
 
     /* Recent Received vt-id, aa-id */
-    vip_init_message(snd_pkt, VIP_TYPE_VRR, aa_id, vt_id, 0);
+    vip_init_message(snd_pkt, VIP_TYPE_VRR, aa_id, vt_id, vr_id);
     /* send to new aa */
     vip_set_ep_cooja(snd_pkt, src_addr, node_id, dest_addr, aa_id, VIP_AA_URL);
     /* set vr id to 0. it's mean not allocated*/
