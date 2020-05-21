@@ -177,6 +177,7 @@ void show_vt_table() {
 static void
 res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset)
 {
+  const char *src = NULL;
   printf("Received\n");
   // printf("LEN:%d\n", request->payload_len);
 
@@ -187,7 +188,12 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
     return;
   }
 
-  printf("[POST]Req addr:%s\n", request->uri_host);
+  
+
+  if(coap_get_query_variable(request, "src", &src)) {
+    vip_pkt->query_rcv_id = atoi(src);
+    printf("Success? = %d\n", vip_pkt->query_rcv_id);
+  }
   
   process_post(&aa_process, aa_rcv_event, (void *)vip_pkt);
   printf("after post\n");
