@@ -63,7 +63,7 @@ PROCESS_THREAD(aa_process, ev, data)
 
       if(ev == aa_rcv_event) {
         rcv_pkt = (vip_message_t *)data;
-        printf("type is %d\n", rcv_pkt->type);
+        printf("Type[%d]\n", rcv_pkt->type);
 
         vip_route(rcv_pkt, &aa_type_handler);
       }
@@ -71,8 +71,6 @@ PROCESS_THREAD(aa_process, ev, data)
         snd_pkt = (vip_message_t *)data;
         vip_request(snd_pkt);
       }
-
-      printf("EVENT!\n");
   }
 
   PROCESS_END();
@@ -80,13 +78,6 @@ PROCESS_THREAD(aa_process, ev, data)
 
 static void
 vip_request_callback(coap_callback_request_state_t *callback_state) {
-  coap_request_state_t *state = &callback_state->state;
-
-  if(state->status == COAP_REQUEST_STATUS_RESPONSE) {
-      printf("CODE:%d Payload_Len:%d\n", state->response->code, state->response->payload_len);
-      if(state->request)
-        printf("Path:%s\n", state->request->uri_host);
-  }
 }
 
 static void

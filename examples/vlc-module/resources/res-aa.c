@@ -129,6 +129,7 @@ void
 allocation_vr(vip_message_t* rcv_pkt) {
   mutex_try_lock(&p);
   int nonce = publish_nonce();
+  printf("Pub %d\n", nonce);
   /* Send nonce to vr using vrr. It's possble that vr doesn't receive vrr type in main flow */
   vip_set_ep_cooja(rcv_pkt, src_addr, node_id, dest_addr, rcv_pkt->query_rcv_id, VIP_VR_URL);
   /* use vr_id field to send the nonce */
@@ -185,7 +186,6 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
 {
   const char *src = NULL;
   printf("Received\n");
-  // printf("LEN:%d\n", request->payload_len);
 
   static vip_message_t vip_pkt[1];
   if (vip_parse_common_header(vip_pkt, request->payload, request->payload_len) != VIP_NO_ERROR)
@@ -198,17 +198,14 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
 
   if(coap_get_query_variable(request, "src", &src)) {
     vip_pkt->query_rcv_id = atoi(src);
-    printf("Success? = %d\n", vip_pkt->query_rcv_id);
   }
   
   process_post(&aa_process, aa_rcv_event, (void *)vip_pkt);
-  printf("after post\n");
 }
 
 static void
 handler_beacon(vip_message_t *rcv_pkt) {
   printf("I'm beacon handler [%s]\n", rcv_pkt->uplink_id);
-  
 }
 
 
