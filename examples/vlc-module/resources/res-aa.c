@@ -148,7 +148,7 @@ allocation_vr(vip_message_t* rcv_pkt) {
   vip_init_message(snd_pkt, VIP_TYPE_VRR, node_id, 0, nonce);
   vip_set_ep_cooja(snd_pkt, query, node_id, dest_addr, rcv_pkt->query_rcv_id, VIP_VR_URL);
   vip_serialize_message(snd_pkt, buffer);
-  vip_request(snd_pkt);
+  //vip_request(snd_pkt);
   //mutex_unlock(&p);
 }
 
