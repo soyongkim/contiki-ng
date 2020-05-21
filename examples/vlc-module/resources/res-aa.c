@@ -101,9 +101,6 @@ void
 allocation_vr(vip_message_t* rcv_pkt) {
   mutex_try_lock(&p);
   int nonce = publish_nonce();
-  vip_set_ep_cooja(rcv_pkt, src_addr, node_id, dest_addr, )
-
-
   mutex_unlock(&p);
 }
 
