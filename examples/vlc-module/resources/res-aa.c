@@ -128,7 +128,6 @@ expire_nonce() {
 void
 allocation_vr(vip_message_t* rcv_pkt) {
   mutex_try_lock(&p);
-  int nonce = publish_nonce();
   mutex_unlock(&p);
 }
 
