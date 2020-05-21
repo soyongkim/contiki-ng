@@ -25,7 +25,7 @@ extern vip_entity_t vr_type_handler;
 
 /* test event process */
 process_event_t vr_rcv_event;
-
+char query[11];
 
 static char test_addr[50];
 
