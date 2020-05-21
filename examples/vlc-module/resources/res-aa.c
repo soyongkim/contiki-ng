@@ -100,7 +100,7 @@ TYPE_HANDLER(aa_type_handler, handler_beacon, handler_vrr, handler_vra,
 int
 publish_nonce() {
   /* publish nonce_pool */
-  for(int i=0; i<65000; i++) {
+  for(int i=1; i<65000; i++) {
     if(!nonce_pool[i]) {
       nonce_pool[i] = 1;
       return i;
@@ -159,19 +159,6 @@ remove_vt_id_tuple(vip_vt_tuple_t* tuple) {
   free(tuple);
 }
 
-int
-find_node_id(int vt_id) {
-  vip_vt_tuple_t *c;
-  for(c = list_head(vt_table); c != NULL; c = c->next) {
-    if(c->vt_id == vt_id) {
-      /* found vt id */
-      return c->vt_id;
-    }
-  }
-
-  /* not found */
-  return 0;
-}
 
 void show_vt_table() {
   vip_vt_tuple_t *c;
