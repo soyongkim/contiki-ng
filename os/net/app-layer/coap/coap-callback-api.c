@@ -79,7 +79,7 @@ progress_request(coap_callback_request_state_t *callback_state) {
 
     coap_send_transaction(state->transaction);
     //LOG_DBG("Requested #%"PRIu32" (MID %u)\n", state->block_num, request->mid);
-    printf("Requested #%"PRIu32" (MID %u)\n", state->block_num, request->mid);
+    printf("Requested #%"PRIu32" (MID %x)\n", state->block_num, request->mid);
     return 1;
   }
   return 0;
@@ -101,6 +101,7 @@ coap_request_callback(void *callback_data, coap_message_t *response)
 
   if(!state->response) {
     LOG_WARN("Server not responding giving up...\n");
+    printf("-timeout-\n");
     state->status = COAP_REQUEST_STATUS_TIMEOUT;
     callback_state->callback(callback_state);
     return;
@@ -132,7 +133,7 @@ coap_request_callback(void *callback_data, coap_message_t *response)
 
   if(state->more) {
     if((state->block_error) < COAP_MAX_ATTEMPTS) {
-      printf("Re_transmit???\n");
+      printf("Re-transmit\n");
       progress_request(callback_state);
     } else {
       /* failure - now we give up and notify the callback */
