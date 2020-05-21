@@ -1,18 +1,5 @@
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include "aa.h"
-#include "coap-engine.h"
-#include "vip-interface.h"
-#include "net/netstack.h"
-
-/* for ROOT in RPL */
-#include "contiki-net.h"
-
-/* Node ID */
-#include "sys/node-id.h"
-
 /*
  * Resources to be activated need to be imported through the extern keyword.
  * The build system automatically compiles the resources in the corresponding sub-directory.

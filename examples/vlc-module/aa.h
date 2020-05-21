@@ -1,5 +1,19 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
 #include "contiki.h"
 #include "coap-callback-api.h"
+#include "coap-engine.h"
+#include "vip-interface.h"
+#include "net/netstack.h"
+
+/* for ROOT in RPL */
+#include "contiki-net.h"
+
+/* Node ID */
+#include "sys/node-id.h"
+
 
 extern process_event_t aa_rcv_event;
 extern process_event_t aa_snd_event;
