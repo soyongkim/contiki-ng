@@ -131,10 +131,11 @@ allocation_vr(vip_message_t* rcv_pkt) {
   int nonce = publish_nonce();
   printf("Pub %d\n", nonce);
   /* Send nonce to vr using vrr. It's possble that vr doesn't receive vrr type in main flow */
-  vip_set_ep_cooja(rcv_pkt, src_addr, node_id, dest_addr, rcv_pkt->query_rcv_id, VIP_VR_URL);
   /* use vr_id field to send the nonce */
-  vip_set_type_header_vr_id(rcv_pkt, nonce);
-  process_post(&aa_process, aa_snd_event, (void *)rcv_pkt);
+  vip_init_message(snd_pkt, VIP_TYPE_VRR, node_id, 0, nonce);
+  vip_set_ep_cooja(snd_pkt, src_addr, node_id, dest_addr, rcv_pkt->query_rcv_id, VIP_VR_URL);
+  vip_serialize_message(snd_pkt, buffer);
+  process_post(&aa_process, aa_snd_event, (void *)snd_pkt);
   mutex_unlock(&p);
 }
 
