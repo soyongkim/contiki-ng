@@ -33,7 +33,6 @@ process_event_t vr_rcv_event, vr_snd_event;
 static coap_callback_request_state_t callback_state;
 static coap_endpoint_t dest_ep;
 static coap_message_t request[1];
-static char query[11] = { "?src=" };
 
 
 static char test_addr[50];
