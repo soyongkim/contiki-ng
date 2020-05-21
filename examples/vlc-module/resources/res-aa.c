@@ -148,7 +148,6 @@ allocation_vr(vip_message_t* rcv_pkt) {
   vip_init_message(snd_pkt, VIP_TYPE_VRR, node_id, 0, nonce);
   vip_set_ep_cooja(snd_pkt, src_addr, node_id, dest_addr, rcv_pkt->query_rcv_id, VIP_VR_URL);
   vip_serialize_message(snd_pkt, buffer);
-  //process_post(&aa_process, aa_snd_event, (void *)snd_pkt);
   vip_request(snd_pkt);
   mutex_unlock(&p);
 }
@@ -158,7 +157,7 @@ handover_vr(vip_message_t* rcv_pkt) {
   /* forward to vg */
   vip_set_ep_cooja(rcv_pkt, src_addr, node_id, dest_addr, VIP_VG_ID, VIP_VT_URL);
   printf("forward to vg(%d)\n", VIP_VG_ID);
-  process_post(&aa_process, aa_snd_event, (void *)rcv_pkt);
+  vip_request(rcv_pkt);
 }
 
 void
@@ -216,7 +215,7 @@ handler_vrr(vip_message_t *rcv_pkt) {
       allocation_vr(rcv_pkt);
   }
   else {
-    handover_vr(rcv_pkt);
+      handover_vr(rcv_pkt);
   }
 }
 
@@ -228,8 +227,7 @@ handler_vra(vip_message_t *rcv_pkt) {
   vip_set_type_header_nonce(rcv_pkt, published_nonce);
 
   printf("forward to vt(%d)\n", rcv_pkt->vt_id);
-  //process_post(&aa_process, aa_snd_event, (void *)rcv_pkt);
-   vip_request(snd_pkt);
+  vip_request(snd_pkt);
 }
 
 static void
@@ -280,9 +278,7 @@ allocate_vt_handler(vip_message_t *rcv_pkt) {
   vip_set_payload(snd_pkt, (void *)uplink_id, strlen(uplink_id));
 
   vip_serialize_message(snd_pkt, buffer);
-  //printf("total? %d\n", snd_pkt->total_len);
-  //process_post(&aa_process, aa_snd_event, (void *)snd_pkt);
-   vip_request(snd_pkt);
+  vip_request(snd_pkt);
 }
 
 
@@ -296,8 +292,7 @@ res_periodic_ad_handler(void)
   vip_init_message(snd_pkt, VIP_TYPE_ALLOW, node_id, 0, 0);
   vip_set_ep_cooja(snd_pkt, src_addr, node_id, dest_addr, 0, VIP_VT_URL);
   vip_serialize_message(snd_pkt, buffer);
-  //process_post(&aa_process, aa_snd_event, (void *)snd_pkt);
-   vip_request(snd_pkt);
+  vip_request(snd_pkt);
 }
 
 
