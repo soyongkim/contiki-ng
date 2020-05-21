@@ -16,6 +16,12 @@
 #include "sys/node-id.h"
 
 
+#include "os/sys/log.h"
+#define LOG_MODULE "vr"
+#define LOG_LEVEL LOG_LEVEL_DBG
+
+
+
 /*
  * Resources to be activated need to be imported through the extern keyword.
  * The build system automatically compiles the resources in the corresponding sub-directory.
