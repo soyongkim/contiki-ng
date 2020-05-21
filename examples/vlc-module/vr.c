@@ -32,6 +32,7 @@ process_event_t vr_rcv_event, vr_snd_event;
 static coap_callback_request_state_t callback_state;
 static coap_endpoint_t dest_ep;
 static coap_message_t request[1];
+static char query[11] = { "?src=" };
 
 PROCESS(vr_process, "VR");
 AUTOSTART_PROCESSES(&vr_process);
@@ -40,8 +41,9 @@ PROCESS_THREAD(vr_process, ev, data)
 {
   PROCESS_BEGIN();
   PROCESS_PAUSE();
+  sprintf(query + 5, "%d", node_id);
+  printf("Query: %s\n", query);
 
-  printf("Node ID is %d\n", node_id);
 
   vr_rcv_event = process_alloc_event();
   vr_snd_event = process_alloc_event();
@@ -93,7 +95,8 @@ vip_request(vip_message_t *snd_pkt) {
   coap_endpoint_parse(snd_pkt->dest_coap_addr, strlen(snd_pkt->dest_coap_addr), &dest_ep);
   coap_init_message(request, COAP_TYPE_CON, COAP_POST, 0);
   coap_set_header_uri_path(request, snd_pkt->dest_path);
-  coap_set_header_uri_host(request, snd_pkt->src_coap_addr);
+  //coap_set_header_uri_host(request, snd_pkt->src_coap_addr);
+  coap_set_header_uri_query(snd_pkt, 
   coap_set_payload(request, snd_pkt->buffer, snd_pkt->total_len);
 
   printf("VR Request to %s(%d)\n", snd_pkt->dest_coap_addr, snd_pkt->type);

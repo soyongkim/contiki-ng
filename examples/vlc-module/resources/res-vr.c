@@ -103,8 +103,12 @@ handler_beacon(vip_message_t *rcv_pkt) {
 }
 
 
+/* Receive Nonce from AA */
 static void
 handler_vrr(vip_message_t *rcv_pkt) {
+  
+
+
 }
 
 static void

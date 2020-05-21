@@ -100,9 +100,12 @@ TYPE_HANDLER(aa_type_handler, handler_beacon, handler_vrr, handler_vra,
 void
 allocation_vr(vip_message_t* rcv_pkt) {
   mutex_try_lock(&p);
+  int nonce = publish_nonce();
+  vip_set_ep_cooja(rcv_pkt, src_addr, node_id, dest_addr, )
+
+
   mutex_unlock(&p);
 }
-
 
 void
 handover_vr(vip_message_t* rcv_pkt) {
@@ -112,19 +115,16 @@ handover_vr(vip_message_t* rcv_pkt) {
   process_post(&aa_process, aa_snd_event, (void *)rcv_pkt);
 }
 
-
 int
 publish_nonce() {
-  int nonce = 0;
   /* publish nonce_pool */
   for(int i=0; i<65000; i++) {
     if(!nonce_pool[i]) {
       nonce_pool[i] = 1;
-      nonce = i;
-      break;
+      return i;
     }
   }
-  return nonce;
+  return 0;
 }
 
 int expire_nonce() {
@@ -193,10 +193,7 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
   }
 
   printf("[POST]Req addr:%s\n", request->uri_host);
-
-  make_coap_uri(src_addr, node_id);
-  coap_set_header_uri_host(response, src_addr);
-
+  
   process_post(&aa_process, aa_rcv_event, (void *)vip_pkt);
   printf("after post\n");
 }
