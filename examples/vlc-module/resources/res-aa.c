@@ -142,7 +142,7 @@ void
 allocation_vr(vip_message_t* rcv_pkt) {
   //mutex_try_lock(&p);
   int nonce = publish_nonce();
-  printf("Pub %d / Query : %d\n", nonce, rcv_pkt->query_rcv_id);
+  printf("[Pub]: %d\n", nonce);
   /* Send nonce to vr using vrr. It's possble that vr doesn't receive vrr type in main flow */
   /* use vr_id field to send the nonce */
   vip_init_message(snd_pkt, VIP_TYPE_VRR, node_id, 0, nonce);
