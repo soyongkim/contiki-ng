@@ -72,8 +72,8 @@ LIST(vt_table);
 /* for snd-pkt */
 static vip_message_t snd_pkt[1];
 static uint8_t buffer[50];
-static char src_addr[50], dest_addr[50];
-
+static char dest_addr[50];
+static char query[11] = { "?src=" };
 
 static int nonce_pool[65000];
 static mutex_t p, e;
@@ -146,7 +146,7 @@ allocation_vr(vip_message_t* rcv_pkt) {
   /* Send nonce to vr using vrr. It's possble that vr doesn't receive vrr type in main flow */
   /* use vr_id field to send the nonce */
   vip_init_message(snd_pkt, VIP_TYPE_VRR, node_id, 0, nonce);
-  vip_set_ep_cooja(snd_pkt, src_addr, node_id, dest_addr, rcv_pkt->query_rcv_id, VIP_VR_URL);
+  vip_set_ep_cooja(snd_pkt, query, node_id, dest_addr, rcv_pkt->query_rcv_id, VIP_VR_URL);
   vip_serialize_message(snd_pkt, buffer);
   vip_request(snd_pkt);
   mutex_unlock(&p);
@@ -155,7 +155,7 @@ allocation_vr(vip_message_t* rcv_pkt) {
 void
 handover_vr(vip_message_t* rcv_pkt) {
   /* forward to vg */
-  vip_set_ep_cooja(rcv_pkt, src_addr, node_id, dest_addr, VIP_VG_ID, VIP_VT_URL);
+  vip_set_ep_cooja(rcv_pkt, query, node_id, dest_addr, VIP_VG_ID, VIP_VT_URL);
   printf("forward to vg(%d)\n", VIP_VG_ID);
   vip_request(rcv_pkt);
 }
@@ -223,7 +223,7 @@ static void
 handler_vra(vip_message_t *rcv_pkt) {
   int published_nonce = expire_nonce();
   /* forward to vt */
-  vip_set_ep_cooja(rcv_pkt, src_addr, node_id, dest_addr, rcv_pkt->vt_id, VIP_VT_URL);
+  vip_set_ep_cooja(rcv_pkt, query, node_id, dest_addr, rcv_pkt->vt_id, VIP_VT_URL);
   vip_set_type_header_nonce(rcv_pkt, published_nonce);
 
   printf("forward to vt(%d)\n", rcv_pkt->vt_id);
@@ -273,7 +273,7 @@ allocate_vt_handler(vip_message_t *rcv_pkt) {
 
   /* pkt, type, aa-id(node_id), vt-id(target vt's node id) */
   vip_init_message(snd_pkt, VIP_TYPE_ALLOW, node_id, rcv_pkt->vt_id, 0);
-  vip_set_ep_cooja(snd_pkt, src_addr, node_id, dest_addr, rcv_pkt->vt_id, VIP_VT_URL);
+  vip_set_ep_cooja(snd_pkt, query, node_id, dest_addr, rcv_pkt->vt_id, VIP_VT_URL);
 
   vip_set_payload(snd_pkt, (void *)uplink_id, strlen(uplink_id));
 
@@ -290,7 +290,7 @@ res_periodic_ad_handler(void)
 
   /* pkt, type, aa-id(node_id), vt-id */
   vip_init_message(snd_pkt, VIP_TYPE_ALLOW, node_id, 0, 0);
-  vip_set_ep_cooja(snd_pkt, src_addr, node_id, dest_addr, 0, VIP_VT_URL);
+  vip_set_ep_cooja(snd_pkt, query, node_id, dest_addr, 0, VIP_VT_URL);
   vip_serialize_message(snd_pkt, buffer);
   vip_request(snd_pkt);
 }
@@ -315,9 +315,9 @@ vip_request(vip_message_t *snd_pkt) {
   coap_endpoint_parse(snd_pkt->dest_coap_addr, strlen(snd_pkt->dest_coap_addr), &dest_ep);
   coap_init_message(request, COAP_TYPE_CON, COAP_POST, 0);
   coap_set_header_uri_path(request, snd_pkt->dest_path);
-  coap_set_header_uri_query(request, query);
+  coap_set_header_uri_query(request, snd_pkt->query);
   coap_set_payload(request, snd_pkt->buffer, snd_pkt->total_len);
 
-  printf("Send from %s to %s %s\n", snd_pkt->dest_coap_addr, snd_pkt->src_coap_addr, query);
+  printf("Send from %s to %s\n", snd_pkt->query, snd_pkt->dest_coap_addr);
   coap_send_request(&callback_state, &dest_ep, request, vip_request_callback);
 }

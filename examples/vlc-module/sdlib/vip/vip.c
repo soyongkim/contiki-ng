@@ -429,11 +429,11 @@ vip_set_dest_ep(vip_message_t *vip_pkt, char *dest_addr, char *dest_path) {
 
 
 void 
-vip_set_ep_cooja(vip_message_t *vip_pkt, char* src_addr, int src_id, char* dest_addr, int dest_id, char *path)
+vip_set_ep_cooja(vip_message_t *vip_pkt, char* query, int src_id, char* dest_addr, int dest_id, char *path)
 {
-    make_coap_uri(src_addr, src_id);
+    sprintf(query + 5, "%d", src_id);
     make_coap_uri(dest_addr, dest_id);
-    vip_pkt->src_coap_addr = src_addr;
+    vip_pkt->query = query;
     vip_pkt->dest_coap_addr = dest_addr;
     vip_pkt->dest_path = path;
 }

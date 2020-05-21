@@ -32,7 +32,6 @@ PROCESS_THREAD(aa_process, ev, data)
   PROCESS_BEGIN();
   PROCESS_PAUSE();
 
-  sprintf(query + 5, "%d", node_id);
 
   aa_rcv_event = process_alloc_event();
   

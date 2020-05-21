@@ -66,8 +66,8 @@ static void request_vt_id_handler(vip_message_t *rcv_pkt);
 static vip_message_t snd_pkt[1];
 static uint8_t buffer[50];
 static int vt_id, aa_id;
-static char src_addr[50], dest_addr[50];
-
+static char dest_addr[50];
+static char query[11] = { "?src=" };
 
 static char uplink_id[50];
 
@@ -115,7 +115,7 @@ beaconing() {
     printf("Beaconing...\n");
     /* you have to comfirm that the type field is fulled */
     vip_init_message(snd_pkt, VIP_TYPE_BEACON, aa_id, vt_id, 0);
-    vip_set_ep_cooja(snd_pkt, src_addr, vt_id, dest_addr, 0, VIP_VR_URL);
+    vip_set_ep_cooja(snd_pkt, query, vt_id, dest_addr, 0, VIP_VR_URL);
 
     vip_set_type_header_uplink_id(snd_pkt, uplink_id);
     vip_serialize_message(snd_pkt, buffer);
@@ -178,7 +178,7 @@ request_vt_id_handler(vip_message_t *rcv_pkt) {
 
     /* send ack pkt for ad pkt */
     vip_init_message(snd_pkt, VIP_TYPE_ALLOW, rcv_pkt->aa_id, node_id, 0);
-    vip_set_ep_cooja(snd_pkt, src_addr, node_id, dest_addr, rcv_pkt->aa_id, VIP_AA_URL);
+    vip_set_ep_cooja(snd_pkt, query, node_id, dest_addr, rcv_pkt->aa_id, VIP_AA_URL);
     vip_serialize_message(snd_pkt, buffer);
 
     process_post(&vt_process, vt_snd_event, (void *)snd_pkt);

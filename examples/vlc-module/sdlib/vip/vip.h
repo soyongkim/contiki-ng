@@ -28,7 +28,7 @@ typedef struct {
     uint32_t nonce;
 
     /* for target handler */
-    char *src_coap_addr, *dest_coap_addr, *dest_path;
+    char *query, *dest_coap_addr, *dest_path;
     uint32_t query_rcv_id;
 } vip_message_t;
 
