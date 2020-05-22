@@ -1,6 +1,7 @@
 #include "net/ipv6/uip.h"
 #include "vip-constants.h"
 
+typedef struct vip_vt_tuple vip_vt_tuple_t;
 typedef struct vip_nonce_tuple vip_nonce_tuple_t;
 typedef struct vip_vr_session_tuple vip_vr_session_tuple_t;
 
@@ -32,6 +33,10 @@ typedef struct {
     uint32_t query_rcv_id;
 } vip_message_t;
 
+struct vip_vt_tuple {
+    vip_vt_tuple_t *next;
+    int vt_id;
+};
 
 struct vip_nonce_tuple {
     vip_nonce_tuple_t *next;

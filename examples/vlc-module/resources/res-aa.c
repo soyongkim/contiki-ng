@@ -67,6 +67,7 @@ static void handler_sda(vip_message_t *rcv_pkt);
 static void allocate_vt_handler(vip_message_t *rcv_pkt);
 
 /* make vt table which administrate the vt id */
+LIST(vt_table);
 LIST(vr_nonce_table);
 
 /* for snd-pkt */
@@ -80,7 +81,7 @@ static vip_message_t ack_pkt[1];
 
 
 static int nonce_pool[65000];
-//static mutex_t p, e;
+static mutex_t p;
 
 static char uplink_id[50] = {"ISL_AA_UPLINK_ID"};
 
@@ -115,6 +116,7 @@ TYPE_HANDLER(aa_type_handler, handler_beacon, handler_vrr, handler_vra,
 
 int
 publish_nonce() {
+  mutex_try_lock(&p);
   /* publish nonce_pool */
   for(int i=1; i<65000; i++) {
     if(!nonce_pool[i]) {
@@ -122,6 +124,7 @@ publish_nonce() {
       return i;
     }
   }
+  mutex_unlock(&p);
   return 0;
 }
 
@@ -167,6 +170,30 @@ vip_check_nonce_table(int vr_node_id) {
   }
   return NULL;
 }
+
+
+void
+add_vt_id_tuple(int node_id) {
+  vip_vt_tuple_t *new_tuple = malloc(sizeof(vip_vt_tuple_t));
+  new_tuple->vt_id = node_id;
+  list_add(vt_table, new_tuple);
+}
+
+void
+remove_vt_id_tuple(vip_vt_tuple_t* tuple) {
+  list_remove(vt_table, tuple);
+  free(tuple);
+}
+
+
+void show_vt_table() {
+  vip_vt_tuple_t *c;
+  for(c = list_head(vt_table); c != NULL; c = c->next) {
+    printf("[aa(%d) -> vt(%d):]\n", node_id, c->vt_id);
+  }
+}
+
+
 
 void
 allocation_vr(vip_message_t* rcv_pkt) {
@@ -242,7 +269,7 @@ handler_vrr(vip_message_t *rcv_pkt) {
     printf("forward to vg..\n");
     vip_set_ep_cooja(rcv_pkt, query, node_id, dest_addr, VIP_VG_ID, VIP_VG_URL);
     vip_serialize_message(rcv_pkt, buffer);
-    vip_request(rcv_pkt);
+    //vip_request(rcv_pkt);
   }
   else
   {
@@ -308,6 +335,9 @@ handler_sda(vip_message_t *rcv_pkt) {
 
 static void
 allocate_vt_handler(vip_message_t *rcv_pkt) {
+  add_vt_id_tuple(rcv_pkt->vt_id);
+  show_vt_table();
+
   /* pkt, type, aa-id(node_id), vt-id(target vt's node id) */
   vip_init_message(snd_pkt, VIP_TYPE_ALLOW, node_id, rcv_pkt->vt_id, 0);
   vip_set_ep_cooja(snd_pkt, query, node_id, dest_addr, rcv_pkt->vt_id, VIP_VT_URL);
