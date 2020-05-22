@@ -113,38 +113,6 @@ TYPE_HANDLER(aa_type_handler, handler_beacon, handler_vrr, handler_vra,
               handler_vrc, handler_rel, handler_ser, handler_sea, handler_sec,
               handler_sd, handler_sda, allocate_vt_handler);
 
-
-int
-vip_add_nonce_table(int vr_node_id) {
-  vip_nonce_tuple_t* new_tuple = malloc(sizeof(vip_nonce_tuple_t));
-  new_tuple->nonce = publish_nonce();
-  new_tuple->vr_node_id = vr_node_id;
-  list_add(vr_nonce_table, new_tuple);
-
-  return new_tuple->nonce;
-}
-
-void
-vip_remove_nonce_table(vip_nonce_tuple_t* tuple) {
-  list_remove(vr_nonce_table, tuple);
-  free(tuple);
-}
-
-vip_nonce_tuple_t*
-vip_check_nonce_table(int vr_node_id) {
-  vip_nonce_tuple_t* c;
-  for(c = list_head(vr_nonce_table); c != NULL; c = c->next) {
-    if(c->vr_node_id == vr_node_id) {
-        return c;
-    }
-  }
-  return NULL;
-}
-
-
-
-
-
 int
 publish_nonce() {
   /* publish nonce_pool */
@@ -171,6 +139,33 @@ expire_nonce() {
   }
   //mutex_unlock(&e);
   return nonce;
+}
+
+int
+vip_add_nonce_table(int vr_node_id) {
+  vip_nonce_tuple_t* new_tuple = malloc(sizeof(vip_nonce_tuple_t));
+  new_tuple->nonce = publish_nonce();
+  new_tuple->vr_node_id = vr_node_id;
+  list_add(vr_nonce_table, new_tuple);
+
+  return new_tuple->nonce;
+}
+
+void
+vip_remove_nonce_table(vip_nonce_tuple_t* tuple) {
+  list_remove(vr_nonce_table, tuple);
+  free(tuple);
+}
+
+vip_nonce_tuple_t*
+vip_check_nonce_table(int vr_node_id) {
+  vip_nonce_tuple_t* c;
+  for(c = list_head(vr_nonce_table); c != NULL; c = c->next) {
+    if(c->vr_node_id == vr_node_id) {
+        return c;
+    }
+  }
+  return NULL;
 }
 
 void
