@@ -105,6 +105,7 @@ handler_beacon(vip_message_t *rcv_pkt) {
     vip_init_message(snd_pkt, VIP_TYPE_VRR, aa_id, vt_id, vr_id);
     /* send to new aa */
     vip_set_ep_cooja(snd_pkt, query, node_id, dest_addr, aa_id, VIP_AA_URL);
+    vip_set_type_header_nonce(snd_pkt, 0);
     /* set vr id to 0. it's mean not allocated*/
     vip_serialize_message(snd_pkt, buffer);
 
