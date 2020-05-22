@@ -192,7 +192,7 @@ vip_request_callback(coap_callback_request_state_t *res_callback_state) {
   if(state->status == COAP_REQUEST_STATUS_RESPONSE) {
       printf("Ack:%d - mid(%x)\n", state->response->code, state->response->mid);
       if(state->response->code < 100) {
-        if(coap_get_query_variable(request, "src", &src)) {
+        if(coap_get_query_variable(state->response, "src", &src)) {
           nonce = atoi(src);
           printf("Nonce: %d\n", nonce);
         }
