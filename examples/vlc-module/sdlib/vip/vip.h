@@ -1,7 +1,7 @@
 #include "net/ipv6/uip.h"
 #include "vip-constants.h"
 
-typedef struct vip_vt_tuple vip_vt_tuple_t;
+typedef struct vip_nonce_tuple vip_nonce_tuple_t;
 typedef struct vip_vr_session_tuple vip_vr_session_tuple_t;
 
 /* message struct */
@@ -33,9 +33,10 @@ typedef struct {
 } vip_message_t;
 
 
-struct vip_vt_tuple {
-    vip_vt_tuple_t *next;
-    int vt_id;
+struct vip_nonce_tuple {
+    vip_nonce_tuple_t *next;
+    int nonce;
+    int vr_node_id;
 };
 
 
@@ -55,6 +56,7 @@ struct vip_vr_session_tuple {
 
 /* Interface for vip-pkt Serializaion */
 void vip_init_message(vip_message_t *message, uint8_t type, uint16_t aa_id, uint16_t vt_id, uint32_t vr_id);
+void vip_clear_message(vip_message_t *vip_pkt);
 int vip_serialize_message(vip_message_t *message, uint8_t *buffer);
 int vip_set_dest_ep(vip_message_t *message, char *dest_addr, char *dest_url);
 

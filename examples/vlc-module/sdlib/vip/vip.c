@@ -35,6 +35,11 @@ void vip_init_message(vip_message_t *vip_pkt, uint8_t type,
     vip_pkt->vr_id = vr_id;
 }
 
+void vip_clear_message(vip_message_t *vip_pkt) {
+    memset(vip_pkt, 0, sizeof(vip_message_t));
+}
+
+
 int vip_int_serialize(unsigned int cur_offset, unsigned int space, uint8_t *buffer, uint32_t value)
 {
     switch (space)
@@ -111,6 +116,9 @@ int vip_serialize_message(vip_message_t *vip_pkt, uint8_t *buffer)
         /* code */
         total_len += vip_serialize_beacon(vip_pkt);
         break;
+    case VIP_TYPE_VRR:
+        total_len += vip_serialize_VRR(vip_pkt);
+        break;
     case VIP_TYPE_VRA:
         /* code */
         total_len += vip_serialize_VRA(vip_pkt);
@@ -171,7 +179,12 @@ vip_serialize_beacon(vip_message_t *vip_pkt)
 int
 vip_serialize_VRR(vip_message_t *vip_pkt)
 {
-    return 0;
+    uint8_t *offset = vip_pkt->buffer + VIP_COMMON_HEADER_LEN;
+    unsigned int index = 0;
+    index += vip_int_serialize(index, 4, offset, vip_pkt->nonce);
+
+    printf("Serialize VR-ID:%d | Nonce:%d\n",vip_pkt->vr_id, vip_pkt->nonce);
+    return index;
 }
 
 int
@@ -431,6 +444,7 @@ vip_set_dest_ep(vip_message_t *vip_pkt, char *dest_addr, char *dest_path) {
 void 
 vip_set_ep_cooja(vip_message_t *vip_pkt, char* query, int src_id, char* dest_addr, int dest_id, char *path)
 {
+
     sprintf(query + 5, "%d", src_id);
     make_coap_uri(dest_addr, dest_id);
     vip_pkt->query = query;

@@ -67,13 +67,17 @@ static void handler_sda(vip_message_t *rcv_pkt);
 static void allocate_vt_handler(vip_message_t *rcv_pkt);
 
 /* make vt table which administrate the vt id */
-LIST(vt_table);
+LIST(vr_nonce_table);
 
 /* for snd-pkt */
 static vip_message_t snd_pkt[1];
 static uint8_t buffer[50];
 static char dest_addr[50];
 static char query[11] = { "?src=" };
+
+/* for ack */
+static vip_message_t ack_pkt[1];
+
 
 static int nonce_pool[65000];
 //static mutex_t p, e;
@@ -108,6 +112,37 @@ PERIODIC_RESOURCE(res_aa,
 TYPE_HANDLER(aa_type_handler, handler_beacon, handler_vrr, handler_vra, 
               handler_vrc, handler_rel, handler_ser, handler_sea, handler_sec,
               handler_sd, handler_sda, allocate_vt_handler);
+
+
+int
+vip_add_nonce_table(int vr_node_id) {
+  vip_nonce_tuple_t* new_tuple = malloc(sizeof(vip_nonce_tuple_t));
+  new_tuple->nonce = publish_nonce();
+  new_tuple->vr_node_id = vr_node_id;
+  list_add(vr_nonce_table, new_tuple);
+
+  return new_tuple->nonce;
+}
+
+void
+vip_remove_nonce_table(vip_nonce_tuple_t* tuple) {
+  list_remove(vr_nonce_table, tuple);
+  free(tuple);
+}
+
+vip_nonce_tuple_t*
+vip_check_nonce_table(int vr_node_id) {
+  vip_nonce_tuple_t* c;
+  for(c = list_head(vr_nonce_table); c != NULL; c = c->next) {
+    if(c->vr_node_id == vr_node_id) {
+        return c;
+    }
+  }
+  return NULL;
+}
+
+
+
 
 
 int
@@ -160,27 +195,6 @@ handover_vr(vip_message_t* rcv_pkt) {
   vip_request(rcv_pkt);
 }
 
-void
-add_vt_id_tuple(int node_id) {
-  vip_vt_tuple_t *new_tuple = malloc(sizeof(vip_vt_tuple_t));
-  new_tuple->vt_id = node_id;
-  list_add(vt_table, new_tuple);
-}
-
-void
-remove_vt_id_tuple(vip_vt_tuple_t* tuple) {
-  list_remove(vt_table, tuple);
-  free(tuple);
-}
-
-
-void show_vt_table() {
-  vip_vt_tuple_t *c;
-  for(c = list_head(vt_table); c != NULL; c = c->next) {
-    printf("[aa(%d) -> vt(%d):]\n", node_id, c->vt_id);
-  }
-}
-
 /* called by coap-engine proc */
 static void
 res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset)
@@ -188,19 +202,30 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
   const char *src = NULL;
   printf("Received - mid(%x)\n", request->mid);
 
-  static vip_message_t vip_pkt[1];
-  if (vip_parse_common_header(vip_pkt, request->payload, request->payload_len) != VIP_NO_ERROR)
+  static vip_message_t rcv_pkt[1];
+  if (vip_parse_common_header(rcv_pkt, request->payload, request->payload_len) != VIP_NO_ERROR)
   {
     printf("VIP: Not VIP Packet\n");
     return;
   }
 
-
   if(coap_get_query_variable(request, "src", &src)) {
-    vip_pkt->query_rcv_id = atoi(src);
+    rcv_pkt->query_rcv_id = atoi(src);
   }
-  
-  process_post(&aa_process, aa_rcv_event, (void *)vip_pkt);
+
+
+  vip_route(rcv_pkt, &aa_type_handler);
+
+
+  if(ack_pkt->total_len > 0) {
+    //coap_set_payload(response, ack_pkt->buffer, ack_pkt->total_len);
+    coap_set_header_uri_query(response, query);
+    ack_pkt->total_len = 0;
+  }
+
+
+  /* where is best place for change process */
+  //process_post(&aa_process, aa_rcv_event, (void *)rcv_pkt);
 }
 
 static void
@@ -211,12 +236,32 @@ handler_beacon(vip_message_t *rcv_pkt) {
 
 static void
 handler_vrr(vip_message_t *rcv_pkt) {
-  if(!rcv_pkt->vr_id) {
-      allocation_vr(rcv_pkt);
+  vip_nonce_tuple_t *chk;
+  int nonce;
+  if (!(chk = vip_check_nonce_tuple()))
+  {
+    /* publish new nonce to the vr */
+    nonce = vip_add_nonce_table(rcv_pkt->query_rcv_id);
+
+    /* Send vrr to vg */
+    printf("forward to vg..\n");
+    vip_set_ep_cooja(rcv_pkt, query, node_id, dest_addr, VIP_VG_ID, VIP_VG_URL);
+    vip_serialize_message(rcv_pkt, buffer);
+    vip_request(rcv_pkt);
   }
-  else {
-      handover_vr(rcv_pkt);
+  else
+  {
+    nonce = chk->nonce;
   }
+
+  /* Set payload for ack */
+  printf("Setting Ack..\n");
+  vip_init_message(ack_pkt, VIP_TYPE_VRR, rcv_pkt->aa_id, rcv_pkt->vt_id, rcv_pkt->vr_id);
+  vip_set_type_header_nonce(ack_pkt, nonce);
+  vip_serialize_message(ack_pkt, buffer);
+  /* test */
+  vip_set_ep_cooja(ack_pkt, query, nonce, dest_addr, rcv_pkt->vt_id, VIP_VR_URL);
+
 }
 
 static void
@@ -232,7 +277,8 @@ handler_vra(vip_message_t *rcv_pkt) {
 
 static void
 handler_vrc(vip_message_t *rcv_pkt) {
-  
+  /* remove nonce tuple if vrc received */
+  vip_remove_nonce_table(vip_check_nonce_table(rcv_pkt->query_rcv_id));
 }
 
 static void
@@ -302,9 +348,8 @@ vip_request_callback(coap_callback_request_state_t *res_callback_state) {
 
   if(state->status == COAP_REQUEST_STATUS_RESPONSE) {
       printf("Ack:%d - mid(%x)\n", state->response->code, state->response->mid);
-      if(state->response->code > 100) {
-          //printf("4.xx -> So.. try to retransmit\n");
-          //coap_send_request(&callback_state, &dest_ep, state->request, vip_request_callback);
+      if(state->response->code < 100) {
+        
       }
   }
 }

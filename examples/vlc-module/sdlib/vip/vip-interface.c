@@ -17,7 +17,7 @@ vip_route(vip_message_t *vip_pkt, vip_entity_t *type_handler) {
         type_handler->beacon_handler(vip_pkt);
         break;
     case VIP_TYPE_VRR:
-        /* code */
+        vip_parse_VRR(vip_pkt);
         type_handler->vrr_handler(vip_pkt);
         break;
     case VIP_TYPE_VRA:
