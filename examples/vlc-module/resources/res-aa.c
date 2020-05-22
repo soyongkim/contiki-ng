@@ -260,7 +260,7 @@ static void
 handler_vrr(vip_message_t *rcv_pkt) {
   vip_nonce_tuple_t *chk;
   int nonce;
-  if (!(chk = vip_check_nonce_table(rcv_pkt->nonce)))
+  if (!(chk = vip_check_nonce_table(rcv_pkt->query_rcv_id)))
   {
     /* publish new nonce to the vr */
     nonce = vip_add_nonce_table(rcv_pkt->query_rcv_id);
