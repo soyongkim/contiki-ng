@@ -308,10 +308,6 @@ handler_sda(vip_message_t *rcv_pkt) {
 
 static void
 allocate_vt_handler(vip_message_t *rcv_pkt) {
-  /* rcv_pkt->vt_id is the vt's "NODE ID" */
-  add_vt_id_tuple(rcv_pkt->vt_id);
-  show_vt_table();
-
   /* pkt, type, aa-id(node_id), vt-id(target vt's node id) */
   vip_init_message(snd_pkt, VIP_TYPE_ALLOW, node_id, rcv_pkt->vt_id, 0);
   vip_set_ep_cooja(snd_pkt, query, node_id, dest_addr, rcv_pkt->vt_id, VIP_VT_URL);
