@@ -43,7 +43,7 @@ static vip_message_t ack_pkt[1];
 static char ack_query[50];
 
 static int nonce_pool[65000];
-static mutex_t p, v, e;
+static mutex_t p;
 
 static char uplink_id[50] = {"ISL_AA_UPLINK_ID"};
 
