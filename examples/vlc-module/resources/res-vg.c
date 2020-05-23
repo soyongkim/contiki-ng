@@ -34,14 +34,8 @@ static uint8_t buffer[50];
 
 /* use ack for query */
 static vip_message_t ack_pkt[1];
-static char ack_query[50];
 
 static mutex_t v;
-
-/* for send packet */
-static coap_callback_request_state_t callback_state;
-static coap_endpoint_t dest_ep;
-static coap_message_t request[1];
 
 
 
@@ -163,10 +157,10 @@ static void
 handler_vrr(vip_message_t *rcv_pkt) {
   vip_nonce_tuple_t *chk;
   int alloc_vr_id;
-  if (!(chk = check_vr_table(rcv_pkt->nonce)))
+  if (!(chk = check_nonce_table(rcv_pkt->nonce)))
   {
     /* publish new vr-id */
-    alloc_vr_id = add_vr_table(rcv_pkt->nonce);
+    alloc_vr_id = add_nonce_table(rcv_pkt->nonce);
   }
   else
   {
