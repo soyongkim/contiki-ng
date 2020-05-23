@@ -142,7 +142,7 @@ beaconing() {
     vip_set_dest_ep_cooja(snd_pkt, dest_addr, VIP_BROADCAST, VIP_VR_URL);
     vip_set_type_header_uplink_id(snd_pkt, uplink_id);
     vip_serialize_message(snd_pkt, buffer);
-    process_post(&vt_process, vt_snd_event, (void *)snd_pkt);
+    vip_request(snd_pkt);
   }
 }
 
