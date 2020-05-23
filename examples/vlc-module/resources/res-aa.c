@@ -316,8 +316,6 @@ vip_request_callback(coap_callback_request_state_t *res_callback_state) {
   /* Process ack-pkt from vg */
   if (state->status == COAP_REQUEST_STATUS_RESPONSE)
   {
-   const uint8_t *chunk;
-
     vip_message_t rcv_ack[1];
 
     printf("[RES] Ack:%d - mid(%x) - payload_len(%d)\n", state->response->code, state->response->mid, state->response->payload_len);
