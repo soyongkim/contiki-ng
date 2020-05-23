@@ -283,7 +283,7 @@ static void
 allocate_vt_handler(vip_message_t *rcv_pkt) {
   printf("alloc handler\n");
   if(!check_vt_tuple(rcv_pkt->vt_id)) {
-    add_vt_id_tuple(rcv_pkt->vt_id);
+    add_vt_tuple(rcv_pkt->vt_id);
     show_vt_table();
   }
 }
