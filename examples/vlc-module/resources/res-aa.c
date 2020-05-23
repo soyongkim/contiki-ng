@@ -125,16 +125,27 @@ check_nonce_table(int vr_node_id) {
 }
 
 void
-add_vt_id_tuple(int node_id) {
+add_vt_tuple(int node_id) {
   vip_vt_tuple_t *new_tuple = malloc(sizeof(vip_vt_tuple_t));
   new_tuple->vt_id = node_id;
   list_add(vt_table, new_tuple);
 }
 
 void
-remove_vt_id_tuple(vip_vt_tuple_t* tuple) {
+remove_vt_tuple(vip_vt_tuple_t* tuple) {
   list_remove(vt_table, tuple);
   free(tuple);
+}
+
+int
+check_vt_tuple(int vt_id) {
+  vip_vt_tuple_t *c;
+  for(c = list_head(vt_table); c != NULL; c = c->next) {
+    if(c->vt_id == vt_id) {
+      return c->vt_id;
+    }
+  }
+  return 0;
 }
 
 
@@ -270,8 +281,11 @@ handler_sda(vip_message_t *rcv_pkt) {
 
 static void
 allocate_vt_handler(vip_message_t *rcv_pkt) {
-  add_vt_id_tuple(rcv_pkt->vt_id);
-  show_vt_table();
+  printf("alloc handler\n");
+  if(!check_vt_tuple(rcv_pkt->vt_id)) {
+    add_vt_id_tuple(rcv_pkt->vt_id);
+    show_vt_table();
+  }
 }
 
 
@@ -303,7 +317,7 @@ vip_request_callback(coap_callback_request_state_t *res_callback_state) {
   /* Process ack-pkt from vg */
   if (state->status == COAP_REQUEST_STATUS_RESPONSE)
   {
-    printf("Ack:%d - mid(%x)\n", state->response->code, state->response->mid);
+    printf("Ack:%d - mid(%x) - payload_len(%d)\n", state->response->code, state->response->mid, state->response->payload_len);
     if (state->response->code < 100 && state->response->payload_len)
     {
       if (vip_parse_common_header(rcv_ack, state->response->payload, state->response->payload_len) != VIP_NO_ERROR)
