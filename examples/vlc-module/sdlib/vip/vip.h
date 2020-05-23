@@ -68,7 +68,7 @@ void vip_clear_message(vip_message_t *message);
 int vip_serialize_message(vip_message_t *message, uint8_t *buffer);
 /* for cooja, make uri from node id */
 void vip_set_dest_ep_cooja(vip_message_t *message, char *dest_addr, int dest_node_id, char *dest_path);
-void vip_set_query(vip_message_t *message, char *query, int len);
+void vip_set_query(vip_message_t *message, char *query);
 void vip_init_query(char *query);
 
 /* Parse the vip-pkt on vip-interface.c */
