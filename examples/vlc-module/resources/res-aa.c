@@ -206,18 +206,18 @@ handler_vrr(vip_message_t *rcv_pkt) {
   {
     /* publish new nonce to the vr */
     nonce = add_nonce_table(rcv_pkt->query_rcv_id);
-
-    /* Send vrr to vg */
-    printf("forward to vg..\n");
-    vip_set_dest_ep_cooja(rcv_pkt, dest_addr, VIP_VG_ID, VIP_VG_URL);
-    vip_set_type_header_nonce(rcv_pkt, nonce);
-    vip_serialize_message(rcv_pkt, buffer);
-    vip_request(rcv_pkt);
   }
   else
   {
     nonce = chk->nonce;
   }
+
+  /* Send vrr to vg */
+  printf("forward to vg..\n");
+  vip_set_dest_ep_cooja(rcv_pkt, dest_addr, VIP_VG_ID, VIP_VG_URL);
+  vip_set_type_header_nonce(rcv_pkt, nonce);
+  vip_serialize_message(rcv_pkt, buffer);
+  vip_request(rcv_pkt);
 
   /* Set payload for ack */
   printf("Setting Ack..\n");
@@ -319,7 +319,7 @@ vip_request_callback(coap_callback_request_state_t *res_callback_state) {
     vip_message_t rcv_ack[1];
 
     printf("[RES] Ack:%d - mid(%x) - payload_len(%d)\n", state->response->code, state->response->mid, state->response->payload_len);
-    if (state->response->code < 100)
+    if (state->response->code < 100 && state->response->payload_len)
     {
       if (vip_parse_common_header(rcv_ack, state->response->payload, state->response->payload_len) != VIP_NO_ERROR)
       {
