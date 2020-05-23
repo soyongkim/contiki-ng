@@ -441,7 +441,7 @@ void vip_make_query_src(char *query, int src_id)
     if (!strlen(query))
     {
         make_query[0] = '?';
-        memset(query, 0, sizeof(query));
+        memset(query, 0, sizeof(char)*VIP_MAX_QUERY_SIZE);
     }
     else
     {
@@ -460,7 +460,7 @@ void vip_make_query_nonce(char *query, int value)
     if (!strlen(query))
     {
         make_query[0] = '?';
-        memset(query, 0, sizeof(query));
+        memset(query, 0, sizeof(char)*VIP_MAX_QUERY_SIZE);
     }
     else
     {
