@@ -113,13 +113,10 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
   printf("Received - mid(%x)\n", request->mid);
   
   static vip_message_t rcv_pkt[1];
-  if (vip_parse_common_header(rcv_pkt, request->payload, request->payload_len) == VIP_NO_ERROR)
+  if (vip_parse_common_header(rcv_pkt, request->payload, request->payload_len) != VIP_NO_ERROR)
   {
-    printf("VIP: NO ERROR\n");
-  }
-  else
-  {
-    printf("VIP: Not VIP Packet\n");
+     printf("vip_pkt have problem\n");
+     return;
   }
 
   vip_route(rcv_pkt, &vt_type_handler);

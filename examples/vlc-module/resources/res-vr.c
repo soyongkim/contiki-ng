@@ -30,7 +30,7 @@ static char query[50];
 
 static int vr_id, aa_id, vt_id, rcv_nonce;
 static int vip_timeout_swtich;
-//static int loss_count;
+static int loss_count = 0;
 
 
 /* for send packet */
@@ -110,19 +110,22 @@ handler_beacon(vip_message_t *rcv_pkt) {
 
     vip_request(snd_pkt);
   } else {
+    // if(vip_timeout_swtich) {
+    //   loss_handler();
+    // }
     loss_handler();
   }
 }
 
 static void
 loss_handler() {
-  // loss_count++;
-  // /* if the vr received same beacon frame, retransmit the pkt */
-  // if(loss_count >= 3) {
-  //   /* Send recently sent pkt */
-  //   vip_request(snd_pkt);
-  //   vip_timeout_swtich = 0;
-  // }
+  ++loss_count;
+  /* if the vr received same beacon frame, retransmit the pkt */
+  if(loss_count >= 3) {
+    /* Send recently sent pkt */
+    vip_request(snd_pkt);
+    vip_timeout_swtich = 0;
+  }
   printf("Why?\n");
 }
 
