@@ -7,7 +7,7 @@ typedef struct vip_vr_session_tuple vip_vr_session_tuple_t;
 
 /* message struct */
 typedef struct {
-    const uint8_t *buffer;
+    uint8_t *buffer;
 
     /* basis header */
     uint8_t type;
