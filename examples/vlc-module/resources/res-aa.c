@@ -198,7 +198,7 @@ handler_vrr(vip_message_t *rcv_pkt) {
 
     /* Send vrr to vg */
     printf("forward to vg..\n");
-    vip_set_ep_cooja(rcv_pkt, query, node_id, dest_addr, VIP_VG_ID, VIP_VG_URL);
+    vip_set_dest_ep_cooja(rcv_pkt, dest_addr, VIP_VG_ID, VIP_VG_URL);
     vip_set_type_header_nonce(rcv_pkt, nonce);
     vip_serialize_message(rcv_pkt, buffer);
     vip_request(rcv_pkt);
