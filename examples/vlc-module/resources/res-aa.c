@@ -272,21 +272,6 @@ static void
 allocate_vt_handler(vip_message_t *rcv_pkt) {
   add_vt_id_tuple(rcv_pkt->vt_id);
   show_vt_table();
-
-  /* pkt, type, aa-id(node_id), vt-id(target vt's node id) */
-  vip_init_message(snd_pkt, VIP_TYPE_ALLOW, node_id, rcv_pkt->vt_id, 0);
-  vip_set_payload(snd_pkt, (void *)uplink_id, strlen(uplink_id));
-  vip_serialize_message(snd_pkt, buffer);
-
-  /* set destination end point */
-  vip_set_dest_ep_cooja(snd_pkt, dest_addr, VIP_BROADCAST, VIP_VT_URL);
-
-  /* set query */
-  vip_init_query(query);
-  vip_make_query_src(query, node_id);
-  vip_set_query(snd_pkt, query);
-
-  vip_request(snd_pkt);
 }
 
 
@@ -297,12 +282,12 @@ res_periodic_ad_handler(void)
 
   /* pkt, type, aa-id(node_id), vt-id */
   vip_init_message(snd_pkt, VIP_TYPE_ALLOW, node_id, 0, 0);
+  vip_set_payload(snd_pkt, (void *)uplink_id, strlen(uplink_id));
   vip_serialize_message(snd_pkt, buffer);
 
   vip_set_dest_ep_cooja(snd_pkt, dest_addr, VIP_BROADCAST, VIP_VT_URL);
 
   /* set query */
-  vip_init_query(query);
   vip_make_query_src(query, node_id);
   vip_set_query(snd_pkt, query);
 

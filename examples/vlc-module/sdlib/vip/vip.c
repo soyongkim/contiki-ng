@@ -448,25 +448,25 @@ void vip_make_query_src(char *query, int src_id)
     {
         query[strlen(query)] = "&";
     }
-    
+
     strcat(query, make_query);
 }
 
 void vip_make_query_nonce(char *query, int value)
 {
-    char make_query[11];
+    char make_query[11] = "nonce=";
+    sprintf(make_query + 7, "%d", value);
+
 
     if (!strlen(query))
     {
-        make_query[0] = '?';
         memset(query, 0, sizeof(char)*VIP_MAX_QUERY_SIZE);
+        query[0] = '?';
     }
     else
     {
-        make_query[0] = '&';
+        query[strlen(query)] = "&";
     }
 
-    strcat(make_query, "nonce=");
-    sprintf(make_query + 7, "%d", value);
     strcat(query, make_query);
 }

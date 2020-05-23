@@ -67,7 +67,7 @@ static void handler_sea(vip_message_t *rcv_pkt);
 static void handler_sec(vip_message_t *rcv_pkt);
 static void handler_sd(vip_message_t *rcv_pkt);
 static void handler_sda(vip_message_t *rcv_pkt);
-static void request_vt_id_handler(vip_message_t *rcv_pkt);
+static void handler_allow(vip_message_t *rcv_pkt);
 
 static int vt_id, aa_id;
 
@@ -75,6 +75,10 @@ static int vt_id, aa_id;
 static vip_message_t snd_pkt[1];
 static uint8_t buffer[50];
 static char dest_addr[50];
+
+/* use ack for query */
+static vip_message_t ack_pkt[1];
+static char ack_query[50];
 
 static char uplink_id[50];
 
@@ -100,7 +104,7 @@ PERIODIC_RESOURCE(res_vt,
 /* vip type handler */
 TYPE_HANDLER(vt_type_handler, NULL, handler_vrr, handler_vra, 
               handler_vrc, handler_rel, handler_ser, handler_sea, handler_sec,
-              handler_sd, handler_sda, request_vt_id_handler);
+              handler_sd, handler_sda, handler_allow);
 
 
 /* called by coap-engine proc */
@@ -120,6 +124,12 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
   }
 
   vip_route(rcv_pkt, &vt_type_handler);
+
+  /* for ack */
+  if(ack_pkt->total_len)
+    coap_set_payload(response, ack_pkt->buffer, ack_pkt->total_len);
+  if(ack_pkt->query_len)
+    coap_set_header_uri_query(response, ack_pkt->query);
 }
 
 /* beaconing */
@@ -184,29 +194,20 @@ handler_sda(vip_message_t *rcv_pkt) {
 }
 
 static void
-request_vt_id_handler(vip_message_t *rcv_pkt) {
+handler_allow(vip_message_t *rcv_pkt) {
   /* broadcast ad pkt */
-  if(!rcv_pkt->vt_id) {
-    /* if vt was already registered, ignore ad pkt */
-    if(vt_id)
-      return;
-
-    /* send ack pkt for ad pkt */
-    vip_init_message(snd_pkt, VIP_TYPE_ALLOW, rcv_pkt->aa_id, node_id, 0);
-    vip_set_dest_ep_cooja(snd_pkt, dest_addr, rcv_pkt->aa_id, VIP_AA_URL);
-    vip_serialize_message(snd_pkt, buffer);
-    vip_request(snd_pkt);
+  if(!vt_id) {
+    vt_id = rcv_pkt->vt_id;
+    aa_id = rcv_pkt->aa_id;
+    strcpy(uplink_id, rcv_pkt->uplink_id);
+    printf("vt-[%d] is allocated by aa-[%d]\n", vt_id, aa_id);
+    printf("uplink-id is [%s]\n", uplink_id);
+    
+    vip_init_message(ack_pkt, VIP_TYPE_ALLOW, aa_id, vt_id, 0);
+    vip_serialize_message(ack_pkt, buffer);
   }
   else {
-    if(!vt_id) {
-      vt_id = rcv_pkt->vt_id;
-      aa_id = rcv_pkt->aa_id;
-      strcpy(uplink_id, rcv_pkt->uplink_id);
-      printf("vt-[%d] is allocated by aa-[%d]\n", vt_id, aa_id);
-      printf("uplink-id is [%s]\n", uplink_id);
-    } else {
-      printf("Already allocated with %d\n", vt_id);
-    }
+    printf("Already allocated with %d\n", vt_id);
   }
 }
 
