@@ -132,7 +132,6 @@ loss_handler() {
 static void
 handler_vra(vip_message_t *rcv_pkt) {
   /* received vr-id */
-  printf("vra! my nonce=%d | rcv_nonce=%d\n", rcv_nonce, rcv_pkt->nonce);
   if(rcv_nonce == rcv_pkt->nonce)
   {
     vr_id = rcv_pkt->vr_id;

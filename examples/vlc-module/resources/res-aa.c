@@ -78,7 +78,6 @@ TYPE_HANDLER(aa_type_handler, handler_beacon, handler_vrr, handler_vra,
 int
 publish_nonce() {
   int pick_nonce = 0;
-  mutex_try_lock(&p);
   /* publish nonce_pool */
   for(int i=1; i<65000; i++) {
     if(!nonce_pool[i]) {
@@ -87,7 +86,6 @@ publish_nonce() {
       break;
     }
   }
-  mutex_unlock(&p);
   return pick_nonce;
 }
 
@@ -98,11 +96,12 @@ expire_nonce(int target) {
 
 int
 add_nonce_table(int vr_node_id) {
+  mutex_try_lock(&p);
   vip_nonce_tuple_t* new_tuple = malloc(sizeof(vip_nonce_tuple_t));
   new_tuple->nonce = publish_nonce();
   new_tuple->vr_node_id = vr_node_id;
   list_add(vr_nonce_table, new_tuple);
-
+  mutex_unlock(&p);
   return new_tuple->nonce;
 }
 
@@ -206,6 +205,7 @@ handler_vrr(vip_message_t *rcv_pkt) {
   {
     /* publish new nonce to the vr */
     nonce = add_nonce_table(rcv_pkt->query_rcv_id);
+    printf("Pub(%d) to vr(%d)\n", nonce, rcv_pkt->query_rcv_id);
   }
   else
   {
