@@ -436,36 +436,34 @@ void vip_init_query(char *query) {
 
 void vip_make_query_src(char *query, int query_len, int src_id)
 {
-    char make_query[11] = "src=";
-    sprintf(make_query + 5, "%d", src_id);
-
     if (!query_len)
     {
         memset(query, 0, sizeof(char)*VIP_MAX_QUERY_SIZE);
-        query[0] = '?';
+        strcpy(query, "?src=");
     }
     else
     {
-        query[query_len] = "&";
+        strcat(query, "&src=");
     }
 
-    strcat(query, make_query);
+    char tochar[5];
+    sprintf(tochar, "%d", src_id);
+    strcat(query, tochar);
 }
 
 void vip_make_query_nonce(char *query, int query_len, int value)
 {
-    char make_query[11] = "nonce=";
-    sprintf(make_query + 7, "%d", value);
-
     if (!query_len)
     {
         memset(query, 0, sizeof(char)*VIP_MAX_QUERY_SIZE);
-        query[0] = '?';
+        strcpy(query, "?nonce=");
     }
     else
     {
-        query[query_len] = "&";
+        strcat(query, "&nonce=");
     }
 
-    strcat(query, make_query);
-}s
+    char tochar[5];
+    sprintf(tochar, "%d", value);
+    strcat(query, tochar);
+}
