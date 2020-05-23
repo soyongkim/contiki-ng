@@ -154,8 +154,9 @@ handler_vrr(vip_message_t *rcv_pkt) {
 static void
 handler_vra(vip_message_t *rcv_pkt) {
   /* VLC! */
-  vip_set_dest_ep_cooja(rcv_pkt, dest_addr, VIP_BROADCAST, VIP_VR_URL);
-  vip_request(rcv_pkt);
+  printf("VLC!\n");
+  // vip_set_dest_ep_cooja(rcv_pkt, dest_addr, VIP_BROADCAST, VIP_VR_URL);
+  // vip_request(rcv_pkt);
 }
 
 static void
