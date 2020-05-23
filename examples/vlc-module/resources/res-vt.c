@@ -49,6 +49,12 @@
 #include <stdio.h>
 #include <string.h>
 
+
+/* using coap callback api */
+static void vip_request_callback(coap_callback_request_state_t *callback_state);
+static void vip_request(vip_message_t *snd_pkt);
+
+
 static void res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset);
 static void beaconing(void);
 
@@ -189,7 +195,7 @@ request_vt_id_handler(vip_message_t *rcv_pkt) {
 
     /* send ack pkt for ad pkt */
     vip_init_message(snd_pkt, VIP_TYPE_ALLOW, rcv_pkt->aa_id, node_id, 0);
-    vip_set_ep_cooja(snd_pkt, query, node_id, dest_addr, rcv_pkt->aa_id, VIP_AA_URL);
+    vip_set_dest_ep_cooja(snd_pkt, query, node_id, dest_addr, rcv_pkt->aa_id, VIP_AA_URL);
     vip_serialize_message(snd_pkt, buffer);
 
     process_post(&vt_process, vt_snd_event, (void *)snd_pkt);
@@ -210,7 +216,6 @@ request_vt_id_handler(vip_message_t *rcv_pkt) {
 static void
 vip_request_callback(coap_callback_request_state_t *res_callback_state) {
   coap_request_state_t *state = &res_callback_state->state;
-  vip_message_t rcv_ack[1];
   /* Process ack-pkt from vg */
   if (state->status == COAP_REQUEST_STATUS_RESPONSE)
   {
