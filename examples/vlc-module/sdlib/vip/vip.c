@@ -440,11 +440,11 @@ void vip_make_query_src(char *query, int src_id)
 
     if (!strlen(query))
     {
-        make_query[0] = "?";
+        make_query[0] = '?';
     }
     else
     {
-        make_query[0] = "&";
+        make_query[0] = '&';
     }
 
     strcat(make_query, "src=");
@@ -458,11 +458,11 @@ void vip_make_query_nonce(char *query, int value)
 
     if (!strlen(query))
     {
-        make_query[0] = "?";
+        make_query[0] = '?';
     }
     else
     {
-        make_query[0] = "&";
+        make_query[0] = '&';
     }
 
     strcat(make_query, "nonce=");
