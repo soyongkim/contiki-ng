@@ -122,8 +122,12 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
   vip_route(rcv_pkt, &vt_type_handler);
 
   /* for ack */
+  coap_set_status_code(response, CONTENT_2_05);
   if(ack_pkt->total_len)
+  {
+    printf("Ack with payload\n");
     coap_set_payload(response, ack_pkt->buffer, ack_pkt->total_len);
+  }
   if(ack_pkt->query_len)
     coap_set_header_uri_query(response, ack_pkt->query);
 }
