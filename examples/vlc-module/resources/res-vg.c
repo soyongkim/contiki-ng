@@ -26,17 +26,11 @@ static void handler_sec(vip_message_t *rcv_pkt);
 static void handler_sd(vip_message_t *rcv_pkt);
 static void handler_sda(vip_message_t *rcv_pkt);
 
-/* using coap callback api */
-static void vip_request_callback(coap_callback_request_state_t *callback_state);
-static void vip_request(vip_message_t *snd_pkt);
 
 LIST(vr_nonce_table);
 
 /* for snd-pkt */
-static vip_message_t snd_pkt[1];
 static uint8_t buffer[50];
-static char dest_addr[50];
-static char query[50];
 
 /* use ack for query */
 static vip_message_t ack_pkt[1];
@@ -169,10 +163,10 @@ static void
 handler_vrr(vip_message_t *rcv_pkt) {
   vip_nonce_tuple_t *chk;
   int alloc_vr_id;
-  if (!(chk = vip_check_vr_table(rcv_pkt->nonce)))
+  if (!(chk = check_vr_table(rcv_pkt->nonce)))
   {
     /* publish new vr-id */
-    alloc_vr_id = vip_add_vr_table(rcv_pkt->nonce);
+    alloc_vr_id = add_vr_table(rcv_pkt->nonce);
   }
   else
   {
@@ -233,41 +227,4 @@ handler_sd(vip_message_t *rcv_pkt) {
 static void
 handler_sda(vip_message_t *rcv_pkt) {
 
-}
-
-
-
-static void
-vip_request_callback(coap_callback_request_state_t *res_callback_state) {
-  coap_request_state_t *state = &res_callback_state->state;
-  vip_message_t rcv_ack[1];
-  /* Process ack-pkt from vg */
-  if (state->status == COAP_REQUEST_STATUS_RESPONSE)
-  {
-    printf("Ack:%d - mid(%x)\n", state->response->code, state->response->mid);
-    if (state->response->code < 100 && state->response->payload_len)
-    {
-      if (vip_parse_common_header(rcv_ack, state->response->payload, state->response->payload_len) != VIP_NO_ERROR)
-      {
-        printf("VIP: Not VIP Packet\n");
-        return;
-      }
-      vip_route(rcv_ack, &vg_type_handler);
-    }
-  }
-}
-
-static void
-vip_request(vip_message_t *snd_pkt) {
-  /* set vip endpoint */
-  coap_endpoint_parse(snd_pkt->dest_coap_addr, strlen(snd_pkt->dest_coap_addr), &dest_ep);
-  coap_init_message(request, COAP_TYPE_CON, COAP_POST, 0);
-  coap_set_header_uri_path(request, snd_pkt->dest_path);
-  coap_set_payload(request, snd_pkt->buffer, snd_pkt->total_len);
-
-  if(snd_pkt->query)
-    coap_set_header_uri_query(request, snd_pkt->query);
-
-  printf("Send from %s to %s\n", snd_pkt->query, snd_pkt->dest_coap_addr);
-  coap_send_request(&callback_state, &dest_ep, request, vip_request_callback);
 }
