@@ -110,10 +110,9 @@ handler_beacon(vip_message_t *rcv_pkt) {
 
     vip_request(snd_pkt);
   } else {
-    // if(vip_timeout_swtich) {
-    //   loss_handler();
-    // }
-    loss_handler();
+    if(vip_timeout_swtich) {
+      loss_handler();
+    }
   }
 }
 

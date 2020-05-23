@@ -193,7 +193,7 @@ static void
 handler_allow(vip_message_t *rcv_pkt) {
   /* broadcast ad pkt */
   if(!vt_id) {
-    vt_id = rcv_pkt->vt_id;
+    vt_id = node_id;
     aa_id = rcv_pkt->aa_id;
     strcpy(uplink_id, rcv_pkt->uplink_id);
     printf("vt-[%d] is allocated by aa-[%d]\n", vt_id, aa_id);
