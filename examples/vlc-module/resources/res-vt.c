@@ -122,13 +122,13 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
     printf("VIP: Not VIP Packet\n");
   }
 
-  vip_route(rcv_pkt, &vt_type_handler);
+  // vip_route(rcv_pkt, &vt_type_handler);
 
-  /* for ack */
-  if(ack_pkt->total_len)
-    coap_set_payload(response, ack_pkt->buffer, ack_pkt->total_len);
-  if(ack_pkt->query_len)
-    coap_set_header_uri_query(response, ack_pkt->query);
+  // /* for ack */
+  // if(ack_pkt->total_len)
+  //   coap_set_payload(response, ack_pkt->buffer, ack_pkt->total_len);
+  // if(ack_pkt->query_len)
+  //   coap_set_header_uri_query(response, ack_pkt->query);
 }
 
 /* beaconing */
