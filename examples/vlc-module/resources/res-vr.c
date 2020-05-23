@@ -15,9 +15,7 @@ static void res_post_handler(coap_message_t *request, coap_message_t *response, 
 static void res_event_handler(void);
 
 static void handler_beacon(vip_message_t *rcv_pkt);
-static void handler_vrr(vip_message_t *rcv_pkt);
 static void handler_vra(vip_message_t *rcv_pkt);
-static void handler_vrc(vip_message_t *rcv_pkt);
 static void handler_rel(vip_message_t *rcv_pkt);
 static void handler_ser(vip_message_t *rcv_pkt);
 static void handler_sea(vip_message_t *rcv_pkt);
@@ -30,7 +28,7 @@ static uint8_t buffer[50];
 static char dest_addr[50];
 static char query[11] = { "?src=" };
 
-static int vr_id, aa_id, vt_id;
+static int vr_id, aa_id, vt_id, rcv_nonce;
 static int vip_timeout_swtich, loss_count;
 
 
@@ -60,8 +58,8 @@ EVENT_RESOURCE(res_vr,
 
 
 /* vip type handler */
-TYPE_HANDLER(vr_type_handler, handler_beacon, handler_vrr, handler_vra, 
-              handler_vrc, handler_rel, handler_ser, handler_sea, handler_sec,
+TYPE_HANDLER(vr_type_handler, handler_beacon, NULL, handler_vra, 
+              NULL, handler_rel, handler_ser, handler_sea, handler_sec,
               handler_sd, handler_sda, NULL);
 
 
@@ -71,14 +69,15 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
 {
   printf("Received - mid(%x)\n", request->mid);
 
-  static vip_message_t vip_pkt[1];
-  if (vip_parse_common_header(vip_pkt, request->payload, request->payload_len) != VIP_NO_ERROR)
+  static vip_message_t rcv_pkt[1];
+  if (vip_parse_common_header(rcv_pkt, request->payload, request->payload_len) != VIP_NO_ERROR)
   {
      printf("vip_pkt have problem\n");
      return;
   }
 
-  process_post(&vr_process, vr_rcv_event, (void *)vip_pkt);
+  vip_route(rcv_pkt, &vr_type_handler);
+  //process_post(&vr_process, vr_rcv_event, (void *)vip_pkt);
 }
 
 bool
@@ -89,8 +88,6 @@ is_my_pkt(int rcv_vr_id) {
 }
 
 
-
-
 static void
 handler_beacon(vip_message_t *rcv_pkt) {
   /* check handover and loss */
@@ -98,8 +95,6 @@ handler_beacon(vip_message_t *rcv_pkt) {
     /* update aa_id, vt_id */
     aa_id = rcv_pkt->aa_id;
     vt_id = rcv_pkt->vt_id;
-
-    printf("Beacon\n");
 
     /* Recent Received vt-id, aa-id */
     vip_init_message(snd_pkt, VIP_TYPE_VRR, aa_id, vt_id, vr_id);
@@ -126,24 +121,19 @@ loss_handler() {
   }
 }
 
-
-/* Receive Nonce from AA */
-static void
-handler_vrr(vip_message_t *rcv_pkt) {
-  printf("My Nonce is %d\n", rcv_pkt->vr_id);  
-}
-
 static void
 handler_vra(vip_message_t *rcv_pkt) {
-  if(!vr_id || is_my_pkt(rcv_pkt->vr_id)) {
-      vr_id = rcv_pkt->vr_id;
-      printf("My ID is %d\n", vr_id);
+  /* received vr-id */
+  if(rcv_nonce == rcv_pkt->nonce)
+  {
+    vr_id = rcv_pkt->vr_id;
+    printf("I'm allocated vr-id(%d)!\n", vr_id);
+
+    /* send vrc */
+    vip_init_message(snd_pkt, VIP_TYPE_VRC, aa_id, vt_id, vr_id);
+    vip_serialize_message(snd_pkt, buffer);
+    vip_request(snd_pkt);
   }
-}
-
-static void
-handler_vrc(vip_message_t *rcv_pkt) {
-
 }
 
 static void
@@ -187,14 +177,13 @@ static void
 vip_request_callback(coap_callback_request_state_t *res_callback_state) {
   const char *src = NULL;
   coap_request_state_t *state = &res_callback_state->state;
-  int nonce;
 
   if(state->status == COAP_REQUEST_STATUS_RESPONSE) {
       printf("Ack:%d - mid(%x)\n", state->response->code, state->response->mid);
       if(state->response->code < 100) {
-        if(coap_get_query_variable(state->response, "src", &src)) {
-          nonce = atoi(src);
-          printf("Nonce: %d\n", nonce);
+        if(coap_get_query_variable(state->response, "nonce", &src)) {
+          rcv_nonce = atoi(src);
+          printf("Nonce: %d\n", rcv_nonce);
         }
         /* Ack means that the vr wait for vip-ack-message by vt */ 
         vip_timeout_swtich = 1;

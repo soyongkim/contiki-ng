@@ -7,12 +7,12 @@
 #define VIP_MAX_UPLINK_ID 1024
 #define VIP_SEQ_LEN 4
 
-#define VIP_SERVICE_NUM 2
-#define VIP_SERVICE_ID_LEN 4
-#define VIP_PAYLOAD_LEN_POSITION 8
+#define VIP_MAX_QUERY_SIZE 50
 
 /* for test, vg-id is fixed by 1 */
 #define VIP_VG_ID 1
+
+#define VIP_BROADCAST 0
 
 #define VIP_ERROR 0
 #define VIP_NO_ERROR 1
@@ -23,8 +23,6 @@
 #define VIP_VT_URL "vip/vt"
 #define VIP_VR_URL "vip/vr"
 
-
-#define VIP_BROADCAST_URI "coap://[ff02::1]"
 
 /* VIP message types */
 typedef enum {

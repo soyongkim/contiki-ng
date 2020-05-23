@@ -26,13 +26,30 @@ static void handler_sec(vip_message_t *rcv_pkt);
 static void handler_sd(vip_message_t *rcv_pkt);
 static void handler_sda(vip_message_t *rcv_pkt);
 
+/* using coap callback api */
+static void vip_request_callback(coap_callback_request_state_t *callback_state);
+static void vip_request(vip_message_t *snd_pkt);
+
+LIST(vr_nonce_table);
+
+/* for snd-pkt */
 static vip_message_t snd_pkt[1];
 static uint8_t buffer[50];
 static char dest_addr[50];
-static char query[11] = { "?src=" };
+static char query[50];
+
+/* use ack for query */
+static vip_message_t ack_pkt[1];
+static char ack_query[50];
+
+static mutex_t v;
+
+/* for send packet */
+static coap_callback_request_state_t callback_state;
+static coap_endpoint_t dest_ep;
+static coap_message_t request[1];
 
 
-static mutex_t m;
 
 /* vr session_array */
 /* array index is "VR-ID" */
@@ -55,16 +72,52 @@ TYPE_HANDLER(vg_type_handler, NULL, handler_vrr, handler_vra,
               handler_sd, handler_sda, NULL);
 
 int
-find_new_vr_id() {
+publish_vrid() {
+  mutex_try_lock(&v);
+  int vr_id = 0;
   for(int i=1; i<65000; i++) {
     if(!vr_id_pool[i]) {
       vr_id_pool[i] = 1;
-      return i;
+      vr_id = i;
+      break;
     }
   }
-
-  return 0;
+  mutex_unlock(&v);
+  return vr_id;
 }
+
+void
+expire_vrid(int target) {
+  vr_id_pool[target] = 0;
+}
+
+int
+add_nonce_table(int nonce) {
+  vip_nonce_tuple_t* new_tuple = malloc(sizeof(vip_nonce_tuple_t));
+  new_tuple->alloc_vr_id = publish_vrid();
+  new_tuple->nonce = nonce;
+  list_add(vr_nonce_table, new_tuple);
+
+  return new_tuple->nonce;
+}
+
+void
+remove_nonce_table(vip_nonce_tuple_t* tuple) {
+  list_remove(vr_nonce_table, tuple);
+  free(tuple);
+}
+
+vip_nonce_tuple_t*
+check_nonce_table(int vr_node_id) {
+  vip_nonce_tuple_t* c;
+  for(c = list_head(vr_nonce_table); c != NULL; c = c->next) {
+    if(c->vr_node_id == vr_node_id) {
+        return c;
+    }
+  }
+  return NULL;
+}
+
 
 void
 add_session_info(int vr_id, int session_id, int vg_seq, int vr_seq) {
@@ -78,40 +131,31 @@ save_session_info(int vr_id, int session_id, int vg_seq, int vr_seq, uint8_t *da
 }
 
 
-void
-allocate_vr_id(vip_message_t *rcv_pkt) {
-    mutex_try_lock(&m);
-    vip_init_message(snd_pkt, VIP_TYPE_VRA, rcv_pkt->aa_id, rcv_pkt->vt_id, find_new_vr_id());
-
-    /* for vra pkt */
-    vip_set_type_header_nonce(snd_pkt, 0);
-
-    vip_set_ep_cooja(snd_pkt, query, node_id, dest_addr, rcv_pkt->aa_id, VIP_AA_URL);
-
-    vip_serialize_message(snd_pkt, buffer);
-    process_post(&vg_process, vg_snd_event, (void *)snd_pkt);
-    mutex_unlock(&m);
-}
-
-void
-handover_vr(int vr_id) {
-
-}
-
 /* called by coap-engine proc */
 static void
 res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset)
 {
-  printf("Received\n");
+  const char *src = NULL;
+  printf("Received - mid(%x)\n", request->mid);
 
-  static vip_message_t vip_pkt[1];
-  if (vip_parse_common_header(vip_pkt, request->payload, request->payload_len) != VIP_NO_ERROR)
+  static vip_message_t rcv_pkt[1];
+  if (vip_parse_common_header(rcv_pkt, request->payload, request->payload_len) != VIP_NO_ERROR)
   {
     printf("VIP: Not VIP Packet\n");
     return;
   }
 
-  process_post(&vg_process, vg_rcv_event, (void *)vip_pkt);
+  if(coap_get_query_variable(request, "src", &src)) {
+    rcv_pkt->query_rcv_id = atoi(src);
+  }
+
+  vip_route(rcv_pkt, &vg_type_handler);
+
+  /* for ack */
+  if(ack_pkt->total_len)
+    coap_set_payload(response, ack_pkt->buffer, ack_pkt->total_len);
+  if(ack_pkt->query_len)
+    coap_set_header_uri_query(response, ack_pkt->query);
 }
 
 static void 
@@ -123,11 +167,23 @@ res_event_handler(void) {
 
 static void
 handler_vrr(vip_message_t *rcv_pkt) {
-    /* case that vr is not allocated */
-    if(!rcv_pkt->vr_id) {
-      /* process concurrent reqeust problem from VRs */
-      allocate_vr_id(rcv_pkt);
-    }
+  vip_nonce_tuple_t *chk;
+  int alloc_vr_id;
+  if (!(chk = vip_check_vr_table(rcv_pkt->nonce)))
+  {
+    /* publish new vr-id */
+    alloc_vr_id = vip_add_vr_table(rcv_pkt->nonce);
+  }
+  else
+  {
+    alloc_vr_id = chk->alloc_vr_id;
+  }
+
+  /* Set payload for ack */
+  printf("Setting Ack..\n");
+  vip_init_message(ack_pkt, VIP_TYPE_VRA, rcv_pkt->aa_id, rcv_pkt->vt_id, alloc_vr_id);
+  vip_set_type_header_nonce(ack_pkt, rcv_pkt->nonce);
+  vip_serialize_message(ack_pkt, buffer);
 }
 
 static void
@@ -138,7 +194,15 @@ handler_vra(vip_message_t *rcv_pkt) {
 
 static void
 handler_vrc(vip_message_t *rcv_pkt) {
-  /* Allocate the vr-id */
+  vip_nonce_tuple_t *chk;
+  /* if vrc is duplicated, the tuple is null. so nothing to do and just send ack */
+  if (!(chk = check_nonce_table(rcv_pkt->vr_id)))
+  {
+    /* remove nonce tuple if vrc received */
+    remove_nonce_table(chk);
+
+    printf("vr[%d] complete!\n", rcv_pkt->vr_id);
+  }
 }
 
 static void
@@ -169,4 +233,41 @@ handler_sd(vip_message_t *rcv_pkt) {
 static void
 handler_sda(vip_message_t *rcv_pkt) {
 
+}
+
+
+
+static void
+vip_request_callback(coap_callback_request_state_t *res_callback_state) {
+  coap_request_state_t *state = &res_callback_state->state;
+  vip_message_t rcv_ack[1];
+  /* Process ack-pkt from vg */
+  if (state->status == COAP_REQUEST_STATUS_RESPONSE)
+  {
+    printf("Ack:%d - mid(%x)\n", state->response->code, state->response->mid);
+    if (state->response->code < 100 && state->response->payload_len)
+    {
+      if (vip_parse_common_header(rcv_ack, state->response->payload, state->response->payload_len) != VIP_NO_ERROR)
+      {
+        printf("VIP: Not VIP Packet\n");
+        return;
+      }
+      vip_route(rcv_ack, &vg_type_handler);
+    }
+  }
+}
+
+static void
+vip_request(vip_message_t *snd_pkt) {
+  /* set vip endpoint */
+  coap_endpoint_parse(snd_pkt->dest_coap_addr, strlen(snd_pkt->dest_coap_addr), &dest_ep);
+  coap_init_message(request, COAP_TYPE_CON, COAP_POST, 0);
+  coap_set_header_uri_path(request, snd_pkt->dest_path);
+  coap_set_payload(request, snd_pkt->buffer, snd_pkt->total_len);
+
+  if(snd_pkt->query)
+    coap_set_header_uri_query(request, snd_pkt->query);
+
+  printf("Send from %s to %s\n", snd_pkt->query, snd_pkt->dest_coap_addr);
+  coap_send_request(&callback_state, &dest_ep, request, vip_request_callback);
 }

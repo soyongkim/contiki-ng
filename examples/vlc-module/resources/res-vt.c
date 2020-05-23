@@ -63,13 +63,23 @@ static void handler_sd(vip_message_t *rcv_pkt);
 static void handler_sda(vip_message_t *rcv_pkt);
 static void request_vt_id_handler(vip_message_t *rcv_pkt);
 
+static int vt_id, aa_id;
+
+/* for snd-pkt */
 static vip_message_t snd_pkt[1];
 static uint8_t buffer[50];
-static int vt_id, aa_id;
 static char dest_addr[50];
-static char query[11] = { "?src=" };
+static char query[50];
+
 
 static char uplink_id[50];
+
+
+/* for send packet */
+static coap_callback_request_state_t callback_state;
+static coap_endpoint_t dest_ep;
+static coap_message_t request[1];
+
 
 /* A simple actuator example. Toggles the red led */
 PERIODIC_RESOURCE(res_vt,
@@ -95,8 +105,8 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
 {
   printf("Received - %d\n", request->mid);
   
-  static vip_message_t vip_pkt[1];
-  if (vip_parse_common_header(vip_pkt, request->payload, request->payload_len) == VIP_NO_ERROR)
+  static vip_message_t rcv_pkt[1];
+  if (vip_parse_common_header(rcv_pkt, request->payload, request->payload_len) == VIP_NO_ERROR)
   {
     printf("VIP: NO ERROR\n");
   }
@@ -104,7 +114,8 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
   {
     printf("VIP: Not VIP Packet\n");
   }
-  process_post(&vt_process, vt_rcv_event, (void *)vip_pkt);
+
+  vip_route(rcv_pkt, &vt_type_handler);
 }
 
 /* beaconing */
@@ -115,8 +126,7 @@ beaconing() {
     printf("Beaconing...\n");
     /* you have to comfirm that the type field is fulled */
     vip_init_message(snd_pkt, VIP_TYPE_BEACON, aa_id, vt_id, 0);
-    vip_set_ep_cooja(snd_pkt, query, vt_id, dest_addr, 0, VIP_VR_URL);
-
+    vip_set_dest_ep_cooja(snd_pkt, dest_addr, VIP_BROADCAST, VIP_VR_URL);
     vip_set_type_header_uplink_id(snd_pkt, uplink_id);
     vip_serialize_message(snd_pkt, buffer);
     process_post(&vt_process, vt_snd_event, (void *)snd_pkt);
@@ -129,8 +139,9 @@ handler_vrr(vip_message_t *rcv_pkt) {
 
 static void
 handler_vra(vip_message_t *rcv_pkt) {
-  vip_set_dest_ep(rcv_pkt, VIP_BROADCAST_URI, VIP_VR_URL);
-  process_post(&vt_process, vt_snd_event, (void *)rcv_pkt);
+  /* VLC! */
+  vip_set_dest_ep_cooja(rcv_pkt, dest_addr, VIP_BROADCAST, VIP_VR_URL);
+  vip_request(rcv_pkt);
 }
 
 static void
@@ -194,4 +205,30 @@ request_vt_id_handler(vip_message_t *rcv_pkt) {
       printf("Already allocated with %d\n", vt_id);
     }
   }
+}
+
+static void
+vip_request_callback(coap_callback_request_state_t *res_callback_state) {
+  coap_request_state_t *state = &res_callback_state->state;
+  vip_message_t rcv_ack[1];
+  /* Process ack-pkt from vg */
+  if (state->status == COAP_REQUEST_STATUS_RESPONSE)
+  {
+    printf("Ack:%d - mid(%x)\n", state->response->code, state->response->mid);
+  }
+}
+
+static void
+vip_request(vip_message_t *snd_pkt) {
+  /* set vip endpoint */
+  coap_endpoint_parse(snd_pkt->dest_coap_addr, strlen(snd_pkt->dest_coap_addr), &dest_ep);
+  coap_init_message(request, COAP_TYPE_NON, COAP_POST, 0);
+  coap_set_header_uri_path(request, snd_pkt->dest_path);
+  coap_set_payload(request, snd_pkt->buffer, snd_pkt->total_len);
+
+  if(snd_pkt->query)
+    coap_set_header_uri_query(request, snd_pkt->query);
+
+  printf("Send from %s to %s\n", snd_pkt->query, snd_pkt->dest_coap_addr);
+  coap_send_request(&callback_state, &dest_ep, request, vip_request_callback);
 }
