@@ -155,8 +155,9 @@ static void
 handler_vra(vip_message_t *rcv_pkt) {
   /* VLC! */
   printf("VLC!\n");
-  // vip_set_dest_ep_cooja(rcv_pkt, dest_addr, VIP_BROADCAST, VIP_VR_URL);
-  // vip_request(rcv_pkt);
+  vip_set_dest_ep_cooja(rcv_pkt, dest_addr, VIP_BROADCAST, VIP_VR_URL);
+  vip_serialize_message(rcv_pkt, buffer);
+  vip_request(rcv_pkt);
 }
 
 static void
@@ -229,10 +230,6 @@ vip_request(vip_message_t *snd_pkt) {
   coap_init_message(request, COAP_TYPE_NON, COAP_POST, 0);
   coap_set_header_uri_path(request, snd_pkt->dest_path);
   coap_set_payload(request, snd_pkt->buffer, snd_pkt->total_len);
-
-  if(snd_pkt->query_len > 0)
-    coap_set_header_uri_query(request, snd_pkt->query);
-
   printf("Send from %s to %s\n", snd_pkt->query, snd_pkt->dest_coap_addr);
   coap_send_request(&callback_state, &dest_ep, request, vip_request_callback);
 }
