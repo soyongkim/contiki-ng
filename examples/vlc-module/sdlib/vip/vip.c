@@ -434,11 +434,10 @@ void vip_init_query(char *query) {
 }
 
 
-void vip_make_query_src(char *query, int src_id)
+void vip_make_query_src(char *query, int query_len, int src_id)
 {
     char make_query[11] = "src=";
     sprintf(make_query + 5, "%d", src_id);
-    int query_len = strlen(query);
 
     if (!query_len)
     {
@@ -453,11 +452,10 @@ void vip_make_query_src(char *query, int src_id)
     strcat(query, make_query);
 }
 
-void vip_make_query_nonce(char *query, int value)
+void vip_make_query_nonce(char *query, int query_len, int value)
 {
     char make_query[11] = "nonce=";
     sprintf(make_query + 7, "%d", value);
-    int query_len = strlen(query);
 
     if (!query_len)
     {
@@ -470,4 +468,4 @@ void vip_make_query_nonce(char *query, int value)
     }
 
     strcat(query, make_query);
-}
+}s

@@ -104,8 +104,7 @@ handler_beacon(vip_message_t *rcv_pkt) {
     /* set vr id to 0. it's mean not allocated*/
     vip_serialize_message(snd_pkt, buffer);
 
-    vip_init_query(query);
-    vip_make_query_src(query, node_id);
+    vip_make_query_src(query, strlen(query), node_id);
     vip_set_query(snd_pkt, query);
 
     vip_request(snd_pkt);
