@@ -436,7 +436,7 @@ void vip_init_query(char *query) {
 
 void vip_make_query_src(char *query, int src_id)
 {
-    char make_query[11];
+    char make_query[11] = { "_src=" };
 
     if (!strlen(query))
     {
@@ -448,7 +448,6 @@ void vip_make_query_src(char *query, int src_id)
         make_query[0] = '&';
     }
 
-    sprintf(make_query+5, "%s", "src=");
     sprintf(make_query + 5, "%d", src_id);
     strcat(query, make_query);
 }
