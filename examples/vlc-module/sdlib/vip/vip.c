@@ -446,7 +446,7 @@ void vip_make_query_src(char *query, int src_id)
     }
     else
     {
-        query[strlen(query)] = "&";
+        query[(int)strlen(query)] = "&";
     }
 
     strcat(query, make_query);
@@ -465,7 +465,7 @@ void vip_make_query_nonce(char *query, int value)
     }
     else
     {
-        query[strlen(query)] = "&";
+        query[(int)strlen(query)] = "&";
     }
 
     strcat(query, make_query);
