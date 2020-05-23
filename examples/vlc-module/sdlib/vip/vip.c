@@ -448,6 +448,7 @@ void vip_make_query_src(char *query, int query_len, int src_id)
     char tochar[5];
     sprintf(tochar, "%d", src_id);
     strcat(query, tochar);
+    printf("src_query: %s\n", query);
 }
 
 void vip_make_query_nonce(char *query, int query_len, int value)
@@ -464,4 +465,5 @@ void vip_make_query_nonce(char *query, int query_len, int value)
     char tochar[5];
     sprintf(tochar, "%d", value);
     strcat(query, tochar);
+    printf("nonce_query: %s\n", query);
 }

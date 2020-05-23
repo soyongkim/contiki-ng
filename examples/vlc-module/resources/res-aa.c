@@ -188,7 +188,10 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
   if(ack_pkt->total_len)
     coap_set_payload(response, ack_pkt->buffer, ack_pkt->total_len);
   if(ack_pkt->query_len)
+  {
+    printf("nonce query\n");
     coap_set_header_uri_query(response, ack_pkt->query);
+  }
 }
 
 static void
@@ -221,7 +224,7 @@ handler_vrr(vip_message_t *rcv_pkt) {
 
   /* Set payload for ack */
   printf("Setting Ack..\n");
-  vip_init_query(query);
+  vip_init_query(ack_query);
   vip_make_query_nonce(ack_query, strlen(ack_query), nonce);
   vip_set_query(ack_pkt, ack_query);
 }

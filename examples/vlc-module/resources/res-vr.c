@@ -183,15 +183,15 @@ res_event_handler(void) {
 
 static void
 vip_request_callback(coap_callback_request_state_t *res_callback_state) {
-  const char *src = NULL;
+  const char *nonce = NULL;
   coap_request_state_t *state = &res_callback_state->state;
 
   if(state->status == COAP_REQUEST_STATUS_RESPONSE) {
       printf("Ack:%d - mid(%x)\n", state->response->code, state->response->mid);
       if(state->response->code < 100) {
         vip_timeout_swtich = 1;
-        if(coap_get_query_variable(state->response, "nonce", &src)) {
-          rcv_nonce = atoi(src);
+        if(coap_get_query_variable(state->response, "nonce", &nonce)) {
+          rcv_nonce = atoi(nonce);
           printf("Nonce: %d\n", rcv_nonce);
         }
       }
