@@ -438,7 +438,6 @@ void vip_make_query_src(char *query, int query_len, int src_id)
 {
     if (!query_len)
     {
-        memset(query, 0, sizeof(char)*VIP_MAX_QUERY_SIZE);
         strcpy(query, "?src=");
     }
     else
@@ -455,7 +454,6 @@ void vip_make_query_nonce(char *query, int query_len, int value)
 {
     if (!query_len)
     {
-        memset(query, 0, sizeof(char)*VIP_MAX_QUERY_SIZE);
         strcpy(query, "?nonce=");
     }
     else

@@ -210,6 +210,7 @@ handler_vrr(vip_message_t *rcv_pkt) {
 
   /* Set payload for ack */
   printf("Setting Ack..\n");
+  vip_init_query(query);
   vip_make_query_nonce(ack_query, strlen(ack_query), nonce);
   vip_set_query(ack_pkt, ack_query);
 }
@@ -287,6 +288,7 @@ res_periodic_ad_handler(void)
   vip_set_dest_ep_cooja(snd_pkt, dest_addr, VIP_BROADCAST, VIP_VT_URL);
 
   /* set query */
+  vip_init_query(query);
   vip_make_query_src(query, strlen(query), node_id);
   vip_set_query(snd_pkt, query);
 
