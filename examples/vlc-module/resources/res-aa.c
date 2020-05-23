@@ -313,14 +313,18 @@ res_periodic_ad_handler(void)
 static void
 vip_request_callback(coap_callback_request_state_t *res_callback_state) {
   coap_request_state_t *state = &res_callback_state->state;
-  vip_message_t rcv_ack[1];
   /* Process ack-pkt from vg */
   if (state->status == COAP_REQUEST_STATUS_RESPONSE)
   {
-    printf("Ack:%d - mid(%x) - payload_len(%d)\n", state->response->code, state->response->mid, state->response->payload_len);
-    if (state->response->code < 100 && state->response->payload_len)
+    uint8_t *chunk;
+
+    vip_message_t rcv_ack[1];
+
+    int len = coap_get_payload(state->response, &chunk);
+    printf("Ack:%d - mid(%x) - payload_len(%d)\n", state->response->code, state->response->mid, len);
+    if (state->response->code < 100 && len)
     {
-      if (vip_parse_common_header(rcv_ack, state->response->payload, state->response->payload_len) != VIP_NO_ERROR)
+      if (vip_parse_common_header(rcv_ack, chunk, len) != VIP_NO_ERROR)
       {
         printf("VIP: Not VIP Packet\n");
         return;
