@@ -96,10 +96,10 @@ remove_nonce_table(vip_nonce_tuple_t* tuple) {
 }
 
 vip_nonce_tuple_t*
-check_nonce_table(int vr_node_id) {
+check_nonce_table(int nonce) {
   vip_nonce_tuple_t* c;
   for(c = list_head(vr_nonce_table); c != NULL; c = c->next) {
-    if(c->vr_node_id == vr_node_id) {
+    if(c->nonce == nonce) {
         return c;
     }
   }
@@ -157,6 +157,7 @@ static void
 handler_vrr(vip_message_t *rcv_pkt) {
   vip_nonce_tuple_t *chk;
   int alloc_vr_id;
+  /* 추후에 aa-id도 같이 체크하도록 수정해야 함 */
   if (!(chk = check_nonce_table(rcv_pkt->nonce)))
   {
     /* publish new vr-id */

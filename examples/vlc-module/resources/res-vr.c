@@ -189,12 +189,11 @@ vip_request_callback(coap_callback_request_state_t *res_callback_state) {
   if(state->status == COAP_REQUEST_STATUS_RESPONSE) {
       printf("Ack:%d - mid(%x)\n", state->response->code, state->response->mid);
       if(state->response->code < 100) {
+        vip_timeout_swtich = 1;
         if(coap_get_query_variable(state->response, "nonce", &src)) {
           rcv_nonce = atoi(src);
           printf("Nonce: %d\n", rcv_nonce);
         }
-        /* Ack means that the vr wait for vip-ack-message by vt */ 
-        vip_timeout_swtich = 1;
       }
   }
 }
