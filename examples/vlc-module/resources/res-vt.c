@@ -75,8 +75,6 @@ static int vt_id, aa_id;
 static vip_message_t snd_pkt[1];
 static uint8_t buffer[50];
 static char dest_addr[50];
-static char query[50];
-
 
 static char uplink_id[50];
 
