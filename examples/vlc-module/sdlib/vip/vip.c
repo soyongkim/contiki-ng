@@ -448,7 +448,7 @@ void vip_make_query_src(char *query, int src_id)
         make_query[0] = '&';
     }
 
-    strcat(make_query, "src=");
+    sprintf(make_query+5, "%s", "src=");
     sprintf(make_query + 5, "%d", src_id);
     strcat(query, make_query);
 }
