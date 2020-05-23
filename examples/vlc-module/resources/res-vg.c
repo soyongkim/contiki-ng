@@ -126,14 +126,11 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
   const char *src = NULL;
   printf("Received - mid(%x)\n", request->mid);
 
-  const uint8_t *chunk;
-  int len = coap_get_payload(request, &chunk);
-  buffer = chunk;
   static vip_message_t rcv_pkt[1];
-  if (vip_parse_common_header(rcv_pkt, buffer, len) != VIP_NO_ERROR)
+  if (vip_parse_common_header(rcv_pkt, request->payload, request->payload_len) != VIP_NO_ERROR)
   {
-     printf("vip_pkt have problem\n");
-     return;
+    printf("VIP: Not VIP Packet\n");
+    return;
   }
 
   if(coap_get_query_variable(request, "src", &src)) {
