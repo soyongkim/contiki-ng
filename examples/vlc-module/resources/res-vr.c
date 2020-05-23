@@ -26,7 +26,7 @@ static void handler_sda(vip_message_t *rcv_pkt);
 static vip_message_t snd_pkt[1];
 static uint8_t buffer[50];
 static char dest_addr[50];
-static char query[11] = { "?src=" };
+static char query[50];
 
 static int vr_id, aa_id, vt_id, rcv_nonce;
 static int vip_timeout_swtich, loss_count;
@@ -77,7 +77,6 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
   }
 
   vip_route(rcv_pkt, &vr_type_handler);
-  //process_post(&vr_process, vr_rcv_event, (void *)vip_pkt);
 }
 
 bool
@@ -99,7 +98,7 @@ handler_beacon(vip_message_t *rcv_pkt) {
     /* Recent Received vt-id, aa-id */
     vip_init_message(snd_pkt, VIP_TYPE_VRR, aa_id, vt_id, vr_id);
     /* send to new aa */
-    vip_set_dest_ep_cooja(snd_pkt,dest_addr, aa_id, VIP_AA_URL);
+    vip_set_dest_ep_cooja(snd_pkt, dest_addr, aa_id, VIP_AA_URL);
     vip_set_type_header_nonce(snd_pkt, 0);
     /* set vr id to 0. it's mean not allocated*/
     vip_serialize_message(snd_pkt, buffer);
@@ -110,7 +109,8 @@ handler_beacon(vip_message_t *rcv_pkt) {
 
     vip_request(snd_pkt);
   } else {
-    loss_handler();
+    printf("WHY?");
+    //loss_handler();
   }
 }
 

@@ -110,7 +110,7 @@ TYPE_HANDLER(vt_type_handler, NULL, handler_vrr, handler_vra,
 static void
 res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset)
 {
-  printf("Received - %d\n", request->mid);
+  printf("Received - mid(%x)\n", request->mid);
   
   static vip_message_t rcv_pkt[1];
   if (vip_parse_common_header(rcv_pkt, request->payload, request->payload_len) == VIP_NO_ERROR)
