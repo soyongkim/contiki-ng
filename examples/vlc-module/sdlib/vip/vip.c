@@ -290,7 +290,7 @@ int vip_serialize_SDA(vip_message_t *vip_pkt)
 }
 
 /* Data Parsing */
-int vip_parse_common_header(vip_message_t *vip_pkt, const uint8_t *data, uint16_t data_len)
+int vip_parse_common_header(vip_message_t *vip_pkt, uint8_t *data, uint16_t data_len)
 {
     memset(vip_pkt, 0, sizeof(vip_message_t));
 
