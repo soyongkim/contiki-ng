@@ -228,7 +228,7 @@ vip_request(vip_message_t *snd_pkt) {
   coap_set_header_uri_path(request, snd_pkt->dest_path);
   coap_set_payload(request, snd_pkt->buffer, snd_pkt->total_len);
 
-  if(snd_pkt->query)
+  if(snd_pkt->query_len > 0)
     coap_set_header_uri_query(request, snd_pkt->query);
 
   printf("Send from %s to %s\n", snd_pkt->query, snd_pkt->dest_coap_addr);
