@@ -78,7 +78,6 @@ static char dest_addr[50];
 
 /* use ack for query */
 static vip_message_t ack_pkt[1];
-static char ack_query[50];
 
 static char uplink_id[50];
 
