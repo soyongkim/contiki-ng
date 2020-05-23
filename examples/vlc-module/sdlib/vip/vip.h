@@ -73,7 +73,7 @@ void vip_init_query(char *query);
 
 
 /* Parse the vip-pkt on vip-interface.c */
-int vip_parse_common_header(vip_message_t *message, uint8_t *data, uint16_t data_len);
+int vip_parse_common_header(vip_message_t *message, const uint8_t *data, uint16_t data_len);
 uint32_t vip_parse_int_option(uint8_t *bytes, size_t length);
 void vip_parse_beacon(vip_message_t *message);
 void vip_parse_VRR(vip_message_t *message);
