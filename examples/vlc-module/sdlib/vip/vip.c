@@ -438,15 +438,16 @@ void vip_make_query_src(char *query, int src_id)
 {
     char make_query[11] = "src=";
     sprintf(make_query + 5, "%d", src_id);
+    int query_len = strlen(query);
 
-    if (!strlen(query))
+    if (!query_len)
     {
         memset(query, 0, sizeof(char)*VIP_MAX_QUERY_SIZE);
         query[0] = '?';
     }
     else
     {
-        query[(int)strlen(query)] = "&";
+        query[query_len] = "&";
     }
 
     strcat(query, make_query);
@@ -456,16 +457,16 @@ void vip_make_query_nonce(char *query, int value)
 {
     char make_query[11] = "nonce=";
     sprintf(make_query + 7, "%d", value);
+    int query_len = strlen(query);
 
-
-    if (!strlen(query))
+    if (!query_len)
     {
         memset(query, 0, sizeof(char)*VIP_MAX_QUERY_SIZE);
         query[0] = '?';
     }
     else
     {
-        query[(int)strlen(query)] = "&";
+        query[query_len] = "&";
     }
 
     strcat(query, make_query);
