@@ -112,23 +112,23 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
 {
   printf("Received - %d\n", request->mid);
   
-  static vip_message_t rcv_pkt[1];
-  if (vip_parse_common_header(rcv_pkt, request->payload, request->payload_len) == VIP_NO_ERROR)
-  {
-    printf("VIP: NO ERROR\n");
-  }
-  else
-  {
-    printf("VIP: Not VIP Packet\n");
-  }
+  // static vip_message_t rcv_pkt[1];
+  // if (vip_parse_common_header(rcv_pkt, request->payload, request->payload_len) == VIP_NO_ERROR)
+  // {
+  //   printf("VIP: NO ERROR\n");
+  // }
+  // else
+  // {
+  //   printf("VIP: Not VIP Packet\n");
+  // }
 
-  vip_route(rcv_pkt, &vt_type_handler);
+  // vip_route(rcv_pkt, &vt_type_handler);
 
-  /* for ack */
-  if(ack_pkt->total_len)
-    coap_set_payload(response, ack_pkt->buffer, ack_pkt->total_len);
-  if(ack_pkt->query_len)
-    coap_set_header_uri_query(response, ack_pkt->query);
+  // /* for ack */
+  // if(ack_pkt->total_len)
+  //   coap_set_payload(response, ack_pkt->buffer, ack_pkt->total_len);
+  // if(ack_pkt->query_len)
+  //   coap_set_header_uri_query(response, ack_pkt->query);
 }
 
 /* beaconing */
