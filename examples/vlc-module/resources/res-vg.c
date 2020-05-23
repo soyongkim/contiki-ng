@@ -86,7 +86,7 @@ add_nonce_table(int nonce) {
   new_tuple->nonce = nonce;
   list_add(vr_nonce_table, new_tuple);
 
-  return new_tuple->nonce;
+  return new_tuple->alloc_vr_id;
 }
 
 void
@@ -187,7 +187,7 @@ handler_vrc(vip_message_t *rcv_pkt) {
   if (!(chk = check_nonce_table(rcv_pkt->vr_id)))
   {
     /* remove nonce tuple if vrc received */
-    remove_nonce_table(chk);
+    //remove_nonce_table(chk);
 
     printf("vr[%d] complete!\n", rcv_pkt->vr_id);
   }
