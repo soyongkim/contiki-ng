@@ -436,19 +436,19 @@ void vip_init_query(char *query) {
 
 void vip_make_query_src(char *query, int src_id)
 {
-    char make_query[11] = { "_src=" };
+    char make_query[11] = "src=";
+    sprintf(make_query + 5, "%d", src_id);
 
     if (!strlen(query))
     {
-        make_query[0] = '?';
         memset(query, 0, sizeof(char)*VIP_MAX_QUERY_SIZE);
+        query[0] = '?';
     }
     else
     {
-        make_query[0] = '&';
+        query[strlen(query)] = "&";
     }
-
-    sprintf(make_query + 5, "%d", src_id);
+    
     strcat(query, make_query);
 }
 
