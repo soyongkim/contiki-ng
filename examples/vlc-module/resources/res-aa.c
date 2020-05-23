@@ -316,7 +316,7 @@ vip_request_callback(coap_callback_request_state_t *res_callback_state) {
   /* Process ack-pkt from vg */
   if (state->status == COAP_REQUEST_STATUS_RESPONSE)
   {
-    uint8_t *chunk;
+    const uint8_t *chunk;
 
     vip_message_t rcv_ack[1];
 
