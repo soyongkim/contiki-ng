@@ -122,7 +122,6 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
   vip_route(rcv_pkt, &vt_type_handler);
 
   /* for ack */
-  coap_set_header_content_format(response, TEXT_PLAIN);
   coap_set_status_code(response, CONTENT_2_05);
   if(ack_pkt->total_len)
   {

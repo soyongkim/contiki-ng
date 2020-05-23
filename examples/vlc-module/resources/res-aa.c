@@ -319,8 +319,7 @@ vip_request_callback(coap_callback_request_state_t *res_callback_state) {
     vip_message_t rcv_ack[1];
 
     printf("[RES] Ack:%d - mid(%x) - payload_len(%d)\n", state->response->code, state->response->mid, state->response->payload_len);
-    printf("[REQ] Ack:%d - mid(%x) - payload_len(%d)\n", state->request->code, state->request->mid, state->request->payload_len);
-    if (state->response->code < 100 && state->response->payload_len)
+    if (state->response->code < 100)
     {
       if (vip_parse_common_header(rcv_ack, state->response->payload, state->response->payload_len) != VIP_NO_ERROR)
       {
