@@ -123,10 +123,11 @@ loss_handler() {
   /* if the vr received same beacon frame, retransmit the pkt */
   if(loss_count >= 3) {
     /* Send recently sent pkt */
+    printf("test loss count\n");
     vip_request(snd_pkt);
     vip_timeout_swtich = 0;
+    loss_count = 0;
   }
-  printf("Why?\n");
 }
 
 static void
