@@ -35,8 +35,6 @@ static int loss_count = 0;
 
 static void loss_handler();
 
-
-
 /* A simple actuator example. Toggles the red led */
 EVENT_RESOURCE(res_vr,
          "title=\"vr\";rt=\"Control\"",
@@ -104,7 +102,7 @@ loss_handler() {
   if(loss_count >= 3) {
     /* Send recently sent pkt */
     printf("test loss count\n");
-    vip_request(snd_pkt);
+    process_post(&vr_process, vr_snd_event, (void *)snd_pkt);
     vip_timeout_swtich = 0;
     loss_count = 0;
   }
