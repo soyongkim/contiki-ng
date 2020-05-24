@@ -33,9 +33,6 @@ static int vip_timeout_swtich;
 static int rcv_nonce;
 static int loss_count = 0;
 
-/* using coap callback api */
-static void vip_request_callback(coap_callback_request_state_t *callback_state);
-static void vip_request(vip_message_t *snd_pkt);
 static void loss_handler();
 
 
