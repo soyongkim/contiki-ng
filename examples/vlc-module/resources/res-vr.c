@@ -32,7 +32,6 @@ static int vr_id, aa_id, vt_id;
 static int vip_timeout_swtich;
 static int loss_count = 0;
 
-extern int rcv_nonce;
 
 static void loss_handler();
 
