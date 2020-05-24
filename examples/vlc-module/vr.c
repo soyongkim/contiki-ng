@@ -60,8 +60,7 @@ PROCESS_THREAD(vr_process, ev, data)
 
       if(ev == vr_snd_event) {
         snd_pkt = (vip_message_t *)data;
-        // 여기서 route를 실행해야함 aa 프로세스가 route해서 보내야함
-        
+        vip_request(snd_pkt);
       }
   }
 
