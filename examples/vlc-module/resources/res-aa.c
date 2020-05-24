@@ -16,7 +16,6 @@
 static void res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset);
 static void res_periodic_ad_handler(void);
 
-static void handler_beacon(vip_message_t *rcv_pkt);
 static void handler_vrr(vip_message_t *rcv_pkt);
 static void handler_vra(vip_message_t *rcv_pkt);
 static void handler_vrc(vip_message_t *rcv_pkt);
