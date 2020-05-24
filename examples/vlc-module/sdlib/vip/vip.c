@@ -8,6 +8,7 @@
 #include "sdlib/configure_cooja/cooja_addr.h"
 #include "vip.h"
 #include "sys/node-id.h"
+#include "vr.h"
 
 /* Serialize Type Specific Header */
 int vip_serialize_beacon(vip_message_t *message);
@@ -467,3 +468,4 @@ void vip_make_query_nonce(char *query, int query_len, int value)
     strcat(query, tochar);
     printf("nonce_query: %s\n", query);
 }
+

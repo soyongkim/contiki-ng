@@ -3,6 +3,7 @@
 #include "net/ipv6/uip-ds6.h"
 #include "net/ipv6/uip-debug.h"
 
+
 uip_ipaddr_t
 change_target(int node_id) {
     const uip_ipaddr_t *default_prefix = uip_ds6_default_prefix();
@@ -69,7 +70,7 @@ make_coap_uri(char *src_coap_addr, int node_id) {
     sprintf(forth, "%x", node_id);
     strcat(coap_uri, forth);
     strcat(coap_uri, "]");
-    
+
     strcpy(src_coap_addr, coap_uri);    
   }
 }
