@@ -47,17 +47,6 @@ static mutex_t p;
 
 static char uplink_id[50] = {"ISL_AA_UPLINK_ID"};
 
-/* for send packet */
-static coap_callback_request_state_t callback_state;
-static coap_endpoint_t dest_ep;
-static coap_message_t request[1];
-
-
-
-/* using coap callback api */
-static void vip_request_callback(coap_callback_request_state_t *callback_state);
-static void vip_request(vip_message_t *snd_pkt);
-
 
 /* A simple actuator example. Toggles the red led */
 PERIODIC_RESOURCE(res_aa,
@@ -71,7 +60,7 @@ PERIODIC_RESOURCE(res_aa,
 
 
 /* vip type handler */
-TYPE_HANDLER(aa_type_handler, handler_beacon, handler_vrr, handler_vra, 
+TYPE_HANDLER(aa_type_handler, NULL, handler_vrr, handler_vra, 
               handler_vrc, handler_rel, handler_ser, handler_sea, handler_sec,
               handler_sd, handler_sda, allocate_vt_handler);
 
@@ -161,7 +150,7 @@ handover_vr(vip_message_t* rcv_pkt) {
   /* forward to vg */
   vip_set_dest_ep_cooja(rcv_pkt, dest_addr, VIP_VG_ID, VIP_VG_URL);
   printf("forward to vg(%d)\n", VIP_VG_ID);
-  vip_request(rcv_pkt);
+  process_post(&aa_process, aa_snd_event, (void *)rcv_pkt);
 }
 
 /* called by coap-engine proc */
@@ -195,12 +184,6 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
 }
 
 static void
-handler_beacon(vip_message_t *rcv_pkt) {
-  printf("I'm beacon handler [%s]\n", rcv_pkt->uplink_id);
-}
-
-
-static void
 handler_vrr(vip_message_t *rcv_pkt) {
   vip_nonce_tuple_t *chk;
   int nonce;
@@ -220,7 +203,7 @@ handler_vrr(vip_message_t *rcv_pkt) {
   vip_set_dest_ep_cooja(rcv_pkt, dest_addr, VIP_VG_ID, VIP_VG_URL);
   vip_set_type_header_nonce(rcv_pkt, nonce);
   vip_serialize_message(rcv_pkt, buffer);
-  vip_request(rcv_pkt);
+  process_post(&aa_process, aa_snd_event, (void *)rcv_pkt);
 
   /* Set payload for ack */
   printf("Setting Ack..\n");
@@ -234,7 +217,7 @@ handler_vra(vip_message_t *rcv_pkt) {
   /* forward vra(vrid) to vt with nonce*/
   vip_set_dest_ep_cooja(rcv_pkt, dest_addr, rcv_pkt->vt_id, VIP_VT_URL);
   vip_serialize_message(rcv_pkt, buffer);
-  vip_request(rcv_pkt);
+  process_post(&aa_process, aa_snd_event, (void *)rcv_pkt);
 }
 
 static void
@@ -248,7 +231,7 @@ handler_vrc(vip_message_t *rcv_pkt) {
 
     /* forward vra(vrid) to vt with nonce*/
     vip_set_dest_ep_cooja(rcv_pkt, dest_addr, VIP_VG_ID, VIP_VG_URL);
-    vip_request(rcv_pkt);
+    process_post(&aa_process, aa_snd_event, (void *)rcv_pkt);
   }
 }
 
@@ -309,42 +292,5 @@ res_periodic_ad_handler(void)
   vip_make_query_src(query, strlen(query), node_id);
   vip_set_query(snd_pkt, query);
 
-  vip_request(snd_pkt);
-}
-
-
-static void
-vip_request_callback(coap_callback_request_state_t *res_callback_state) {
-  coap_request_state_t *state = &res_callback_state->state;
-  /* Process ack-pkt from vg */
-  if (state->status == COAP_REQUEST_STATUS_RESPONSE)
-  {
-    vip_message_t rcv_ack[1];
-
-    printf("[RES] Ack:%d - mid(%x) - payload_len(%d)\n", state->response->code, state->response->mid, state->response->payload_len);
-    if (state->response->code < 100 && state->response->payload_len)
-    {
-      if (vip_parse_common_header(rcv_ack, state->response->payload, state->response->payload_len) != VIP_NO_ERROR)
-      {
-        printf("VIP: Not VIP Packet\n");
-        return;
-      }
-      vip_route(rcv_ack, &aa_type_handler);
-    }
-  }
-}
-
-static void
-vip_request(vip_message_t *snd_pkt) {
-  /* set vip endpoint */
-  coap_endpoint_parse(snd_pkt->dest_coap_addr, strlen(snd_pkt->dest_coap_addr), &dest_ep);
-  coap_init_message(request, COAP_TYPE_CON, COAP_POST, 0);
-  coap_set_header_uri_path(request, snd_pkt->dest_path);
-  coap_set_payload(request, snd_pkt->buffer, snd_pkt->total_len);
-
-  if(snd_pkt->query_len > 0)
-    coap_set_header_uri_query(request, snd_pkt->query);
-
-  printf("Send from %s to %s\n", snd_pkt->query, snd_pkt->dest_coap_addr);
-  coap_send_request(&callback_state, &dest_ep, request, vip_request_callback);
+  process_post(&aa_process, aa_snd_event, (void *)snd_pkt);
 }

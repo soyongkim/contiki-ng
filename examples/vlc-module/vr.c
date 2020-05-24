@@ -16,11 +16,6 @@
 #include "sys/node-id.h"
 
 
-#include "os/sys/log.h"
-#define LOG_MODULE "vr"
-#define LOG_LEVEL LOG_LEVEL_DBG
-
-
 
 /*
  * Resources to be activated need to be imported through the extern keyword.
@@ -30,10 +25,14 @@ extern coap_resource_t res_vr;
 extern vip_entity_t vr_type_handler;
 
 /* test event process */
-process_event_t vr_rcv_event;
-char query[11];
+process_event_t vr_snd_event;
 
-static char test_addr[50];
+/* for send packet */
+static coap_callback_request_state_t callback_state;
+static coap_endpoint_t dest_ep;
+static coap_message_t request[1];
+
+
 
 PROCESS(vr_process, "VR");
 AUTOSTART_PROCESSES(&vr_process);
@@ -42,12 +41,8 @@ PROCESS_THREAD(vr_process, ev, data)
 {
   PROCESS_BEGIN();
   PROCESS_PAUSE();
-  sprintf(query + 5, "%d", node_id);
 
-  make_coap_uri(test_addr, node_id);
-
-
-  vr_rcv_event = process_alloc_event();
+  vr_snd_event = process_alloc_event();
 
   /*
    * Bind the resources to their Uri-Path.
@@ -57,18 +52,49 @@ PROCESS_THREAD(vr_process, ev, data)
   coap_activate_resource(&res_vr, "vip/vr");
 
   /* vip packet */
-  vip_message_t *rcv_pkt;
+  vip_message_t *snd_pkt;
 
   /* Define application-specific events here. */
   while(1) {
       PROCESS_WAIT_EVENT();
 
-      if(ev == vr_rcv_event) {
-        rcv_pkt = (vip_message_t *)data;
+      if(ev == vr_snd_event) {
+        snd_pkt = (vip_message_t *)data;
         // 여기서 route를 실행해야함 aa 프로세스가 route해서 보내야함
-        vip_route(rcv_pkt, &vr_type_handler);
+        
       }
   }
 
   PROCESS_END();
+}
+
+static void
+vip_request_callback(coap_callback_request_state_t *res_callback_state) {
+  const char *nonce = NULL;
+  coap_request_state_t *state = &res_callback_state->state;
+
+  if(state->status == COAP_REQUEST_STATUS_RESPONSE) {
+      printf("Ack:%d - mid(%x)\n", state->response->code, state->response->mid);
+      if(state->response->code < 100) {
+        if(coap_get_query_variable(state->response, "nonce", &nonce)) {
+          rcv_nonce = atoi(nonce);
+          printf("Nonce:%d\n", rcv_nonce);
+        }
+      }
+  }
+}
+
+static void
+vip_request(vip_message_t *snd_pkt) {
+  /* set vip endpoint */
+  coap_endpoint_parse(snd_pkt->dest_coap_addr, strlen(snd_pkt->dest_coap_addr), &dest_ep);
+  coap_init_message(request, COAP_TYPE_CON, COAP_POST, 0);
+  coap_set_header_uri_path(request, snd_pkt->dest_path);
+  coap_set_payload(request, snd_pkt->buffer, snd_pkt->total_len);
+
+  if(snd_pkt->query_len > 0)
+    coap_set_header_uri_query(request, snd_pkt->query);
+
+  printf("Send from %s to %s\n", snd_pkt->query, snd_pkt->dest_coap_addr);
+  coap_send_request(&callback_state, &dest_ep, request, vip_request_callback);
 }

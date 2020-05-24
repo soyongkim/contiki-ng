@@ -28,22 +28,14 @@ static uint8_t buffer[50];
 static char dest_addr[50];
 static char query[50];
 
-static int vr_id, aa_id, vt_id, rcv_nonce;
+static int vr_id, aa_id, vt_id;
 static int vip_timeout_swtich;
+static int rcv_nonce;
 static int loss_count = 0;
-
-
-/* for send packet */
-static coap_callback_request_state_t callback_state;
-static coap_endpoint_t dest_ep;
-static coap_message_t request[1];
-
-
 
 /* using coap callback api */
 static void vip_request_callback(coap_callback_request_state_t *callback_state);
 static void vip_request(vip_message_t *snd_pkt);
-
 static void loss_handler();
 
 
@@ -80,14 +72,6 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
   vip_route(rcv_pkt, &vr_type_handler);
 }
 
-bool
-is_my_pkt(int rcv_vr_id) {
-  if(rcv_vr_id == vr_id)
-    return true;
-  return false;
-}
-
-
 static void
 handler_beacon(vip_message_t *rcv_pkt) {
   /* check handover and loss */
@@ -108,7 +92,7 @@ handler_beacon(vip_message_t *rcv_pkt) {
     vip_make_query_src(query, strlen(query), node_id);
     vip_set_query(snd_pkt, query);
 
-    vip_request(snd_pkt);
+    process_post(&vr_process, vr_snd_event, (void *)snd_pkt);
   } else {
     if(vip_timeout_swtich) {
       loss_handler();
@@ -131,6 +115,7 @@ loss_handler() {
 
 static void
 handler_vra(vip_message_t *rcv_pkt) {
+  printf("[vra] rcv_nonce = %d\n", rcv_nonce);
   /* received vr-id */
   if(rcv_nonce == rcv_pkt->nonce)
   {
@@ -176,39 +161,6 @@ handler_sda(vip_message_t *rcv_pkt) {
 
 static void 
 res_event_handler(void) {
-
-
-}
-
-
-static void
-vip_request_callback(coap_callback_request_state_t *res_callback_state) {
-  const char *nonce = NULL;
-  coap_request_state_t *state = &res_callback_state->state;
-
-  if(state->status == COAP_REQUEST_STATUS_RESPONSE) {
-      printf("Ack:%d - mid(%x)\n", state->response->code, state->response->mid);
-      if(state->response->code < 100) {
-        vip_timeout_swtich = 1;
-        if(coap_get_query_variable(state->response, "nonce", &nonce)) {
-          rcv_nonce = atoi(nonce);
-          printf("Nonce: %d\n", rcv_nonce);
-        }
-      }
-  }
-}
-
-static void
-vip_request(vip_message_t *snd_pkt) {
-  /* set vip endpoint */
-  coap_endpoint_parse(snd_pkt->dest_coap_addr, strlen(snd_pkt->dest_coap_addr), &dest_ep);
-  coap_init_message(request, COAP_TYPE_CON, COAP_POST, 0);
-  coap_set_header_uri_path(request, snd_pkt->dest_path);
-  coap_set_payload(request, snd_pkt->buffer, snd_pkt->total_len);
-
-  if(snd_pkt->query_len > 0)
-    coap_set_header_uri_query(request, snd_pkt->query);
-
-  printf("Send from %s to %s\n", snd_pkt->query, snd_pkt->dest_coap_addr);
-  coap_send_request(&callback_state, &dest_ep, request, vip_request_callback);
+  /* retransmit switch */ 
+  vip_timeout_swtich = 1;
 }
