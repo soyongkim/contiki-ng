@@ -32,6 +32,9 @@ typedef struct {
     char *query, *dest_coap_addr, *dest_path;
     uint32_t query_len;
     uint32_t query_rcv_id;
+
+    /* flag retransmit */
+    uint32_t re_flag;
 } vip_message_t;
 
 struct vip_vt_tuple {
@@ -45,7 +48,6 @@ struct vip_nonce_tuple {
     int vr_node_id;
     int alloc_vr_id;
 };
-
 
 typedef struct vip_session_info {
     int session_id;

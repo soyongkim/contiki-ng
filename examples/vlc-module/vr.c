@@ -25,7 +25,6 @@ extern vip_entity_t vr_type_handler;
 
 /* test event process */
 process_event_t vr_snd_event;
-int rcv_nonce;
 
 /* for send packet */
 static coap_callback_request_state_t callback_state;
