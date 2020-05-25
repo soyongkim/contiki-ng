@@ -225,6 +225,7 @@ handler_vrr(vip_message_t *rcv_pkt) {
       process_post(&aa_process, aa_snd_event, (void *)snd_pkt);
     }
   }
+  
   /* Set payload for ack */
   vip_init_query(ack_query);
   vip_make_query_nonce(ack_query, strlen(ack_query), nonce);

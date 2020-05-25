@@ -94,9 +94,9 @@ vip_request(vip_message_t *snd_pkt) {
   coap_endpoint_parse(snd_pkt->dest_coap_addr, strlen(snd_pkt->dest_coap_addr), &dest_ep);
 
   if(snd_pkt->re_flag)
-    coap_init_message(request, COAP_TYPE_CON, COAP_POST, 0);
-  else
     coap_init_message(request, COAP_TYPE_NON, COAP_POST, 0);
+  else
+    coap_init_message(request, COAP_TYPE_CON, COAP_POST, 0);
 
   coap_set_header_uri_path(request, snd_pkt->dest_path);
   coap_set_payload(request, snd_pkt->buffer, snd_pkt->total_len);
