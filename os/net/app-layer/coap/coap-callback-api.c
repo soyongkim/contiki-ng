@@ -97,11 +97,11 @@ coap_request_callback(void *callback_data, coap_message_t *response)
 
   state->response = response;
 
-  LOG_DBG("request callback\n");
+  //LOG_DBG("request callback\n");
+  printf("request callback\n");
 
   if(!state->response) {
-    LOG_WARN("Server not responding giving up...\n");
-    printf("-timeout-\n");
+    printf("Server not responding giving up...\n");
     state->status = COAP_REQUEST_STATUS_TIMEOUT;
     callback_state->callback(callback_state);
     return;
@@ -111,7 +111,7 @@ coap_request_callback(void *callback_data, coap_message_t *response)
   coap_get_header_block2(state->response, &state->res_block, &state->more, NULL, NULL);
   coap_get_header_block1(state->response, &res_block1, NULL, NULL, NULL);
 
-  LOG_DBG("Received #%lu%s B1:%lu (%u bytes)\n",
+  printf("Received #%lu%s B1:%lu (%u bytes)\n",
           (unsigned long)state->res_block, (unsigned)state->more ? "+" : "",
           (unsigned long)res_block1,
           state->response->payload_len);
@@ -127,13 +127,12 @@ coap_request_callback(void *callback_data, coap_message_t *response)
     /* this is only for counting BLOCK2 blocks.*/
     ++(state->block_num);
   } else {
-    LOG_WARN("WRONG BLOCK %"PRIu32"/%"PRIu32"\n", state->res_block, state->block_num);
+    printf("WRONG BLOCK %"PRIu32"/%"PRIu32"\n", state->res_block, state->block_num);
     ++(state->block_error);
   }
 
   if(state->more) {
     if((state->block_error) < COAP_MAX_ATTEMPTS) {
-      printf("Re-transmit\n");
       progress_request(callback_state);
     } else {
       /* failure - now we give up and notify the callback */
