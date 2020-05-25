@@ -78,7 +78,7 @@ vip_request_callback(coap_callback_request_state_t *res_callback_state) {
   coap_request_state_t *state = &res_callback_state->state;
   printf("callback! - %d\n", state->status);
   /* Process ack-pkt from vg */
-  if (state->status == COAP_REQUEST_STATUS_FINISHED)
+  if (state->status == COAP_REQUEST_STATUS_RESPONSE)
   {
     vip_message_t rcv_ack[1];
 
