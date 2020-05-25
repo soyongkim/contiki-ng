@@ -88,6 +88,7 @@ add_nonce_table(int vr_node_id) {
   vip_nonce_tuple_t* new_tuple = malloc(sizeof(vip_nonce_tuple_t));
   new_tuple->nonce = publish_nonce();
   new_tuple->vr_node_id = vr_node_id;
+  new_tuple->alloc_vr_id = 0;
   list_add(vr_nonce_table, new_tuple);
   mutex_unlock(&p);
   return new_tuple->nonce;
