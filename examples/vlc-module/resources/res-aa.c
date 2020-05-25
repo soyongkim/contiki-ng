@@ -118,6 +118,7 @@ update_nonce_table(int nonce, int vr_id) {
   for(c = list_head(vr_nonce_table); c != NULL; c = c->next) {
     if(c->nonce == nonce) {
         c->alloc_vr_id = vr_id;
+        printf("Update nonce(%d) - vr(%d)\n", c->nonce, c->alloc_vr_id);
         break;
     }
   }
