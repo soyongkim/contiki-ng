@@ -25,7 +25,6 @@ static void handler_sea(vip_message_t *rcv_pkt);
 static void handler_sec(vip_message_t *rcv_pkt);
 static void handler_sd(vip_message_t *rcv_pkt);
 static void handler_sda(vip_message_t *rcv_pkt);
-static void allocate_vt_handler(vip_message_t *rcv_pkt);
 
 /* make vt table which administrate the vt id */
 LIST(vr_nonce_table);
