@@ -113,7 +113,7 @@ static void
 loss_handler() {
   ++loss_count;
   /* if the vr received same beacon frame, retransmit the pkt */
-  if(loss_count >= 5) {
+  if(loss_count >= 10) {
     /* Send recently sent pkt */
     printf("loss count\n");
     snd_pkt->re_flag = 1;
