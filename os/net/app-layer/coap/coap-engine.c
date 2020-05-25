@@ -160,8 +160,8 @@ coap_receive(const coap_endpoint_t *src,
     LOG_DBG("  Parsed: v %u, t %u, tkl %u, c %u, mid %u\n", message->version,
             message->type, message->token_len, message->code, message->mid);
 
-    printf("  Parsed: v %u, t %u, tkl %u, c %u, mid %u\n", message->version,
-            message->type, message->token_len, message->code, message->mid);
+    // printf("  Parsed: v %u, t %u, tkl %u, c %u, mid %u\n", message->version,
+    //         message->type, message->token_len, message->code, message->mid);
 
     LOG_DBG("  URL:");
     LOG_DBG_COAP_STRING(message->uri_path, message->uri_path_len);
