@@ -6,7 +6,8 @@
 
 #include "net/ipv6/uip-packetqueue.h"
 
-#define MAX_NUM_QUEUED_PACKETS 2
+/* [smalldragon] max queue test */
+#define MAX_NUM_QUEUED_PACKETS 100
 MEMB(packets_memb, struct uip_packetqueue_packet, MAX_NUM_QUEUED_PACKETS);
 
 #define DEBUG 0

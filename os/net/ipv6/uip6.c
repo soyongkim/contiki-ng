@@ -85,6 +85,9 @@
 #include "net/ipv6/uip-ds6-nbr.h"
 #endif /* UIP_ND6_SEND_NS */
 
+#include <stdio.h>
+
+
 /* Log configuration */
 #include "sys/log.h"
 #define LOG_MODULE "IPv6"
@@ -1562,7 +1565,7 @@ uip_process(uint8_t flag)
 
   udp_send:
   LOG_DBG("In udp_send\n");
-
+  printf("[uip6] goto udp send~\n");
   if(uip_slen == 0) {
     goto drop;
   }
@@ -2317,6 +2320,7 @@ uip_process(uint8_t flag)
   UIP_IP_BUF->flow = 0x00;
   send:
   LOG_INFO("Sending packet with length %d (%d)\n", uip_len, uipbuf_get_len_field(UIP_IP_BUF));
+  printf("[uip6] Sending packet with length %d (%d)\n", uip_len, uipbuf_get_len_field(UIP_IP_BUF));
 
   UIP_STAT(++uip_stat.ip.sent);
   /* Return and let the caller do the actual transmission. */
