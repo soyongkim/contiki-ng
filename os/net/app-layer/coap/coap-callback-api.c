@@ -142,7 +142,7 @@ coap_request_callback(void *callback_data, coap_message_t *response)
   } else {
     /* No more blocks, finish and notify the callback */
     state->status = COAP_REQUEST_STATUS_FINISHED;
-    state->response = NULL;
+    //state->response = NULL;
     callback_state->callback(callback_state);
   }
 }
