@@ -125,7 +125,8 @@ coap_request_callback(void *callback_data, coap_message_t *response)
     }
     callback_state->callback(callback_state);
     /* this is only for counting BLOCK2 blocks.*/
-    ++(state->block_num);
+    /* [smalldragon] 일단 제거 해봄 */
+    //++(state->block_num);
   } else {
     printf("WRONG BLOCK %"PRIu32"/%"PRIu32"\n", state->res_block, state->block_num);
     ++(state->block_error);
@@ -142,7 +143,8 @@ coap_request_callback(void *callback_data, coap_message_t *response)
   } else {
     /* No more blocks, finish and notify the callback */
     state->status = COAP_REQUEST_STATUS_FINISHED;
-    //state->response = NULL;
+    /* [smalldragon] 여차할땐 이거 제거 해야 됨 */
+    state->response = NULL;
     callback_state->callback(callback_state);
   }
 }

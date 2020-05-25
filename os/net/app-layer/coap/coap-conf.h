@@ -51,6 +51,7 @@
  * respected due to the limited IP buffer.  Larger data must be handled by the
  * resource and will be sent chunk-wise through a TCP stream or CoAP blocks.
  */
+/* [smalldragon] original max chunk size is 64 */
 #ifndef COAP_MAX_CHUNK_SIZE
 #ifdef REST_MAX_CHUNK_SIZE
 #define COAP_MAX_CHUNK_SIZE REST_MAX_CHUNK_SIZE

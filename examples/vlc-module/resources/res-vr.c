@@ -116,7 +116,7 @@ loss_handler() {
   if(loss_count >= 5) {
     /* Send recently sent pkt */
     printf("loss count\n");
-    snd_pkt->re_flag = 1;
+    snd_pkt->re_flag = COAP_TYPE_NON;
     process_post(&vr_process, vr_snd_event, (void *)snd_pkt);
   }
 }

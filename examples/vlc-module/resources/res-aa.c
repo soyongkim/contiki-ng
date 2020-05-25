@@ -28,7 +28,6 @@ static void handler_sda(vip_message_t *rcv_pkt);
 static void allocate_vt_handler(vip_message_t *rcv_pkt);
 
 /* make vt table which administrate the vt id */
-LIST(vt_table);
 LIST(vr_nonce_table);
 
 /* for snd-pkt */
@@ -61,7 +60,7 @@ PERIODIC_RESOURCE(res_aa,
 /* vip type handler */
 TYPE_HANDLER(aa_type_handler, NULL, handler_vrr, handler_vra, 
               handler_vrc, handler_rel, handler_ser, handler_sea, handler_sec,
-              handler_sd, handler_sda, allocate_vt_handler);
+              handler_sd, handler_sda, NULL);
 
 int
 publish_nonce() {
@@ -123,40 +122,6 @@ update_nonce_table(int nonce, int vr_id) {
     }
   }
 }
-
-
-void
-add_vt_tuple(int node_id) {
-  vip_vt_tuple_t *new_tuple = malloc(sizeof(vip_vt_tuple_t));
-  new_tuple->vt_id = node_id;
-  list_add(vt_table, new_tuple);
-}
-
-void
-remove_vt_tuple(vip_vt_tuple_t* tuple) {
-  list_remove(vt_table, tuple);
-  free(tuple);
-}
-
-int
-check_vt_tuple(int vt_id) {
-  vip_vt_tuple_t *c;
-  for(c = list_head(vt_table); c != NULL; c = c->next) {
-    if(c->vt_id == vt_id) {
-      return c->vt_id;
-    }
-  }
-  return 0;
-}
-
-
-void show_vt_table() {
-  vip_vt_tuple_t *c;
-  for(c = list_head(vt_table); c != NULL; c = c->next) {
-    printf("[aa(%d) -> vt(%d):]\n", node_id, c->vt_id);
-  }
-}
-
 
 void
 handover_vr(vip_message_t* rcv_pkt) {
@@ -291,16 +256,6 @@ handler_sda(vip_message_t *rcv_pkt) {
 }
 
 static void
-allocate_vt_handler(vip_message_t *rcv_pkt) {
-  printf("alloc handler\n");
-  if(!check_vt_tuple(rcv_pkt->vt_id)) {
-    add_vt_tuple(rcv_pkt->vt_id);
-    show_vt_table();
-  }
-}
-
-
-static void
 res_periodic_ad_handler(void)
 {
   printf("Advertise...\n");
@@ -316,6 +271,10 @@ res_periodic_ad_handler(void)
   vip_init_query(query);
   vip_make_query_src(query, strlen(query), node_id);
   vip_set_query(snd_pkt, query);
+
+
+  /* non message setting */
+  snd_pkt->re_flag = COAP_TYPE_NON;
 
   process_post(&aa_process, aa_snd_event, (void *)snd_pkt);
 }

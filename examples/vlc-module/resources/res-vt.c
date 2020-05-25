@@ -204,9 +204,6 @@ handler_allow(vip_message_t *rcv_pkt) {
     strcpy(uplink_id, rcv_pkt->uplink_id);
     printf("vt-[%d] is allocated by aa-[%d]\n", vt_id, aa_id);
     printf("uplink-id is [%s]\n", uplink_id);
-    
-    vip_init_message(ack_pkt, VIP_TYPE_ALLOW, aa_id, vt_id, 0);
-    vip_serialize_message(ack_pkt, buffer);
   }
   else {
     printf("Already allocated with %d\n", vt_id);
