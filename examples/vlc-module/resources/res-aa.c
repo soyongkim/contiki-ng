@@ -10,6 +10,10 @@
 /* Node ID */
 #include "sys/node-id.h"
 
+/* test pthread */
+#include "os/sys/pt.h"
+
+
 #include <stdio.h>
 #include <string.h>
 
@@ -40,7 +44,7 @@ static vip_message_t ack_pkt[1];
 static char ack_query[50];
 
 static int nonce_pool[65000];
-static mutex_t p,t;
+static mutex_t p;
 
 static char uplink_id[50] = {"ISL_AA_UPLINK_ID"};
 
@@ -134,7 +138,6 @@ handover_vr(vip_message_t* rcv_pkt) {
 static void
 res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset)
 {
-  mutex_try_lock(&t);
   const char *src = NULL;
   printf("Received - mid(%x)\n", request->mid);
 
@@ -158,7 +161,6 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
   {
     coap_set_header_uri_query(response, ack_pkt->query);
   }
-  mutex_unlock(&t);
 }
 
 static void
