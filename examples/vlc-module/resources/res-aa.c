@@ -112,6 +112,18 @@ check_nonce_table(int vr_node_id) {
 }
 
 void
+update_nonce_table(int nonce, int vr_id) {
+  vip_nonce_tuple_t* c;
+  for(c = list_head(vr_nonce_table); c != NULL; c = c->next) {
+    if(c->nonce == nonce) {
+        c->alloc_vr_id = vr_id;
+        break;
+    }
+  }
+}
+
+
+void
 add_vt_tuple(int node_id) {
   vip_vt_tuple_t *new_tuple = malloc(sizeof(vip_vt_tuple_t));
   new_tuple->vt_id = node_id;
@@ -177,7 +189,6 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
     coap_set_payload(response, ack_pkt->buffer, ack_pkt->total_len);
   if(ack_pkt->query_len)
   {
-    printf("nonce query\n");
     coap_set_header_uri_query(response, ack_pkt->query);
   }
 }
@@ -191,21 +202,30 @@ handler_vrr(vip_message_t *rcv_pkt) {
     /* publish new nonce to the vr */
     nonce = add_nonce_table(rcv_pkt->query_rcv_id);
     printf("Pub(%d) to vr(%d)\n", nonce, rcv_pkt->query_rcv_id);
+
+    /* Send vrr to vg */
+    printf("forward to vg..\n");
+    vip_set_dest_ep_cooja(rcv_pkt, dest_addr, VIP_VG_ID, VIP_VG_URL);
+    vip_set_type_header_nonce(rcv_pkt, nonce);
+    vip_serialize_message(rcv_pkt, buffer);
+    process_post(&aa_process, aa_snd_event, (void *)rcv_pkt);
+
   }
   else
   {
     nonce = chk->nonce;
+
+    printf("forward to vt..\n");
+    if(chk->alloc_vr_id)
+    {
+      vip_init_message(snd_pkt, VIP_TYPE_VRA, node_id, rcv_pkt->vt_id, chk->alloc_vr_id);
+      vip_set_dest_ep_cooja(snd_pkt, dest_addr, rcv_pkt->vt_id, VIP_VT_URL);
+      vip_set_type_header_nonce(snd_pkt, nonce);
+      vip_serialize_message(snd_pkt, buffer);
+      process_post(&aa_process, aa_snd_event, (void *)rcv_pkt);
+    }
   }
-
-  /* Send vrr to vg */
-  printf("forward to vg..\n");
-  vip_set_dest_ep_cooja(rcv_pkt, dest_addr, VIP_VG_ID, VIP_VG_URL);
-  vip_set_type_header_nonce(rcv_pkt, nonce);
-  vip_serialize_message(rcv_pkt, buffer);
-  process_post(&aa_process, aa_snd_event, (void *)rcv_pkt);
-
   /* Set payload for ack */
-  printf("Setting Ack..\n");
   vip_init_query(ack_query);
   vip_make_query_nonce(ack_query, strlen(ack_query), nonce);
   vip_set_query(ack_pkt, ack_query);
@@ -213,6 +233,7 @@ handler_vrr(vip_message_t *rcv_pkt) {
 
 static void
 handler_vra(vip_message_t *rcv_pkt) {
+  update_nonce_table(rcv_pkt->nonce, rcv_pkt->vr_id);
   /* forward vra(vrid) to vt with nonce*/
   vip_set_dest_ep_cooja(rcv_pkt, dest_addr, rcv_pkt->vt_id, VIP_VT_URL);
   vip_serialize_message(rcv_pkt, buffer);
