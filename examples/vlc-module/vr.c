@@ -82,9 +82,9 @@ vip_request_callback(coap_callback_request_state_t *res_callback_state) {
         if(coap_get_query_variable(state->response, "nonce", &nonce)) {
           rcv_nonce = atoi(nonce);
           printf("Nonce:%d\n", rcv_nonce);
-          res_vr.trigger();
         }
       }
+      res_vr.trigger();
   }
 }
 
