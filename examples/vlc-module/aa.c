@@ -95,7 +95,8 @@ vip_request_callback(coap_callback_request_state_t *res_callback_state) {
   }
 
   if(state->status == COAP_REQUEST_STATUS_FINISHED) {
-    printf("test response payload length: %d\n", state->response->payload_len);
+    if(state->response)
+      printf("test response payload length: %d\n", state->response->payload_len);
   }
 }
 
