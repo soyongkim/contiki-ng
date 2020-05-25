@@ -45,6 +45,7 @@ extern uint16_t uip_slen;
 #include "net/ipv6/multicast/uip-mcast6.h"
 
 #include <string.h>
+#include <stdio.h>
 
 /*---------------------------------------------------------------------------*/
 void
@@ -55,6 +56,7 @@ uip_udp_packet_send(struct uip_udp_conn *c, const void *data, int len)
     uip_udp_conn = c;
     uip_slen = len;
     memmove(&uip_buf[UIP_IPUDPH_LEN], data, len);
+    printf("[uip-udp-packet] come?\n");
     uip_process(UIP_UDP_SEND_CONN);
 
 #if UIP_IPV6_MULTICAST
