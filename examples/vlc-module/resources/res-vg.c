@@ -35,7 +35,7 @@ static uint8_t buffer[50];
 /* use ack for query */
 static vip_message_t ack_pkt[1];
 
-static mutex_t v;
+static mutex_t v, t;
 
 
 
@@ -123,6 +123,7 @@ save_session_info(int vr_id, int session_id, int vg_seq, int vr_seq, uint8_t *da
 static void
 res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset)
 {
+  mutex_try_lock(&t);
   const char *src = NULL;
   printf("Received - mid(%x)\n", request->mid);
 
@@ -144,6 +145,7 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
     coap_set_payload(response, ack_pkt->buffer, ack_pkt->total_len);
   if(ack_pkt->query_len)
     coap_set_header_uri_query(response, ack_pkt->query);
+  mutex_unlock(&t);
 }
 
 static void 
