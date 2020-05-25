@@ -344,6 +344,7 @@ coap_receive(const coap_endpoint_t *src,
     /* if(parsed correctly) */
   if(coap_status_code == NO_ERROR) {
     if(transaction) {
+      printf("[coap engine] Send ACK\n");
       coap_send_transaction(transaction);
     }
   } else if(coap_status_code == MANUAL_RESPONSE) {
@@ -363,7 +364,6 @@ coap_receive(const coap_endpoint_t *src,
       coap_status_code = INTERNAL_SERVER_ERROR_5_00;
       /* reuse input buffer for error message */
     }
-    printf("[coap engine] Send ACK\n");
     coap_init_message(message, reply_type, coap_status_code,
                       message->mid);
     coap_set_payload(message, coap_error_message,

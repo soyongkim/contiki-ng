@@ -47,6 +47,7 @@
 #include "lib/memb.h"
 #include "lib/list.h"
 #include <stdlib.h>
+#include <stdio.h>
 
 /* Log configuration */
 #include "coap-log.h"
@@ -96,14 +97,16 @@ coap_new_transaction(uint16_t mid, const coap_endpoint_t *endpoint)
 void
 coap_send_transaction(coap_transaction_t *t)
 {
-  LOG_DBG("Sending transaction %u\n", t->mid);
+  //LOG_DBG("Sending transaction %u\n", t->mid);
+  printf("[coap-transation] Sending transaction %x\n", t->mid);
 
   if(COAP_TYPE_CON ==
      ((COAP_HEADER_TYPE_MASK & t->message[0]) >> COAP_HEADER_TYPE_POSITION)) {
     if(t->retrans_counter <= COAP_MAX_RETRANSMIT) {
       /* not timed out yet */
+      printf("[coap-transaction] maybe send ack here - len:%d\n", t->message_len);
       coap_sendto(&t->endpoint, t->message, t->message_len);
-      LOG_DBG("Keeping transaction %u\n", t->mid);
+      printf("Keeping transaction %u\n", t->mid);
 
       if(t->retrans_counter == 0) {
         coap_timer_set_callback(&t->retrans_timer, coap_retransmit_transaction);
@@ -111,11 +114,11 @@ coap_send_transaction(coap_transaction_t *t)
         t->retrans_interval =
           COAP_RESPONSE_TIMEOUT_TICKS + (rand() %
                                          COAP_RESPONSE_TIMEOUT_BACKOFF_MASK);
-        LOG_DBG("Initial interval %lu msec\n",
+        printf("Initial interval %lu msec\n",
                 (unsigned long)t->retrans_interval);
       } else {
         t->retrans_interval <<= 1;  /* double */
-        LOG_DBG("Doubled (%u) interval %lu s\n", t->retrans_counter,
+        printf("Doubled (%u) interval %lu s\n", t->retrans_counter,
                 (unsigned long)(t->retrans_interval / 1000));
       }
 
@@ -124,6 +127,7 @@ coap_send_transaction(coap_transaction_t *t)
     } else {
       /* timed out */
       LOG_DBG("Timeout\n");
+      printf("[coap-transaction] Timeout!\n");
       coap_resource_response_handler_t callback = t->callback;
       void *callback_data = t->callback_data;
 
@@ -133,10 +137,12 @@ coap_send_transaction(coap_transaction_t *t)
       coap_clear_transaction(t);
 
       if(callback) {
+        printf("[coap-transaction] timeout. so recall callback\n");
         callback(callback_data, NULL);
       }
     }
   } else {
+    printf("[coap-transaction] not con type. but send something len=%d\n", t->message_len);
     coap_sendto(&t->endpoint, t->message, t->message_len);
     coap_clear_transaction(t);
   }
