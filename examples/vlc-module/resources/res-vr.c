@@ -95,18 +95,33 @@ handler_beacon(vip_message_t *rcv_pkt) {
   }
 }
 
+void
+retransmit_on()
+{
+  vip_timeout_swtich = 1;
+}
+
+
+void
+retransmit_off()
+{
+  vip_timeout_swtich = 0;
+  loss_count = 0;
+}
+
 static void
 loss_handler() {
   ++loss_count;
   /* if the vr received same beacon frame, retransmit the pkt */
   if(loss_count >= 3) {
     /* Send recently sent pkt */
-    printf("test loss count\n");
+    printf("loss count\n");
+    snd_pkt->re_flag = 1;
     process_post(&vr_process, vr_snd_event, (void *)snd_pkt);
-    vip_timeout_swtich = 0;
-    loss_count = 0;
   }
 }
+
+
 
 static void
 handler_vra(vip_message_t *rcv_pkt) {
@@ -116,6 +131,7 @@ handler_vra(vip_message_t *rcv_pkt) {
   {
     vr_id = rcv_pkt->vr_id;
     printf("I'm allocated vr-id(%d)!\n", vr_id);
+    retransmit_off();
 
     /* send vrc */
     // vip_init_message(snd_pkt, VIP_TYPE_VRC, aa_id, vt_id, vr_id);
@@ -156,6 +172,6 @@ handler_sda(vip_message_t *rcv_pkt) {
 
 static void 
 res_event_handler(void) {
-  /* retransmit switch */ 
-  vip_timeout_swtich = 1;
+  /* retransmit switch */
+  retransmit_on();
 }
