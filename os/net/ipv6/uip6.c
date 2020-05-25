@@ -1565,7 +1565,7 @@ uip_process(uint8_t flag)
 
   udp_send:
   LOG_DBG("In udp_send\n");
-  printf("[uip6] goto udp send~\n");
+  //printf("[uip6] goto udp send~\n");
   if(uip_slen == 0) {
     goto drop;
   }
@@ -1590,7 +1590,7 @@ uip_process(uint8_t flag)
   uip_ds6_select_src(&UIP_IP_BUF->srcipaddr, &UIP_IP_BUF->destipaddr);
 
   uip_appdata = &uip_buf[UIP_IPTCPH_LEN];
-
+  printf("[uip] real transmit data: %s\n", (char *)uip_appdata);
 #if UIP_UDP_CHECKSUMS
   /* Calculate UDP checksum. */
   UIP_UDP_BUF->udpchksum = ~(uip_udpchksum());
@@ -2320,7 +2320,7 @@ uip_process(uint8_t flag)
   UIP_IP_BUF->flow = 0x00;
   send:
   LOG_INFO("Sending packet with length %d (%d)\n", uip_len, uipbuf_get_len_field(UIP_IP_BUF));
-  printf("[uip6] Sending packet with length %d (%d)\n", uip_len, uipbuf_get_len_field(UIP_IP_BUF));
+  //printf("[uip6] Sending packet with length %d (%d)\n", uip_len, uipbuf_get_len_field(UIP_IP_BUF));
 
   UIP_STAT(++uip_stat.ip.sent);
   /* Return and let the caller do the actual transmission. */

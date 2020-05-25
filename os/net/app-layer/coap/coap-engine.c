@@ -144,7 +144,7 @@ int
 coap_receive(const coap_endpoint_t *src,
              uint8_t *payload, uint16_t payload_length)
 {
-  printf("[coap-engine] received\n");
+  //printf("[coap-engine] received\n");
   /* static declaration reduces stack peaks and program code size */
   static coap_message_t message[1]; /* this way the message can be treated as pointer as usual */
   static coap_message_t response[1];
@@ -299,7 +299,7 @@ coap_receive(const coap_endpoint_t *src,
 
       /* handle responses */
     } else {
-      printf("[coap-engine] It's POST message\n");
+      //printf("[coap-engine] It's POST message\n");
       if(message->type == COAP_TYPE_CON && message->code == 0) {
         LOG_INFO("Received Ping\n");
         coap_status_code = PING_RESPONSE;
@@ -321,7 +321,7 @@ coap_receive(const coap_endpoint_t *src,
 
         /* check if someone registered for the response */
         if(callback) {
-          printf("[coap-engine] callback -> maybe call res_post_handler\n");
+          //printf("[coap-engine] callback -> maybe call res_post_handler\n");
           callback(callback_data, message);
         }
       }
@@ -339,7 +339,7 @@ coap_receive(const coap_endpoint_t *src,
     } /* request or response */
   } /* parsed correctly */
 
-  printf("[coap-engine] prepare for seding ACK\n");
+  //printf("[coap-engine] prepare for seding ACK\n");
 
     /* if(parsed correctly) */
   if(coap_status_code == NO_ERROR) {

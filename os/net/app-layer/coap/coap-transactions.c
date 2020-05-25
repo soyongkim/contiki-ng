@@ -98,7 +98,7 @@ void
 coap_send_transaction(coap_transaction_t *t)
 {
   //LOG_DBG("Sending transaction %u\n", t->mid);
-  printf("[coap-transation] Sending transaction %x\n", t->mid);
+  printf("[coap-transaction] Sending transaction %x\n", t->mid);
 
   if(COAP_TYPE_CON ==
      ((COAP_HEADER_TYPE_MASK & t->message[0]) >> COAP_HEADER_TYPE_POSITION)) {
@@ -114,11 +114,11 @@ coap_send_transaction(coap_transaction_t *t)
         t->retrans_interval =
           COAP_RESPONSE_TIMEOUT_TICKS + (rand() %
                                          COAP_RESPONSE_TIMEOUT_BACKOFF_MASK);
-        printf("Initial interval %lu msec\n",
+        LOG_DBG("Initial interval %lu msec\n",
                 (unsigned long)t->retrans_interval);
       } else {
         t->retrans_interval <<= 1;  /* double */
-        printf("Doubled (%u) interval %lu s\n", t->retrans_counter,
+        LOG_DBG("Doubled (%u) interval %lu s\n", t->retrans_counter,
                 (unsigned long)(t->retrans_interval / 1000));
       }
 
@@ -142,7 +142,7 @@ coap_send_transaction(coap_transaction_t *t)
       }
     }
   } else {
-    printf("[coap-transaction] not con type. but send something len=%d\n", t->message_len);
+    printf("[coap-transaction] Send not con type pkt len=%d\n", t->message_len);
     coap_sendto(&t->endpoint, t->message, t->message_len);
     coap_clear_transaction(t);
   }
