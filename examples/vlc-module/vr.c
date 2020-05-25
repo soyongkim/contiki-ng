@@ -78,7 +78,7 @@ vip_request_callback(coap_callback_request_state_t *res_callback_state) {
 
   printf("callback - %d\n", state->status);
 
-  if(state->status == COAP_REQUEST_STATUS_RESPONSE) {
+  if(state->status == COAP_REQUEST_STATUS_FINISHED) {
       printf("Ack:%d - mid(%x)\n", state->response->code, state->response->mid);
       if(state->response->code < 100) {
         if(coap_get_query_variable(state->response, "nonce", &nonce)) {
@@ -87,12 +87,6 @@ vip_request_callback(coap_callback_request_state_t *res_callback_state) {
         }
       }
       res_vr.trigger();
-  }
-
-
-  if(state->status == COAP_REQUEST_STATUS_TIMEOUT)
-  {
-    printf("time out test ----\n");
   }
 }
 
