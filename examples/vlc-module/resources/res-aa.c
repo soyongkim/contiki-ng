@@ -222,7 +222,7 @@ handler_vrr(vip_message_t *rcv_pkt) {
       vip_set_dest_ep_cooja(snd_pkt, dest_addr, rcv_pkt->vt_id, VIP_VT_URL);
       vip_set_type_header_nonce(snd_pkt, nonce);
       vip_serialize_message(snd_pkt, buffer);
-      process_post(&aa_process, aa_snd_event, (void *)rcv_pkt);
+      process_post(&aa_process, aa_snd_event, (void *)snd_pkt);
     }
   }
   /* Set payload for ack */
