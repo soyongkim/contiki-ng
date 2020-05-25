@@ -78,7 +78,7 @@ vip_request_callback(coap_callback_request_state_t *res_callback_state) {
   coap_request_state_t *state = &res_callback_state->state;
   printf("callback! - %d\n", state->status);
   /* Process ack-pkt from vg */
-  if (state->status == COAP_REQUEST_STATUS_RESPONSE || state->status == COAP_REQUEST_STATUS_MORE || state->status == COAP_REQUEST_STATUS_BLOCK_ERROR)
+  if (state->status == COAP_REQUEST_STATUS_RESPONSE)
   {
     vip_message_t rcv_ack[1];
 
@@ -92,6 +92,10 @@ vip_request_callback(coap_callback_request_state_t *res_callback_state) {
       }
       vip_route(rcv_ack, &aa_type_handler);
     }
+  }
+
+  if(state->status == COAP_REQUEST_STATUS_FINISHED) {
+    printf("test response payload length: %d\n", state->response->payload_len);
   }
 }
 
