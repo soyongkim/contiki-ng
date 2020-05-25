@@ -76,6 +76,8 @@ vip_request_callback(coap_callback_request_state_t *res_callback_state) {
   const char *nonce = NULL;
   coap_request_state_t *state = &res_callback_state->state;
 
+  printf("callback - %d\n", state->status);
+
   if(state->status == COAP_REQUEST_STATUS_RESPONSE) {
       printf("Ack:%d - mid(%x)\n", state->response->code, state->response->mid);
       if(state->response->code < 100) {
