@@ -86,6 +86,12 @@ vip_request_callback(coap_callback_request_state_t *res_callback_state) {
       }
       res_vr.trigger();
   }
+
+
+  if(state->status == COAP_REQUEST_STATUS_TIMEOUT)
+  {
+    printf("time out test ----\n");
+  }
 }
 
 static void

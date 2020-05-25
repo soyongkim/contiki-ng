@@ -76,12 +76,13 @@ PROCESS_THREAD(aa_process, ev, data)
 static void
 vip_request_callback(coap_callback_request_state_t *res_callback_state) {
   coap_request_state_t *state = &res_callback_state->state;
+  printf("callback! - %d\n", state->status);
   /* Process ack-pkt from vg */
-  if (state->status == COAP_REQUEST_STATUS_RESPONSE)
+  if (state->status == COAP_REQUEST_STATUS_RESPONSE || state->status == COAP_REQUEST_STATUS_MORE || state->status == COAP_REQUEST_STATUS_BLOCK_ERROR)
   {
     vip_message_t rcv_ack[1];
 
-    printf("[RES] Ack:%d - mid(%x) - payload_len(%d)\n", state->response->code, state->response->mid, state->response->payload_len);
+    printf("[RES] Ack:%d - mid(%x)\n", state->response->code, state->response->mid);
     if (state->response->code < 100 && state->response->payload_len)
     {
       if (vip_parse_common_header(rcv_ack, state->response->payload, state->response->payload_len) != VIP_NO_ERROR)
