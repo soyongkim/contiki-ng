@@ -79,8 +79,9 @@
 #endif /* COAP_SERVER_PORT */
 
 /* The number of concurrent messages that can be stored for retransmission in the transaction layer. */
+/* [smalldragon] original is 4*/
 #ifndef COAP_MAX_OPEN_TRANSACTIONS
-#define COAP_MAX_OPEN_TRANSACTIONS     4
+#define COAP_MAX_OPEN_TRANSACTIONS     100
 #endif /* COAP_MAX_OPEN_TRANSACTIONS */
 
 /* Maximum number of failed request attempts before action */
