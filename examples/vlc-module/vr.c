@@ -72,11 +72,11 @@ PROCESS_THREAD(vr_process, ev, data)
         random_incount = rand() % 1000;
 
         etimer_set(&et, random_incount);
-      }
-      
-      if(ev == PROCESS_EVENT_TIMER) {
-          snd_pkt = (vip_message_t *)data;
-          vip_request(snd_pkt);
+
+        PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&et));
+
+        snd_pkt = (vip_message_t *)data;
+        vip_request(snd_pkt);
       }
   }
 
