@@ -211,7 +211,6 @@ handler_vra(vip_message_t *rcv_pkt) {
   update_nonce_table(rcv_pkt->nonce, rcv_pkt->vr_id);
   /* forward vra(vrid) to vt with nonce*/
   vip_set_dest_ep_cooja(rcv_pkt, dest_addr, rcv_pkt->vt_id, VIP_VT_URL);
-  vip_serialize_message(rcv_pkt, buffer);
   process_post(&aa_process, aa_snd_event, (void *)rcv_pkt);
 }
 
