@@ -115,6 +115,7 @@ loss_handler() {
   /* if the vr received same beacon frame, retransmit the pkt */
   if(loss_count >= 5) {
     /* Send recently sent pkt */
+    loss_count = 0;
     printf("----------------------------------VIP RETRANSMIT\n");
     snd_pkt->re_flag = COAP_TYPE_NON;
     process_post_synch(&vr_process, vr_snd_event, (void *)snd_pkt);
