@@ -32,7 +32,7 @@ static coap_endpoint_t dest_ep;
 static coap_message_t request[1];
 
 /* vip packet */
-static  vip_message_t* snd_pkt;
+//static  vip_message_t* snd_pkt;
 
 static struct ctimer ct;
 
@@ -84,9 +84,9 @@ static void
 timer_callback(void* data)
 {
   printf("SEND!\n");
-  snd_pkt = vip_front_snd_buf();
-  vip_pop_snd_buf();
-  vip_request(snd_pkt);
+  //snd_pkt = vip_front_snd_buf();
+  //vip_pop_snd_buf();
+  //vip_request(snd_pkt);
 }
 
 static void init()
