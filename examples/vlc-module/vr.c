@@ -6,7 +6,6 @@
 #include "vr.h"
 #include "coap-engine.h"
 #include "coap-callback-api.h"
-#include "vip-interface.h"
 #include "net/netstack.h"
 
 #include "sys/ctimer.h"

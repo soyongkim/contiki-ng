@@ -3,10 +3,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include "aa.h"
-#include "vip.h"
-#include "vip-interface.h"
-#include "vip-buf.h"
-#include "vip-constants.h"
 #include "coap-engine.h"
 #include "coap-callback-api.h"
 #include "net/netstack.h"

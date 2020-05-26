@@ -1,13 +1,9 @@
-#include "contiki.h"
 #include "coap-engine.h"
 #include "coap-callback-api.h"
-#include "vip-include.h"
 #include "lib/list.h"
 #include "aa.h"
 #include "cooja_addr.h"
 #include "os/sys/mutex.h"
-#include "os/net/ipv6/tcpip.h"
-
 
 /* Node ID */
 #include "sys/node-id.h"

@@ -5,8 +5,8 @@
 #include "vg.h"
 #include "coap-engine.h"
 #include "coap-callback-api.h"
-#include "vip-interface.h"
 #include "net/netstack.h"
+
 
 /* for ROOT in RPL */
 #include "contiki-net.h"

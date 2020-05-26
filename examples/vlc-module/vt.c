@@ -43,7 +43,6 @@
 #include "vt.h"
 #include "coap-engine.h"
 #include "coap-callback-api.h"
-#include "vip-interface.h"
 #include "net/netstack.h"
 
 /* Node ID */

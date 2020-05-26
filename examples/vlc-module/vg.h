@@ -1,4 +1,9 @@
 #include "contiki.h"
+#include "vip.h"
+#include "vip-interface.h"
+#include "vip-buf.h"
+#include "vip-constants.h"
+
 
 typedef struct vip_service_tuple vip_service_tuple_t;
 
