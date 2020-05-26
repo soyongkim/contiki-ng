@@ -9,8 +9,8 @@ vip_snd_node_t* make_vip_pkt_node(vip_message_t* vip_pkt)
 {
     vip_snd_node_t* node = calloc(1, sizeof(vip_snd_node_t));
 
-    // node->next = NULL;
-    // node->vip_pkt = calloc(1, sizeof(vip_message_t));
+    node->next = NULL;
+    node->vip_pkt = calloc(1, sizeof(vip_message_t));
 
     // /* dest ep info */
     // node->vip_pkt->dest_coap_addr = calloc(50, sizeof(char));
