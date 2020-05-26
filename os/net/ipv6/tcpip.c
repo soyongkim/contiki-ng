@@ -738,7 +738,7 @@ send_packet:
     linkaddr = NULL;
   }
   
-  printf("output: sending to ");
+  printf("output: sending to \n");
   LOG_INFO_LLADDR((linkaddr_t *)linkaddr);
   LOG_INFO_("\n");
   tcpip_output(linkaddr);
