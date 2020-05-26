@@ -155,6 +155,12 @@ timer_callback(void* data)
   snd_pkt->query_len = strlen(snd_pkt->query);
   snd_pkt->dest_path = cur->path;
 
+
+    printf("---------------\n");
+    printf("addr:%s\n", cur->dest_addr);
+    printf("query:%s\n", cur->query);
+    printf("path:%s\n", cur->path);
+
   vip_request(snd_pkt);
 }
 
