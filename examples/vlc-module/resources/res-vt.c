@@ -49,12 +49,6 @@
 #include <stdio.h>
 #include <string.h>
 
-
-/* using coap callback api */
-static void vip_request_callback(coap_callback_request_state_t *callback_state);
-static void vip_request(vip_message_t *snd_pkt);
-
-
 static void res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset);
 static void beaconing(void);
 
@@ -80,12 +74,6 @@ static char dest_addr[50];
 static vip_message_t ack_pkt[1];
 
 static char uplink_id[50];
-
-
-/* for send packet */
-static coap_callback_request_state_t callback_state;
-static coap_endpoint_t dest_ep;
-static coap_message_t request[1];
 
 
 /* A simple actuator example. Toggles the red led */
@@ -125,7 +113,6 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
   coap_set_status_code(response, CONTENT_2_05);
   if(ack_pkt->total_len)
   {
-    printf("Ack with payload\n");
     coap_set_payload(response, ack_pkt->buffer, ack_pkt->total_len);
   }
   if(ack_pkt->query_len)
@@ -143,7 +130,7 @@ beaconing() {
     vip_set_dest_ep_cooja(snd_pkt, dest_addr, VIP_BROADCAST, VIP_VR_URL);
     vip_set_type_header_uplink_id(snd_pkt, uplink_id);
     vip_serialize_message(snd_pkt, buffer);
-    vip_request(snd_pkt);
+    process_post(&vt_process, vt_snd_event, (void *)snd_pkt);
   }
 }
 
@@ -154,10 +141,9 @@ handler_vrr(vip_message_t *rcv_pkt) {
 static void
 handler_vra(vip_message_t *rcv_pkt) {
   /* VLC! */
-  printf("VLC!\n");
+  printf("Broadcast VRA for VR(%d)\n", rcv_pkt->vr_id);
   vip_set_dest_ep_cooja(rcv_pkt, dest_addr, VIP_BROADCAST, VIP_VR_URL);
-  vip_serialize_message(rcv_pkt, buffer);
-  vip_request(rcv_pkt);
+  process_post_synch(&vt_process, vt_snd_event, (void *)snd_pkt);
 }
 
 static void
@@ -202,31 +188,9 @@ handler_allow(vip_message_t *rcv_pkt) {
     vt_id = node_id;
     aa_id = rcv_pkt->aa_id;
     strcpy(uplink_id, rcv_pkt->uplink_id);
-    printf("vt-[%d] is allocated by aa-[%d]\n", vt_id, aa_id);
-    printf("uplink-id is [%s]\n", uplink_id);
+    printf("vt(%d) - aa(%d) - [%s]\n", vt_id, aa_id, uplink_id);
   }
   else {
     printf("Already allocated with %d\n", vt_id);
   }
-}
-
-static void
-vip_request_callback(coap_callback_request_state_t *res_callback_state) {
-  coap_request_state_t *state = &res_callback_state->state;
-  /* Process ack-pkt from vg */
-  if (state->status == COAP_REQUEST_STATUS_RESPONSE)
-  {
-    printf("Ack:%d - mid(%x)\n", state->response->code, state->response->mid);
-  }
-}
-
-static void
-vip_request(vip_message_t *snd_pkt) {
-  /* set vip endpoint */
-  coap_endpoint_parse(snd_pkt->dest_coap_addr, strlen(snd_pkt->dest_coap_addr), &dest_ep);
-  coap_init_message(request, COAP_TYPE_NON, COAP_POST, 0);
-  coap_set_header_uri_path(request, snd_pkt->dest_path);
-  coap_set_payload(request, snd_pkt->buffer, snd_pkt->total_len);
-  printf("Send from %s to %s\n", snd_pkt->query, snd_pkt->dest_coap_addr);
-  coap_send_request(&callback_state, &dest_ep, request, vip_request_callback);
-}
+} 
