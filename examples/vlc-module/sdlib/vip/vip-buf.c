@@ -34,13 +34,13 @@ vip_snd_node_t* make_vip_pkt_node(vip_message_t* vip_pkt)
         memcpy(node->vip_pkt->uplink_id, vip_pkt->uplink_id, uplink_id_len);
     }
     
-    // /* serialized buffer */
-    // node->vip_pkt->total_len = vip_pkt->total_len;
-    // node->vip_pkt->buffer = calloc(50, sizeof(uint8_t));
-    // memcpy(node->vip_pkt->buffer, vip_pkt->buffer, vip_pkt->total_len);
+    /* serialized buffer */
+    node->vip_pkt->total_len = vip_pkt->total_len;
+    node->vip_pkt->buffer = calloc(50, sizeof(uint8_t));
+    memcpy(node->vip_pkt->buffer, vip_pkt->buffer, vip_pkt->total_len);
     
-    // /* con, non type flag */
-    // node->vip_pkt->re_flag = vip_pkt->re_flag;
+    /* con, non type flag */
+    node->vip_pkt->re_flag = vip_pkt->re_flag;
 
     return node;
 }
