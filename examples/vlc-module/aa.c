@@ -65,8 +65,6 @@ PROCESS_THREAD(aa_process, ev, data)
    */
   coap_activate_resource(&res_aa, VIP_AA_URL);
 
-  /* vip packet */
-  vip_message_t *snd_pkt;
 
   /* Define application-specific events here. */
   while(1) {
