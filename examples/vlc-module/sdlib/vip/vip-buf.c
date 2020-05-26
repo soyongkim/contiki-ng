@@ -88,7 +88,7 @@ void vip_pop_snd_buf()
     if(rm->vip_pkt->query_len)
         free(rm->vip_pkt->query);
 
-    if(strlen(rm->vip_pkt->uplink_id))
+    if(rm->vip_pkt->uplink_id)
         free(rm->vip_pkt->uplink_id);
 
     free(rm->vip_pkt);
