@@ -39,7 +39,7 @@ static struct ctimer ct;
 
 /* using coap callback api */
 static void vip_request_callback(coap_callback_request_state_t *callback_state);
-static void vip_request(vip_message_t *snd_pkt);
+static void vip_request();
 
 
 static void timer_callback(void* data);
@@ -92,7 +92,7 @@ timer_callback(void* data)
 
 
   vip_pop_snd_buf();
-  vip_request(snd_pkt);
+  vip_request();
 }
 
 static void init()
@@ -127,7 +127,7 @@ vip_request_callback(coap_callback_request_state_t *res_callback_state) {
 }
 
 static void
-vip_request(vip_message_t *snd_pkt) {
+vip_request() {
   /* set vip endpoint */
 
   printf("------??????????????????????? -----\n");
