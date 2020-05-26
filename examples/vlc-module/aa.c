@@ -91,7 +91,6 @@ timer_callback(void* data)
   printf("path:%s\n", snd_pkt->dest_path);
 
 
-  vip_pop_snd_buf();
   vip_request();
 }
 
