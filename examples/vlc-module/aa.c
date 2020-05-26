@@ -38,6 +38,39 @@ static  vip_message_t *snd_pkt;
 static struct ctimer ct;
 
 
+
+/* buffer test */
+LIST(snd_buf);
+
+void
+vip_push_snd_buf(void* vip_pkt)
+{
+    vip_snd_buf_t* new = malloc(sizeof(vip_snd_buf_t));
+    new->vip_pkt = malloc(sizeof(uint8_t)*VIP_MAX_SEND_BUF_SIZE);
+
+    memcpy(new->vip_pkt, vip_pkt, sizeof(vip_pkt));
+    list_add(snd_buf, new);
+}
+
+void*
+vip_front_snd_buf()
+{
+    vip_snd_buf_t* cur = list_head(snd_buf);
+    return cur->vip_pkt;
+}
+
+void
+vip_pop_snd_buf()
+{
+    vip_snd_buf_t* rm = list_head(snd_buf);
+    list_remove(snd_buf, rm);
+    free(rm->vip_pkt);
+    free(rm);
+}
+
+
+
+
 /* using coap callback api */
 static void vip_request_callback(coap_callback_request_state_t *callback_state);
 static void vip_request(vip_message_t *snd_pkt);

@@ -1,7 +1,4 @@
 #include "vip.h"
-#include "lib/list.h"
-
-extern list_t snd_buf;
 
 typedef struct vip_snd_buf_s vip_snd_buf_t;
 
@@ -31,7 +28,3 @@ struct vip_entity_s {
 vip_entity_t name = { beacon_handler, vrr_handler, vra_handler, vrc_handler, rel_handler, ser_handler, sea_handler, sec_handler, sd_handler, sda_handler, allocate_vt_handler };
 
 void vip_route(vip_message_t *received_pkt, vip_entity_t *type_handler);
-
-void vip_push_snd_buf(void* vip_pkt);
-void* vip_front_snd_buf();
-void vip_pop_snd_buf();
