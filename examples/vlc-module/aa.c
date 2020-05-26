@@ -84,13 +84,6 @@ static void
 timer_callback(void* data)
 {
   printf("SEND!\n");
-  snd_pkt = vip_front_snd_buf();
-
-  printf("------------------- test -----\n");
-  printf("addr:%s\n", snd_pkt->dest_coap_addr);
-  printf("path:%s\n", snd_pkt->dest_path);
-
-
   vip_request();
 }
 
@@ -129,9 +122,12 @@ static void
 vip_request() {
   /* set vip endpoint */
 
-  printf("------??????????????????????? -----\n");
+  snd_pkt = vip_front_snd_buf();
+
+  printf("------------------- test -----\n");
   printf("addr:%s\n", snd_pkt->dest_coap_addr);
   printf("path:%s\n", snd_pkt->dest_path);
+
 
   coap_endpoint_parse(snd_pkt->dest_coap_addr, strlen(snd_pkt->dest_coap_addr), &dest_ep);
 
