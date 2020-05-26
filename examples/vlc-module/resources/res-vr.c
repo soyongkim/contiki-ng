@@ -87,7 +87,7 @@ handler_beacon(vip_message_t *rcv_pkt) {
     vip_make_query_src(query, strlen(query), node_id);
     vip_set_query(snd_pkt, query);
 
-    process_post(&vr_process, vr_snd_event, (void *)snd_pkt);
+    process_post_synch(&vr_process, vr_snd_event, (void *)snd_pkt);
   } else {
     if(vip_timeout_swtich) {
       loss_handler();
@@ -117,7 +117,7 @@ loss_handler() {
     /* Send recently sent pkt */
     printf("loss count\n");
     snd_pkt->re_flag = COAP_TYPE_NON;
-    process_post(&vr_process, vr_snd_event, (void *)snd_pkt);
+    process_post_synch(&vr_process, vr_snd_event, (void *)snd_pkt);
   }
 }
 
