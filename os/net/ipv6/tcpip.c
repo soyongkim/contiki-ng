@@ -49,6 +49,7 @@
 #include "net/routing/routing.h"
 
 #include <string.h>
+#include <stdio.h>
 
 /* Log configuration */
 #include "sys/log.h"
@@ -351,7 +352,7 @@ eventhandler(process_event_t ev, process_data_t data)
 #if UIP_UDP
     {
       struct uip_udp_conn *cptr;
-
+      printf("[tcpip] Name:%s | Thread:%s\n",PROCESS_CURRENT()->name, PROCESS_CURRENT()->thread);
       for(cptr = &uip_udp_conns[0];
           cptr < &uip_udp_conns[UIP_UDP_CONNS]; ++cptr) {
         if(cptr->appstate.p == p) {
@@ -428,6 +429,7 @@ eventhandler(process_event_t ev, process_data_t data)
 #endif /* UIP_TCP */
 #if UIP_UDP
   case UDP_POLL:
+    printf("[tcpip] UDP_POLL - Name:%s | Thread:%s\n",PROCESS_CURRENT()->name, PROCESS_CURRENT()->thread);
     if(data != NULL) {
       uip_udp_periodic_conn(data);
       tcpip_ipv6_output();
@@ -436,6 +438,7 @@ eventhandler(process_event_t ev, process_data_t data)
 #endif /* UIP_UDP */
 
   case PACKET_INPUT:
+    printf("[tcpip] INPUT - Name:%s | Thread:%s\n",PROCESS_CURRENT()->name, PROCESS_CURRENT()->thread);
     packet_input();
     break;
   };
