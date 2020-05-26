@@ -1,5 +1,6 @@
 #include "contiki.h"
 #include "sys/cc.h"
+#include "vip-interface.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <inttypes.h>
