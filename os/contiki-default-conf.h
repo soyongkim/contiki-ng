@@ -58,7 +58,7 @@
 
 /* [smalldragon] default is 8 */
 #ifndef QUEUEBUF_CONF_NUM
-#define QUEUEBUF_CONF_NUM 8
+#define QUEUEBUF_CONF_NUM 128
 #endif /* QUEUEBUF_CONF_NUM */
 /*---------------------------------------------------------------------------*/
 /* uIPv6 configuration options.
@@ -115,7 +115,7 @@
 
 /* [smalldragon] default is 8 */
 #ifndef UIP_CONF_UDP_CONNS
-#define UIP_CONF_UDP_CONNS 8
+#define UIP_CONF_UDP_CONNS 128
 #endif /* UIP_CONF_UDP_CONNS */
 
 /* UIP_CONF_TCP specifies if TCP support should be included or
