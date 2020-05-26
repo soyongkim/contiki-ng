@@ -1,5 +1,3 @@
-
-
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -7,8 +5,9 @@
 #include "sys/cc.h"
 #include "sdlib/configure_cooja/cooja_addr.h"
 #include "vip.h"
+#include "vip-constants.h"
 #include "sys/node-id.h"
-#include "vr.h"
+
 
 /* Serialize Type Specific Header */
 int vip_serialize_beacon(vip_message_t *message);

@@ -1,4 +1,7 @@
+#ifndef VIP_INTERFACE
+#define VIP_INTERFACE
 #include "vip.h"
+
 
 typedef struct vip_entity_s vip_entity_t;
 typedef void (* vip_type_handler_t)(vip_message_t *received_pkt);
@@ -21,3 +24,5 @@ struct vip_entity_s {
 vip_entity_t name = { beacon_handler, vrr_handler, vra_handler, vrc_handler, rel_handler, ser_handler, sea_handler, sec_handler, sd_handler, sda_handler, allocate_vt_handler };
 
 void vip_route(vip_message_t *received_pkt, vip_entity_t *type_handler);
+
+#endif

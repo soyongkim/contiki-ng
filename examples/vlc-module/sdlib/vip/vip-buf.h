@@ -1,3 +1,5 @@
+#ifndef VIP_BUF
+#define VIP_BUF
 #include "vip.h"
 
 typedef struct vip_snd_buf_s vip_snd_buf_t;
@@ -18,3 +20,6 @@ struct vip_snd_node_s {
 void vip_push_snd_buf(vip_message_t* vip_pkt);
 vip_message_t* vip_front_snd_buf();
 void vip_pop_snd_buf();
+
+
+#endif

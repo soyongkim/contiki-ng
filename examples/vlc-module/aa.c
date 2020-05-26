@@ -3,12 +3,14 @@
 #include <stdlib.h>
 #include <string.h>
 #include "aa.h"
+#include "vip.h"
+#include "vip-interface.h"
+#include "vip-buf.h"
+#include "vip-constants.h"
 #include "coap-engine.h"
 #include "coap-callback-api.h"
-#include "vip-interface.h"
 #include "net/netstack.h"
 #include "sys/ctimer.h"
-#include "vip-buf.h"
 
 /* for ROOT in RPL */
 #include "contiki-net.h"

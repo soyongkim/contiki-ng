@@ -1,7 +1,7 @@
 #include "contiki.h"
 #include "coap-engine.h"
 #include "coap-callback-api.h"
-#include "vip-interface.h"
+#include "vip-include.h"
 #include "lib/list.h"
 #include "aa.h"
 #include "cooja_addr.h"

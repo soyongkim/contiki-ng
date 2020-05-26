@@ -4,7 +4,6 @@
 #include <stdlib.h>
 #include <inttypes.h>
 #include <string.h>
-#include "vip-interface.h"
 
 void
 vip_route(vip_message_t *vip_pkt, vip_entity_t *type_handler) {
