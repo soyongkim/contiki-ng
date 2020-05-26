@@ -1590,7 +1590,9 @@ uip_process(uint8_t flag)
   uip_ds6_select_src(&UIP_IP_BUF->srcipaddr, &UIP_IP_BUF->destipaddr);
 
   uip_appdata = &uip_buf[UIP_IPTCPH_LEN];
-  printf("[uip] real transmit data: %x\n", (uint8_t *)uip_appdata);
+
+  printf("[uip] real transmit data len=%d\n", strlen((char *)uip_appdata));
+  
 #if UIP_UDP_CHECKSUMS
   /* Calculate UDP checksum. */
   UIP_UDP_BUF->udpchksum = ~(uip_udpchksum());
