@@ -50,10 +50,10 @@ vip_push_snd_buf(vip_message_t* vip_pkt)
     new->total_len = vip_pkt->total_len;
     new->re_flag = vip_pkt->re_flag;
 
-    calloc(new->buf, sizeof(uint8_t)*50);
-    calloc(new->dest_addr, sizeof(char)*50);
-    calloc(new->query, sizeof(char)*50);
-    calloc(new->path, sizeof(char)*50);
+    new->buf = calloc(50, sizeof(uint8_t));
+    new->dest_addr = calloc(50, sizeof(char));
+    new->query = calloc(50, sizeof(char));
+    new->path = calloc(50, sizeof(char));
 
     printf("original\n");
     printf("addr:%s\n", vip_pkt->dest_coap_addr);
