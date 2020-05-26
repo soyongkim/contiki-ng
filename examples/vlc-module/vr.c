@@ -10,6 +10,8 @@
 #include "net/netstack.h"
 #include "cooja_addr.h"
 
+#include "sys/ctimer.h"
+
 /* for ROOT in RPL */
 #include "contiki-net.h"
 
@@ -32,13 +34,16 @@ static coap_callback_request_state_t callback_state;
 static coap_endpoint_t dest_ep;
 static coap_message_t request[1];
 
-static struct etimer et;
+static struct ctimer ct;
 
 
 /* using coap callback api */
 static void vip_request_callback(coap_callback_request_state_t *callback_state);
 static void vip_request(vip_message_t *snd_pkt);
 
+
+static void timer_callback(void* data);
+static void init(void* data);
 
 
 PROCESS(vr_process, "VR");
@@ -58,29 +63,36 @@ PROCESS_THREAD(vr_process, ev, data)
    */
   coap_activate_resource(&res_vr, "vip/vr");
 
-  /* vip packet */
-  vip_message_t *snd_pkt;
-
-  int random_incount;
 
   /* Define application-specific events here. */
   while(1) {
       PROCESS_WAIT_EVENT();
 
       if(ev == vr_snd_event) {
-        srand(time(NULL));
-        random_incount = rand() % CLOCK_CONF_SECOND;
-
-        etimer_set(&et, random_incount);
-
-        PROCESS_WAIT_EVENT_UNTIL(etimer_expired(&et));
-
-        snd_pkt = (vip_message_t *)data;
-        vip_request(snd_pkt);
+        init(data);
       }
   }
 
   PROCESS_END();
+}
+
+static void
+timer_callback(void* data)
+{
+  /* vip packet */
+  vip_message_t *snd_pkt;
+
+  snd_pkt = (vip_message_t *)data;
+  vip_request(snd_pkt);
+}
+
+static void init(void *data)
+{
+  int random_incount;
+  srand(time(NULL));
+  random_incount = rand();
+
+  ctimer_set(&ct, random_incount * CLOCK_CONF_SECOND, timer_callback, data);
 }
 
 static void
