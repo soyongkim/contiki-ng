@@ -140,7 +140,7 @@ handover_vr(vip_message_t* rcv_pkt) {
 static void
 res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset)
 {
-  printf("A: [Test] Name:%s | Thread:%s\n",PROCESS_CURRENT()->name, PROCESS_CURRENT()->thread);
+  //printf("A: [Test] Name:%s | Thread:%s\n",PROCESS_CURRENT()->name, PROCESS_CURRENT()->thread);
 
   const char *src = NULL;
   printf("Received - mid(%x)\n", request->mid);
@@ -165,7 +165,7 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
   {
     coap_set_header_uri_query(response, ack_pkt->query);
   }
-  printf("B: [Test] Name:%s | Thread:%s\n",PROCESS_CURRENT()->name, PROCESS_CURRENT()->thread);
+  //printf("B: [Test] Name:%s | Thread:%s\n",PROCESS_CURRENT()->name, PROCESS_CURRENT()->thread);
   process_post_synch(&tcpip_process, tcpip_event, NULL);
 }
 
@@ -180,7 +180,6 @@ handler_vrr(vip_message_t *rcv_pkt) {
     printf("Pub(%d) to vr(%d)\n", nonce, rcv_pkt->query_rcv_id);
 
     /* Send vrr to vg */
-    printf("forward to vg..\n");
     vip_set_dest_ep_cooja(rcv_pkt, dest_addr, VIP_VG_ID, VIP_VG_URL);
     vip_set_type_header_nonce(rcv_pkt, nonce);
     vip_serialize_message(rcv_pkt, buffer);
@@ -190,7 +189,6 @@ handler_vrr(vip_message_t *rcv_pkt) {
   {
     nonce = chk->nonce;
 
-    printf("forward to vt..\n");
     if(chk->alloc_vr_id)
     {
       printf("vt? %d\n", rcv_pkt->vt_id);

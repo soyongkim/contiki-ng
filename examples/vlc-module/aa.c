@@ -61,10 +61,10 @@ PROCESS_THREAD(aa_process, ev, data)
   /* Define application-specific events here. */
   while(1) {
       PROCESS_WAIT_EVENT();
-      printf("[Test] Name:%s | Thread:%s\n",PROCESS_CURRENT()->name, PROCESS_CURRENT()->thread);
+      printf("[AA] Name:%s | Thread:%s\n",PROCESS_CURRENT()->name, PROCESS_CURRENT()->thread);
       if(ev == aa_snd_event) {
         snd_pkt = (vip_message_t *)data;
-        printf("Type[%d]\n", snd_pkt->type);
+        //printf("Type[%d]\n", snd_pkt->type);
 
         vip_request(snd_pkt);
       }
@@ -76,7 +76,6 @@ PROCESS_THREAD(aa_process, ev, data)
 static void
 vip_request_callback(coap_callback_request_state_t *res_callback_state) {
   coap_request_state_t *state = &res_callback_state->state;
-  printf("callback! - %d\n", state->status);
   /* Process ack-pkt from vg */
   if (state->status == COAP_REQUEST_STATUS_RESPONSE)
   {
@@ -107,6 +106,6 @@ vip_request(vip_message_t *snd_pkt) {
   if(snd_pkt->query_len > 0)
     coap_set_header_uri_query(request, snd_pkt->query);
 
-  printf("Send from %s to %s\n", snd_pkt->query, snd_pkt->dest_coap_addr);
+  printf("Send to %s\n", snd_pkt->dest_coap_addr);
   coap_send_request(&callback_state, &dest_ep, request, vip_request_callback);
 }

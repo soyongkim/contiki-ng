@@ -344,7 +344,7 @@ coap_receive(const coap_endpoint_t *src,
     /* if(parsed correctly) */
   if(coap_status_code == NO_ERROR) {
     if(transaction) {
-      printf("[coap engine] Send ACK\n");
+      //printf("[coap engine] Send ACK\n");
       coap_send_transaction(transaction);
     }
   } else if(coap_status_code == MANUAL_RESPONSE) {
