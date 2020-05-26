@@ -90,7 +90,7 @@ timer_callback(void* data)
 static void init()
 {
   int random_incount;
-  srand(time(NULL));
+  //srand(time(NULL));
   random_incount = random_rand();
   printf("Set Send Timer %d\n", random_incount%1000);
 
