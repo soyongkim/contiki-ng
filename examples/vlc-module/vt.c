@@ -49,11 +49,6 @@
 /* Node ID */
 #include "sys/node-id.h"
 
-#include "os/sys/log.h"
-#define LOG_MODULE "vt"
-#define LOG_LEVEL LOG_LEVEL_DBG
-
-
 /*
  * Resources to be activated need to be imported through the extern keyword.
  * The build system automatically compiles the resources in the corresponding sub-directory.
@@ -123,13 +118,11 @@ timer_callback(void* data)
 
 static void init()
 {
-  int random_incount;
-  random_incount = random_rand() % 50;
+  int random_incount = random_rand() % 50;
   printf("Set Send Timer %d\n", random_incount);
 
   ctimer_set(&ct, random_incount, timer_callback, NULL);
 }
-
 
 
 
