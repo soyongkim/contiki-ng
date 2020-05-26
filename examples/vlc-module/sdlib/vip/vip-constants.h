@@ -1,3 +1,6 @@
+#ifndef VIP_CONSTANT
+#define VIP_CONSTANT
+
 #define VIP_MAX_SERVICE 65536
 #define VIP_COMMON_HEADER_LEN 12
 
@@ -43,3 +46,5 @@ typedef enum {
   VIP_TYPE_SDA,                /* Service Data ACK */
   VIP_TYPE_ALLOW
 } vip_message_type_t;
+
+#endif
