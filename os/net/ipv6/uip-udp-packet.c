@@ -56,7 +56,7 @@ uip_udp_packet_send(struct uip_udp_conn *c, const void *data, int len)
     uip_udp_conn = c;
     uip_slen = len;
     memmove(&uip_buf[UIP_IPUDPH_LEN], data, len);
-    printf("[uip-udp-packet] maybe queueing pkt\n");
+    printf("[uip-udp-packet] Name:%s | Thread:%s\n",PROCESS_CURRENT()->name, PROCESS_CURRENT()->thread);
     uip_process(UIP_UDP_SEND_CONN);
 
 #if UIP_IPV6_MULTICAST

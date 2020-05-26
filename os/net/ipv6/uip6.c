@@ -950,6 +950,7 @@ uip_update_ttl(void)
 void
 uip_process(uint8_t flag)
 {
+  printf("[uip] Name:%s | Thread:%s\n",PROCESS_CURRENT()->name, PROCESS_CURRENT()->thread);
   uint8_t *last_header;
   uint8_t protocol;
   uint8_t *next_header;
@@ -1592,7 +1593,7 @@ uip_process(uint8_t flag)
   uip_appdata = &uip_buf[UIP_IPTCPH_LEN];
 
   printf("[uip] real transmit data len=%d\n", strlen((char *)uip_appdata));
-  
+
 #if UIP_UDP_CHECKSUMS
   /* Calculate UDP checksum. */
   UIP_UDP_BUF->udpchksum = ~(uip_udpchksum());
