@@ -20,6 +20,6 @@ struct vip_snd_node_s {
 void vip_push_snd_buf(vip_message_t* vip_pkt);
 vip_message_t* vip_front_snd_buf();
 void vip_pop_snd_buf();
-
+bool vip_is_empty();
 
 #endif

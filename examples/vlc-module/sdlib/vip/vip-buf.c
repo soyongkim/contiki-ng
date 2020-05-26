@@ -101,3 +101,12 @@ void vip_pop_snd_buf()
     len--;
     printf("[pop] buf len:%d\n", len);
 }
+
+bool vip_is_empty()
+{
+    if(len)
+        return false;
+    else
+        return true;
+    
+}
