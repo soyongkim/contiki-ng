@@ -65,7 +65,7 @@ void vip_push_snd_buf(vip_message_t* vip_pkt) {
     }
 
     len++;
-    printf("buf len:%d\n", len);
+    printf("[push] buf len:%d\n", len);
 }
 
 
@@ -99,4 +99,5 @@ void vip_pop_snd_buf()
     free(rm);
 
     len--;
+    printf("[pop] buf len:%d\n", len);
 }
