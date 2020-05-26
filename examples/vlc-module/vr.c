@@ -46,7 +46,7 @@ static void vip_request(vip_message_t *snd_pkt);
 
 
 static void timer_callback(void* data);
-static void init(void* data);
+static void init();
 
 
 PROCESS(vr_process, "VR");
