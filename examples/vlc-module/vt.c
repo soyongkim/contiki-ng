@@ -68,7 +68,7 @@ static coap_message_t request[1];
 /* vip packet */
 static  vip_message_t* snd_pkt;
 
-static struct ctimer ct;
+//static struct ctimer ct;
 
 
 /* using coap callback api */
@@ -76,8 +76,8 @@ static void vip_request_callback(coap_callback_request_state_t *callback_state);
 static void vip_request();
 
 
-static void timer_callback(void* data);
-static void init();
+// static void timer_callback(void* data);
+// static void init();
 
 
 
@@ -103,27 +103,28 @@ PROCESS_THREAD(vt_process, ev, data)
 
      if(ev == vt_snd_event) {
         vip_push_snd_buf((vip_message_t*)data);
-        init();
+        //init();
+        vip_request();
       }
   }
 
   PROCESS_END();
 }
 
-static void
-timer_callback(void* data)
-{
-  printf("SEND!\n");
-  vip_request();
-}
+// static void
+// timer_callback(void* data)
+// {
+//   printf("SEND!\n");
+//   vip_request();
+// }
 
-static void init()
-{
-  int random_incount = rand() % 100;
-  printf("Set Send Timer %d\n", random_incount);
+// static void init()
+// {
+//   int random_incount = rand() % 100;
+//   printf("Set Send Timer %d\n", random_incount);
 
-  ctimer_set(&ct, random_incount, timer_callback, NULL);
-}
+//   ctimer_set(&ct, random_incount, timer_callback, NULL);
+// }
 
 
 
