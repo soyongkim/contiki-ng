@@ -189,7 +189,6 @@ handler_vrr(vip_message_t *rcv_pkt) {
 
     if(chk->alloc_vr_id)
     {
-      printf("vt? %d\n", rcv_pkt->vt_id);
       vip_init_message(snd_pkt, VIP_TYPE_VRA, node_id, rcv_pkt->vt_id, chk->alloc_vr_id);
       vip_set_dest_ep_cooja(snd_pkt, dest_addr, rcv_pkt->vt_id, VIP_VT_URL);
       vip_set_type_header_nonce(snd_pkt, nonce);
