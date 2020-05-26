@@ -1,6 +1,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #include <string.h>
 #include "vr.h"
 #include "coap-engine.h"
@@ -31,6 +32,8 @@ static coap_callback_request_state_t callback_state;
 static coap_endpoint_t dest_ep;
 static coap_message_t request[1];
 
+static struct etimer et;
+
 
 /* using coap callback api */
 static void vip_request_callback(coap_callback_request_state_t *callback_state);
@@ -58,13 +61,22 @@ PROCESS_THREAD(vr_process, ev, data)
   /* vip packet */
   vip_message_t *snd_pkt;
 
+  int random_incount;
+
   /* Define application-specific events here. */
   while(1) {
       PROCESS_WAIT_EVENT();
 
       if(ev == vr_snd_event) {
-        snd_pkt = (vip_message_t *)data;
-        vip_request(snd_pkt);
+        srand(time(NULL));
+        random_incount = rand() % 1000;
+
+        etimer_set(&et, random_incount);
+
+        if(etimer_expired(&et)){
+          snd_pkt = (vip_message_t *)data;
+          vip_request(snd_pkt);
+        }
       }
   }
 

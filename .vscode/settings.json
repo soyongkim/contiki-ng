@@ -36,6 +36,9 @@
         "array": "c",
         "string": "c",
         "string_view": "c",
-        "system_error": "c"
+        "system_error": "c",
+        "limits": "c",
+        "tuple": "c",
+        "type_traits": "c"
     }
 }

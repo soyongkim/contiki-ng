@@ -37,8 +37,8 @@
 /*---------------------------------------------------------------------------*/
 
 /* [smalldragon] default is UIPBUF_ATTR_MAX */
-static uint16_t uipbuf_attrs[128];
-static uint16_t uipbuf_default_attrs[128];
+static uint16_t uipbuf_attrs[UIPBUF_ATTR_MAX];
+static uint16_t uipbuf_default_attrs[UIPBUF_ATTR_MAX];
 
 /*---------------------------------------------------------------------------*/
 void

@@ -230,7 +230,7 @@ void uip_log(char *msg);
 #ifndef UIP_CONF_IPV6_QUEUE_PKT
 /** Do we do per %neighbor queuing during address resolution (default: no) */
 /* [smalldragon] default is 0 */
-#define UIP_CONF_IPV6_QUEUE_PKT       1
+#define UIP_CONF_IPV6_QUEUE_PKT       0
 #endif
 
 #ifndef UIP_CONF_IPV6_CHECKS

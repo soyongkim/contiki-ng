@@ -98,15 +98,14 @@ void
 coap_send_transaction(coap_transaction_t *t)
 {
   //LOG_DBG("Sending transaction %u\n", t->mid);
-  printf("[coap-transaction] Sending transaction %x\n", t->mid);
+  LOG_DBG("[coap-transaction] Sending transaction %x\n", t->mid);
 
   if(COAP_TYPE_CON ==
      ((COAP_HEADER_TYPE_MASK & t->message[0]) >> COAP_HEADER_TYPE_POSITION)) {
     if(t->retrans_counter <= COAP_MAX_RETRANSMIT) {
       /* not timed out yet */
-      printf("[coap-transaction] maybe send ack here - len:%d\n", t->message_len);
       coap_sendto(&t->endpoint, t->message, t->message_len);
-      printf("Keeping transaction %u\n", t->mid);
+      LOG_DBG("Keeping transaction %u\n", t->mid);
 
       if(t->retrans_counter == 0) {
         coap_timer_set_callback(&t->retrans_timer, coap_retransmit_transaction);
@@ -142,7 +141,7 @@ coap_send_transaction(coap_transaction_t *t)
       }
     }
   } else {
-    printf("[coap-transaction] Send not con type pkt len=%d\n", t->message_len);
+    LOG_DBG("[coap-transaction] Send not con type pkt len=%d\n", t->message_len);
     coap_sendto(&t->endpoint, t->message, t->message_len);
     coap_clear_transaction(t);
   }
