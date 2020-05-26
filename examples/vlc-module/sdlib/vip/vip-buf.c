@@ -4,6 +4,7 @@
 #include "vip-buf.h"
 
 static vip_snd_buf_t vip_snd_buf[1];
+static int len;
 
 vip_snd_node_t* make_vip_pkt_node(vip_message_t* vip_pkt)
 {
@@ -62,6 +63,9 @@ void vip_push_snd_buf(vip_message_t* vip_pkt) {
         vip_snd_buf->tail->next = new;
         vip_snd_buf->tail = new;
     }
+
+    len++;
+    printf("buf len:%d\n", len);
 }
 
 
@@ -93,4 +97,6 @@ void vip_pop_snd_buf()
 
     free(rm->vip_pkt);
     free(rm);
+
+    len--;
 }
