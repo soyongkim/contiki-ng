@@ -44,7 +44,7 @@ static vip_message_t ack_pkt[1];
 static char ack_query[50];
 
 static int nonce_pool[65000];
-static mutex_t p;
+//static mutex_t p;
 
 static char uplink_id[50] = {"ISL_AA_UPLINK_ID"};
 
@@ -86,13 +86,13 @@ expire_nonce(int target) {
 
 int
 add_nonce_table(int vr_node_id) {
-  mutex_try_lock(&p);
+  //mutex_try_lock(&p);
   vip_nonce_tuple_t* new_tuple = malloc(sizeof(vip_nonce_tuple_t));
   new_tuple->nonce = publish_nonce();
   new_tuple->vr_node_id = vr_node_id;
   new_tuple->alloc_vr_id = 0;
   list_add(vr_nonce_table, new_tuple);
-  mutex_unlock(&p);
+  //mutex_unlock(&p);
   return new_tuple->nonce;
 }
 
@@ -138,6 +138,8 @@ handover_vr(vip_message_t* rcv_pkt) {
 static void
 res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset)
 {
+  printf("A: [Test] Name:%s | Thread:%s\n",PROCESS_CURRENT()->name, PROCESS_CURRENT()->thread);
+
   const char *src = NULL;
   printf("Received - mid(%x)\n", request->mid);
 
@@ -161,14 +163,11 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
   {
     coap_set_header_uri_query(response, ack_pkt->query);
   }
+  printf(B: "[Test] Name:%s | Thread:%s\n",PROCESS_CURRENT()->name, PROCESS_CURRENT()->thread);
 }
 
 static void
 handler_vrr(vip_message_t *rcv_pkt) {
-
-  printf("[Test] Name:%s | Thread:%s\n",PROCESS_CURRENT()->name, PROCESS_CURRENT()->thread);
-
-
   vip_nonce_tuple_t *chk;
   int nonce;
   if (!(chk = check_nonce_table(rcv_pkt->query_rcv_id)))

@@ -61,7 +61,7 @@ PROCESS_THREAD(aa_process, ev, data)
   /* Define application-specific events here. */
   while(1) {
       PROCESS_WAIT_EVENT();
-
+      printf("[Test] Name:%s | Thread:%s\n",PROCESS_CURRENT()->name, PROCESS_CURRENT()->thread);
       if(ev == aa_snd_event) {
         snd_pkt = (vip_message_t *)data;
         printf("Type[%d]\n", snd_pkt->type);
