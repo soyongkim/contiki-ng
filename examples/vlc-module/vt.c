@@ -91,7 +91,7 @@ PROCESS_THREAD(vt_process, ev, data)
    */
   coap_activate_resource(&res_vt, VIP_VT_URL);
 
-  vip_message_t *rcv_pkt, *snd_pkt;
+  vip_message_t *snd_pkt;
 
   /* Define application-specific events here. */
   while(1) {
