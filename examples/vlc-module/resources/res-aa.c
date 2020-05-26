@@ -180,10 +180,11 @@ handler_vrr(vip_message_t *rcv_pkt) {
     printf("Pub(%d) to vr(%d)\n", nonce, rcv_pkt->query_rcv_id);
 
     /* Send vrr to vg */
-    vip_set_dest_ep_cooja(rcv_pkt, dest_addr, VIP_VG_ID, VIP_VG_URL);
-    vip_set_type_header_nonce(rcv_pkt, nonce);
-    vip_serialize_message(rcv_pkt, buffer);
-    process_post(&aa_process, aa_snd_event, (void *)rcv_pkt);
+    vip_init_message(snd_pkt, VIP_TYPE_VRR, node_id, VIP_VG_ID, VIP_VG_URL);
+    vip_set_type_header_nonce(snd_pkt, nonce);
+    vip_set_dest_ep_cooja(snd_pkt, dest_addr, rcv_pkt->vt_id, VIP_VT_URL);
+    vip_serialize_message(snd_pkt, buffer);
+    process_post(&aa_process, aa_snd_event, (void *)snd_pkt);
   }
   else
   {
