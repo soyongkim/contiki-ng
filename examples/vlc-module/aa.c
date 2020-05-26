@@ -56,9 +56,9 @@ vip_push_snd_buf(vip_message_t* vip_pkt)
     new->path = malloc(sizeof(char)*50);
 
     memcpy(new->buf, vip_pkt->buffer, 50);
-    memcpy(new->dest_addr, vip_pkt->dest_coap_addr, 50);
-    memcpy(new->query, vip_pkt->query, 50);
-    memcpy(new->path, vip_pkt->dest_path, 50);
+    memcpy(new->dest_addr, vip_pkt->dest_coap_addr, strlen(vip_pkt->dest_coap_addr));
+    memcpy(new->query, vip_pkt->query, strlen(vip_pkt->query));
+    memcpy(new->path, vip_pkt->dest_path, strlen(vip_pkt->dest_path));
 
     list_add(snd_buf, new);
 }
