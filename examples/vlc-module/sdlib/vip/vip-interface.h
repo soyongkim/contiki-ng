@@ -4,7 +4,12 @@ typedef struct vip_snd_buf_s vip_snd_buf_t;
 
 struct vip_snd_buf_s {
     vip_snd_buf_t* next;
-    void* vip_pkt;
+    uint8_t *buf;
+    int total_len;
+    uint32_t re_flag;
+    char *dest_addr;
+    char *path;
+    char *query;
 };
 
 typedef struct vip_entity_s vip_entity_t;
