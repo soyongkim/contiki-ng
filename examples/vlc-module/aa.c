@@ -8,6 +8,7 @@
 #include "vip-interface.h"
 #include "net/netstack.h"
 #include "sys/ctimer.h"
+#include "vip-buf.h"
 
 /* for ROOT in RPL */
 #include "contiki-net.h"
@@ -33,67 +34,9 @@ static coap_endpoint_t dest_ep;
 static coap_message_t request[1];
 
 /* vip packet */
-static  vip_message_t snd_pkt[1];
+static  vip_message_t* snd_pkt;
 
 static struct ctimer ct;
-
-
-
-/* buffer test */
-LIST(snd_buf);
-
-void
-vip_push_snd_buf(vip_message_t* vip_pkt)
-{
-    vip_snd_buf_t* new = malloc(sizeof(vip_snd_buf_t));
-
-    new->total_len = vip_pkt->total_len;
-    new->re_flag = vip_pkt->re_flag;
-
-    new->buf = calloc(50, sizeof(uint8_t));
-    new->dest_addr = calloc(50, sizeof(char));
-    new->query = calloc(50, sizeof(char));
-    new->path = calloc(50, sizeof(char));
-
-    printf("original\n");
-    printf("addr:%s\n", vip_pkt->dest_coap_addr);
-    printf("query:%s\n", vip_pkt->query);
-    printf("path:%s\n", vip_pkt->dest_path);
-
-    memcpy(new->buf, vip_pkt->buffer, 50);
-    memcpy(new->dest_addr, vip_pkt->dest_coap_addr, strlen(vip_pkt->dest_coap_addr));
-    memcpy(new->query, vip_pkt->query, strlen(vip_pkt->query));
-    memcpy(new->path, vip_pkt->dest_path, strlen(vip_pkt->dest_path));
-
-    printf("copy\n");
-    printf("addr:%s\n", new->dest_addr);
-    printf("query:%s\n", new->query);
-    printf("path:%s\n", new->path);
-
-
-    list_add(snd_buf, new);
-}
-
-vip_snd_buf_t*
-vip_front_snd_buf()
-{
-    vip_snd_buf_t* cur = list_head(snd_buf);
-    return cur;
-}
-
-void
-vip_pop_snd_buf()
-{
-    vip_snd_buf_t* rm = list_head(snd_buf);
-    list_remove(snd_buf, rm);
-    free(rm->buf);
-    free(rm->dest_addr);
-    free(rm->query);
-    free(rm->path);
-    free(rm);
-}
-
-
 
 
 /* using coap callback api */
@@ -143,25 +86,8 @@ static void
 timer_callback(void* data)
 {
   printf("SEND!\n");
-  vip_snd_buf_t* cur = vip_front_snd_buf();
+  snd_pkt = vip_front_snd_buf();
   vip_pop_snd_buf();
-  memset(snd_pkt, 0, sizeof(snd_pkt));
-
-  snd_pkt->total_len = cur->total_len;
-  snd_pkt->re_flag = cur->re_flag;
-
-  snd_pkt->buffer = cur->buf;
-  snd_pkt->dest_coap_addr = cur->dest_addr;
-  snd_pkt->query = cur->query;
-  snd_pkt->query_len = strlen(snd_pkt->query);
-  snd_pkt->dest_path = cur->path;
-
-
-    printf("---------------\n");
-    printf("addr:%s\n", cur->dest_addr);
-    printf("query:%s\n", cur->query);
-    printf("path:%s\n", cur->path);
-
   vip_request(snd_pkt);
 }
 

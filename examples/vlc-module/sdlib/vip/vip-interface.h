@@ -1,17 +1,5 @@
 #include "vip.h"
 
-typedef struct vip_snd_buf_s vip_snd_buf_t;
-
-struct vip_snd_buf_s {
-    vip_snd_buf_t* next;
-    uint8_t *buf;
-    int total_len;
-    uint32_t re_flag;
-    char *dest_addr;
-    char *path;
-    char *query;
-};
-
 typedef struct vip_entity_s vip_entity_t;
 typedef void (* vip_type_handler_t)(vip_message_t *received_pkt);
 
