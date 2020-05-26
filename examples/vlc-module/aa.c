@@ -32,7 +32,7 @@ process_event_t aa_snd_event;
 // static coap_message_t request[1];
 
 /* vip packet */
-//static  vip_message_t* snd_pkt;
+static  vip_message_t* snd_pkt;
 
 static struct ctimer ct;
 
@@ -84,7 +84,13 @@ static void
 timer_callback(void* data)
 {
   printf("SEND!\n");
-  //snd_pkt = vip_front_snd_buf();
+  snd_pkt = vip_front_snd_buf();
+
+  printf("------------------- test -----\n");
+  printf("addr:%s\n", snd_pkt->dest_coap_addr);
+  printf("path:%s\n", snd_pkt->dest_path);
+
+
   //vip_pop_snd_buf();
   //vip_request(snd_pkt);
 }
