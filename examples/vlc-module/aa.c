@@ -38,8 +38,8 @@ static struct ctimer ct;
 
 
 /* using coap callback api */
-static void vip_request_callback(coap_callback_request_state_t *callback_state);
-static void vip_request(vip_message_t *snd_pkt);
+// static void vip_request_callback(coap_callback_request_state_t *callback_state);
+// static void vip_request(vip_message_t *snd_pkt);
 
 
 static void timer_callback(void* data);
@@ -99,39 +99,39 @@ static void init()
 }
 
 
-static void
-vip_request_callback(coap_callback_request_state_t *res_callback_state) {
-  coap_request_state_t *state = &res_callback_state->state;
-  /* Process ack-pkt from vg */
-  if (state->status == COAP_REQUEST_STATUS_RESPONSE)
-  {
-    vip_message_t rcv_ack[1];
+// static void
+// vip_request_callback(coap_callback_request_state_t *res_callback_state) {
+//   coap_request_state_t *state = &res_callback_state->state;
+//   /* Process ack-pkt from vg */
+//   if (state->status == COAP_REQUEST_STATUS_RESPONSE)
+//   {
+//     vip_message_t rcv_ack[1];
 
-    printf("[RES] Ack:%d - mid(%x)\n", state->response->code, state->response->mid);
-    if (state->response->code < 100 && state->response->payload_len)
-    {
-      if (vip_parse_common_header(rcv_ack, state->response->payload, state->response->payload_len) != VIP_NO_ERROR)
-      {
-        printf("VIP: Not VIP Packet\n");
-        return;
-      }
-      vip_route(rcv_ack, &aa_type_handler);
-    }
-  }
-}
+//     printf("[RES] Ack:%d - mid(%x)\n", state->response->code, state->response->mid);
+//     if (state->response->code < 100 && state->response->payload_len)
+//     {
+//       if (vip_parse_common_header(rcv_ack, state->response->payload, state->response->payload_len) != VIP_NO_ERROR)
+//       {
+//         printf("VIP: Not VIP Packet\n");
+//         return;
+//       }
+//       vip_route(rcv_ack, &aa_type_handler);
+//     }
+//   }
+// }
 
-static void
-vip_request(vip_message_t *snd_pkt) {
-  /* set vip endpoint */
-  coap_endpoint_parse(snd_pkt->dest_coap_addr, strlen(snd_pkt->dest_coap_addr), &dest_ep);
+// static void
+// vip_request(vip_message_t *snd_pkt) {
+//   /* set vip endpoint */
+//   coap_endpoint_parse(snd_pkt->dest_coap_addr, strlen(snd_pkt->dest_coap_addr), &dest_ep);
 
-  coap_init_message(request, snd_pkt->re_flag, COAP_POST, 0);
-  coap_set_header_uri_path(request, snd_pkt->dest_path);
-  coap_set_payload(request, snd_pkt->buffer, snd_pkt->total_len);
+//   coap_init_message(request, snd_pkt->re_flag, COAP_POST, 0);
+//   coap_set_header_uri_path(request, snd_pkt->dest_path);
+//   coap_set_payload(request, snd_pkt->buffer, snd_pkt->total_len);
 
-  if(snd_pkt->query_len > 0)
-    coap_set_header_uri_query(request, snd_pkt->query);
+//   if(snd_pkt->query_len > 0)
+//     coap_set_header_uri_query(request, snd_pkt->query);
 
-  printf("Send to %s\n", snd_pkt->dest_coap_addr);
-  coap_send_request(&callback_state, &dest_ep, request, vip_request_callback);
-}
+//   printf("Send to %s\n", snd_pkt->dest_coap_addr);
+//   coap_send_request(&callback_state, &dest_ep, request, vip_request_callback);
+// }
