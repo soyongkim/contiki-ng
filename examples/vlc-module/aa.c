@@ -129,6 +129,11 @@ vip_request_callback(coap_callback_request_state_t *res_callback_state) {
 static void
 vip_request(vip_message_t *snd_pkt) {
   /* set vip endpoint */
+
+  printf("------??????????????????????? -----\n");
+  printf("addr:%s\n", snd_pkt->dest_coap_addr);
+  printf("path:%s\n", snd_pkt->dest_path);
+
   coap_endpoint_parse(snd_pkt->dest_coap_addr, strlen(snd_pkt->dest_coap_addr), &dest_ep);
 
   coap_init_message(request, snd_pkt->re_flag, COAP_POST, 0);
