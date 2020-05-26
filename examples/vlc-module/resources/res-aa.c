@@ -6,6 +6,8 @@
 #include "aa.h"
 #include "cooja_addr.h"
 #include "os/sys/mutex.h"
+#include "os/net/ipv6/tcpip.h"
+
 
 /* Node ID */
 #include "sys/node-id.h"
@@ -164,6 +166,7 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
     coap_set_header_uri_query(response, ack_pkt->query);
   }
   printf("B: [Test] Name:%s | Thread:%s\n",PROCESS_CURRENT()->name, PROCESS_CURRENT()->thread);
+  process_post_synch(&tcpip_process, tcpip_event, NULL);
 }
 
 static void
