@@ -144,4 +144,6 @@ vip_request() {
 
   printf("Send to %s\n", snd_pkt->dest_coap_addr);
   coap_send_request(&callback_state, &dest_ep, request, vip_request_callback);
+
+  vip_pop_snd_buf();
 }
