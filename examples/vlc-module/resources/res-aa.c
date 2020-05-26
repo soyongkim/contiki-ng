@@ -184,6 +184,7 @@ handler_vrr(vip_message_t *rcv_pkt) {
     vip_set_type_header_nonce(snd_pkt, nonce);
     vip_set_dest_ep_cooja(snd_pkt, dest_addr, VIP_VG_ID, VIP_VG_URL);
     vip_serialize_message(snd_pkt, buffer);
+
     process_post(&aa_process, aa_snd_event, (void *)snd_pkt);
   }
   else

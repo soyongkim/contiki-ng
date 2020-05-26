@@ -71,7 +71,7 @@ PROCESS_THREAD(aa_process, ev, data)
       PROCESS_WAIT_EVENT();
 
       if(ev == aa_snd_event) {
-        snd_pkt = (vip_message_t *)data;
+        vip_push_snd_buf(data);
         init();
       }
   }
@@ -85,6 +85,8 @@ static void
 timer_callback(void* data)
 {
   printf("SEND!\n");
+  snd_pkt = (void *)vip_front_snd_buf();
+  vip_pop_snd_buf();
   vip_request(snd_pkt);
 }
 
