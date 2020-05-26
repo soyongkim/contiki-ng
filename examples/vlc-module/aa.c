@@ -121,7 +121,7 @@ vip_request_callback(coap_callback_request_state_t *res_callback_state) {
 static void
 vip_request() {
   /* set vip endpoint */
-  if(!vip_is_empty())
+  while(!vip_is_empty())
   {
     snd_pkt = vip_front_snd_buf();
 
