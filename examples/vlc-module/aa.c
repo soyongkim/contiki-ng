@@ -48,7 +48,7 @@ vip_push_snd_buf(void* vip_pkt)
     vip_snd_buf_t* new = malloc(sizeof(vip_snd_buf_t));
     new->vip_pkt = malloc(sizeof(uint8_t)*VIP_MAX_SEND_BUF_SIZE);
 
-    memcpy(new->vip_pkt, vip_pkt, sizeof(vip_pkt));
+    memcpy(new->vip_pkt, vip_pkt, strlen((char*)vip_pkt));
     list_add(snd_buf, new);
 }
 
