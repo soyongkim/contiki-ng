@@ -122,6 +122,7 @@ tcpip_output(const uip_lladdr_t *a)
 
   if(netstack_process_ip_callback(NETSTACK_IP_OUTPUT, (const linkaddr_t *)a) ==
      NETSTACK_IP_PROCESS) {
+    printf("Real transmit\n");
     ret = NETSTACK_NETWORK.output((const linkaddr_t *) a);
     return ret;
   } else {
@@ -578,6 +579,7 @@ queue_packet(uip_ds6_nbr_t *nbr)
 static void
 send_queued(uip_ds6_nbr_t *nbr)
 {
+  printf("[tcpip] send_queued - Name:%s | Thread:%s\n",PROCESS_CURRENT()->name, PROCESS_CURRENT()->thread);
 #if UIP_CONF_IPV6_QUEUE_PKT
   /*
    * Send the queued packets from here, may not be 100% perfect though.
@@ -633,6 +635,7 @@ send_nd6_ns(const uip_ipaddr_t *nexthop)
 void
 tcpip_ipv6_output(void)
 {
+  printf("[tcpip] tcpip_ipv6_output - Name:%s | Thread:%s\n",PROCESS_CURRENT()->name, PROCESS_CURRENT()->thread);
   uip_ipaddr_t ipaddr;
   uip_ds6_nbr_t *nbr = NULL;
   const uip_lladdr_t *linkaddr;
@@ -643,19 +646,20 @@ tcpip_ipv6_output(void)
   }
 
   if(uip_len > UIP_LINK_MTU) {
-    LOG_ERR("output: Packet too big");
+    //LOG_ERR("output: Packet too big");
+    printf("output: Packet too big");
     goto exit;
   }
 
   if(uip_is_addr_unspecified(&UIP_IP_BUF->destipaddr)){
-    LOG_ERR("output: Destination address unspecified");
+    printf("output: Destination address unspecified");
     goto exit;
   }
 
 
   if(!NETSTACK_ROUTING.ext_header_update()) {
     /* Packet can not be forwarded */
-    LOG_ERR("output: routing protocol extension header update error\n");
+    printf("output: routing protocol extension header update error\n");
     uipbuf_clear();
     return;
   }
@@ -668,7 +672,7 @@ tcpip_ipv6_output(void)
   /* We first check if the destination address is one of ours. There is no
    * loopback interface -- instead, process this directly as incoming. */
   if(uip_ds6_is_my_addr(&UIP_IP_BUF->destipaddr)) {
-    LOG_INFO("output: sending to ourself\n");
+    printf("output: sending to ourself\n");
     packet_input();
     return;
   }
@@ -733,13 +737,14 @@ send_packet:
   } else {
     linkaddr = NULL;
   }
-
-  LOG_INFO("output: sending to ");
+  
+  printf("output: sending to ");
   LOG_INFO_LLADDR((linkaddr_t *)linkaddr);
   LOG_INFO_("\n");
   tcpip_output(linkaddr);
 
   if(nbr) {
+    printf("send_queued\n");
     send_queued(nbr);
   }
 
