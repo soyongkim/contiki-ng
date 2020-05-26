@@ -18,21 +18,21 @@ vip_snd_node_t* make_vip_pkt_node(vip_message_t* vip_pkt)
     memcpy(node->vip_pkt->dest_coap_addr, vip_pkt->dest_coap_addr, strlen(vip_pkt->dest_coap_addr));
     memcpy(node->vip_pkt->dest_path, vip_pkt->dest_path, strlen(vip_pkt->dest_path));
 
-    // /* query */
-    // if(vip_pkt->query_len)
-    // {
-    //     node->vip_pkt->query_len = vip_pkt->query_len;
-    //     node->vip_pkt->query = calloc(50, sizeof(char));
-    //     memcpy(node->vip_pkt->query, vip_pkt->query, vip_pkt->query_len);
-    // }
+    /* query */
+    if(vip_pkt->query_len)
+    {
+        node->vip_pkt->query_len = vip_pkt->query_len;
+        node->vip_pkt->query = calloc(50, sizeof(char));
+        memcpy(node->vip_pkt->query, vip_pkt->query, vip_pkt->query_len);
+    }
 
-    // /* uplink */
-    // int uplink_id_len = strlen(vip_pkt->uplink_id);
-    // if(!uplink_id_len)
-    // {
-    //     node->vip_pkt->uplink_id = calloc(50, sizeof(char));
-    //     memcpy(node->vip_pkt->uplink_id, vip_pkt->uplink_id, uplink_id_len);
-    // }
+    /* uplink */
+    if(vip_pkt->uplink_id)
+    {
+        int uplink_id_len = strlen(vip_pkt->uplink_id);
+        node->vip_pkt->uplink_id = calloc(50, sizeof(char));
+        memcpy(node->vip_pkt->uplink_id, vip_pkt->uplink_id, uplink_id_len);
+    }
     
     // /* serialized buffer */
     // node->vip_pkt->total_len = vip_pkt->total_len;
