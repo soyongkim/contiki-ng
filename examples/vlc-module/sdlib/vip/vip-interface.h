@@ -1,4 +1,5 @@
 #include "vip.h"
+#include "lib/list.h"
 
 extern list_t snd_buf;
 
