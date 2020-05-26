@@ -145,6 +145,7 @@ timer_callback(void* data)
   printf("SEND!\n");
   vip_snd_buf_t* cur = vip_front_snd_buf();
   vip_pop_snd_buf();
+  memset(snd_pkt, 0, sizeof(snd_pkt));
 
   snd_pkt->total_len = cur->total_len;
   snd_pkt->re_flag = cur->re_flag;
