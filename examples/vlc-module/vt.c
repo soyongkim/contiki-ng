@@ -56,11 +56,19 @@
 extern coap_resource_t res_vt;
 extern vip_entity_t vt_type_handler;
 
+
+/* test event process */
+process_event_t vt_snd_event;
+
+/* for send packet */
+static coap_callback_request_state_t callback_state;
+static coap_endpoint_t dest_ep;
+static coap_message_t request[1];  
+
 /* vip packet */
 static  vip_message_t* snd_pkt;
 
 static struct ctimer ct;
-
 
 
 /* using coap callback api */
@@ -72,13 +80,6 @@ static void timer_callback(void* data);
 static void init();
 
 
-/* test event process */
-process_event_t vt_snd_event;
-
-/* for send packet */
-static coap_callback_request_state_t callback_state;
-static coap_endpoint_t dest_ep;
-static coap_message_t request[1];  
 
 PROCESS(vt_process, "VT");
 AUTOSTART_PROCESSES(&vt_process);
@@ -118,7 +119,7 @@ timer_callback(void* data)
 
 static void init()
 {
-  int random_incount = random_rand() % 50;
+  int random_incount = rand() % 50;
   printf("Set Send Timer %d\n", random_incount);
 
   ctimer_set(&ct, random_incount, timer_callback, NULL);
