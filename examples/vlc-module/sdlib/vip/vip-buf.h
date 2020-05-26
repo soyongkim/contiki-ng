@@ -11,7 +11,7 @@ struct vip_snd_buf_s {
 
 
 struct vip_snd_node_s {
-    vip_snd_buf_t* next;
+    vip_snd_node_t* next;
     vip_message_t* vip_pkt;
 };
 
