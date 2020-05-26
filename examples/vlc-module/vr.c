@@ -8,7 +8,6 @@
 #include "coap-callback-api.h"
 #include "vip-interface.h"
 #include "net/netstack.h"
-#include "cooja_addr.h"
 
 #include "sys/ctimer.h"
 

@@ -7,6 +7,7 @@
 #include "coap-callback-api.h"
 #include "vip-interface.h"
 #include "net/netstack.h"
+#include "sys/ctimer.h"
 
 /* for ROOT in RPL */
 #include "contiki-net.h"
@@ -25,16 +26,25 @@ extern vip_entity_t aa_type_handler;
 process_event_t aa_snd_event;
 
 
+
 /* for send packet */
 static coap_callback_request_state_t callback_state;
 static coap_endpoint_t dest_ep;
 static coap_message_t request[1];
+
+/* vip packet */
+static  vip_message_t *snd_pkt;
+
+static struct ctimer ct;
 
 
 /* using coap callback api */
 static void vip_request_callback(coap_callback_request_state_t *callback_state);
 static void vip_request(vip_message_t *snd_pkt);
 
+
+static void timer_callback(void* data);
+static void init();
 
 
 PROCESS(aa_process, "AA");
@@ -61,17 +71,34 @@ PROCESS_THREAD(aa_process, ev, data)
   /* Define application-specific events here. */
   while(1) {
       PROCESS_WAIT_EVENT();
-      printf("[AA] Name:%s | Thread:%s\n",PROCESS_CURRENT()->name, PROCESS_CURRENT()->thread);
+
       if(ev == aa_snd_event) {
         snd_pkt = (vip_message_t *)data;
-        //printf("Type[%d]\n", snd_pkt->type);
-
-        vip_request(snd_pkt);
+        init();
       }
   }
 
   PROCESS_END();
 }
+
+
+
+static void
+timer_callback(void* data)
+{
+  printf("SEND!\n");
+  vip_request(snd_pkt);
+}
+
+static void init()
+{
+  int random_incount;
+  random_incount = random_rand() % 1000;
+  printf("Set Send Timer %d\n", random_incount);
+
+  ctimer_set(&ct, random_incount, timer_callback, NULL);
+}
+
 
 static void
 vip_request_callback(coap_callback_request_state_t *res_callback_state) {
