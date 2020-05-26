@@ -142,7 +142,7 @@ handler_vra(vip_message_t *rcv_pkt) {
   /* VLC! */
   printf("Broadcast VRA for VR(%d)\n", rcv_pkt->vr_id);
   vip_set_dest_ep_cooja(rcv_pkt, dest_addr, VIP_BROADCAST, VIP_VR_URL);
-  process_post_synch(&vt_process, vt_snd_event, (void *)rcv_pkt);
+  process_post(&vt_process, vt_snd_event, (void *)rcv_pkt);
 }
 
 static void
