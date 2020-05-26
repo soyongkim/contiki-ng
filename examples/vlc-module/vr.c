@@ -83,6 +83,7 @@ PROCESS_THREAD(vr_process, ev, data)
 static void
 timer_callback(void* data)
 {
+  printf("SEND!\n");
   vip_request(snd_pkt);
 }
 
@@ -90,10 +91,10 @@ static void init()
 {
   int random_incount;
   srand(time(NULL));
-  random_incount = rand();
+  random_incount = random_rand();
   printf("Set Send Timer %d\n", random_incount%1000);
 
-  ctimer_set(&ct, random_incount * CLOCK_CONF_SECOND, timer_callback, NULL);
+  ctimer_set(&ct, (random_incount % CLOCK_CONF_SECOND), timer_callback, NULL);
 }
 
 static void
