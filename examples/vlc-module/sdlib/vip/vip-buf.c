@@ -12,11 +12,11 @@ vip_snd_node_t* make_vip_pkt_node(vip_message_t* vip_pkt)
     node->next = NULL;
     node->vip_pkt = calloc(1, sizeof(vip_message_t));
 
-    // /* dest ep info */
-    // node->vip_pkt->dest_coap_addr = calloc(50, sizeof(char));
-    // node->vip_pkt->dest_path = calloc(50, sizeof(char));
-    // memcpy(node->vip_pkt->dest_coap_addr, vip_pkt->dest_coap_addr, strlen(vip_pkt->dest_coap_addr));
-    // memcpy(node->vip_pkt->dest_path, vip_pkt->dest_path, strlen(vip_pkt->dest_path));
+    /* dest ep info */
+    node->vip_pkt->dest_coap_addr = calloc(50, sizeof(char));
+    node->vip_pkt->dest_path = calloc(50, sizeof(char));
+    memcpy(node->vip_pkt->dest_coap_addr, vip_pkt->dest_coap_addr, strlen(vip_pkt->dest_coap_addr));
+    memcpy(node->vip_pkt->dest_path, vip_pkt->dest_path, strlen(vip_pkt->dest_path));
 
     // /* query */
     // if(vip_pkt->query_len)
