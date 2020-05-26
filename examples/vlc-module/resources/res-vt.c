@@ -75,7 +75,6 @@ static vip_message_t ack_pkt[1];
 
 static char uplink_id[50];
 
-
 /* A simple actuator example. Toggles the red led */
 PERIODIC_RESOURCE(res_vt,
          "title=\"VT\";rt=\"Control\"",
