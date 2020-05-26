@@ -3,7 +3,7 @@
 #include <string.h>
 #include "vip-buf.h"
 
-vip_snd_buf_t vip_snd_buf[1];
+static vip_snd_buf_t vip_snd_buf[1];
 
 vip_snd_node_t* make_vip_pkt_node(vip_message_t* vip_pkt)
 {
