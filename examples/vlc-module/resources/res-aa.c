@@ -210,8 +210,11 @@ static void
 handler_vra(vip_message_t *rcv_pkt) {
   update_nonce_table(rcv_pkt->nonce, rcv_pkt->vr_id);
   /* forward vra(vrid) to vt with nonce*/
-  vip_set_dest_ep_cooja(rcv_pkt, dest_addr, rcv_pkt->vt_id, VIP_VT_URL);
-  process_post(&aa_process, aa_snd_event, (void *)rcv_pkt);
+  vip_init_message(snd_pkt, VIP_TYPE_VRA, node_id, rcv_pkt->vt_id, rcv_pkt->vr_id);
+  vip_set_type_header_nonce(snd_pkt, rcv_pkt->nonce);
+  vip_serialize_message(snd_pkt, buffer);
+  vip_set_dest_ep_cooja(snd_pkt, dest_addr, rcv_pkt->vt_id, VIP_VT_URL);
+  process_post(&aa_process, aa_snd_event, (void *)snd_pkt);
 }
 
 static void
