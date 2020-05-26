@@ -165,6 +165,10 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
 
 static void
 handler_vrr(vip_message_t *rcv_pkt) {
+
+  printf("[Test] Name:%s | Thread:%s\n",PROCESS_CURRENT()->name, PROCESS_CURRENT()->thread);
+
+
   vip_nonce_tuple_t *chk;
   int nonce;
   if (!(chk = check_nonce_table(rcv_pkt->query_rcv_id)))
@@ -208,7 +212,7 @@ handler_vra(vip_message_t *rcv_pkt) {
   /* forward vra(vrid) to vt with nonce*/
   vip_set_dest_ep_cooja(rcv_pkt, dest_addr, rcv_pkt->vt_id, VIP_VT_URL);
   vip_serialize_message(rcv_pkt, buffer);
-  process_post_synch(&aa_process, aa_snd_event, (void *)rcv_pkt);
+  process_post(&aa_process, aa_snd_event, (void *)rcv_pkt);
 }
 
 static void
@@ -222,7 +226,7 @@ handler_vrc(vip_message_t *rcv_pkt) {
 
     /* forward vra(vrid) to vt with nonce*/
     vip_set_dest_ep_cooja(rcv_pkt, dest_addr, VIP_VG_ID, VIP_VG_URL);
-    process_post_synch(&aa_process, aa_snd_event, (void *)rcv_pkt);
+    process_post(&aa_process, aa_snd_event, (void *)rcv_pkt);
   }
 }
 
@@ -277,5 +281,5 @@ res_periodic_ad_handler(void)
   /* non message setting */
   snd_pkt->re_flag = COAP_TYPE_NON;
 
-  process_post_synch(&aa_process, aa_snd_event, (void *)snd_pkt);
+  process_post(&aa_process, aa_snd_event, (void *)snd_pkt);
 }
