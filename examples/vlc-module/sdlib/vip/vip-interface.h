@@ -1,6 +1,7 @@
 #ifndef VIP_INTERFACE
 #define VIP_INTERFACE
 #include "vip.h"
+#include "vip-constants.h"
 
 
 typedef struct vip_entity_s vip_entity_t;
