@@ -69,7 +69,7 @@ PROCESS_THREAD(vr_process, ev, data)
 
       if(ev == vr_snd_event) {
         srand(time(NULL));
-        random_incount = rand() % 1000;
+        random_incount = rand() % CLOCK_CONF_SECOND;
 
         etimer_set(&et, random_incount);
 
