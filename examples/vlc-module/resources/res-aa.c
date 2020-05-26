@@ -163,7 +163,7 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
   {
     coap_set_header_uri_query(response, ack_pkt->query);
   }
-  printf(B: "[Test] Name:%s | Thread:%s\n",PROCESS_CURRENT()->name, PROCESS_CURRENT()->thread);
+  printf("B: [Test] Name:%s | Thread:%s\n",PROCESS_CURRENT()->name, PROCESS_CURRENT()->thread);
 }
 
 static void
