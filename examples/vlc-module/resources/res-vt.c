@@ -113,9 +113,13 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
   if(ack_pkt->total_len)
   {
     coap_set_payload(response, ack_pkt->buffer, ack_pkt->total_len);
+    ack_pkt->total_len = 0;
   }
   if(ack_pkt->query_len)
+  {
     coap_set_header_uri_query(response, ack_pkt->query);
+    ack_pkt->query_len = 0;
+  }
 }
 
 /* beaconing */
