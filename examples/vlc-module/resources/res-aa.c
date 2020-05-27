@@ -221,7 +221,7 @@ handler_vrc(vip_message_t *rcv_pkt) {
   if (!(chk = check_nonce_table(rcv_pkt->query_rcv_id)))
   {
     /* remove nonce tuple if vrc received */
-    remove_nonce_table(chk);
+    //remove_nonce_table(chk);
 
     /* forward vra(vrid) to vt with nonce*/
     vip_set_dest_ep_cooja(rcv_pkt, dest_addr, VIP_VG_ID, VIP_VG_URL);
