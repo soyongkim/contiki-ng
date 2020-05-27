@@ -173,7 +173,6 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
   if(ack_pkt->query_len)
   {
     coap_set_header_uri_query(response, ack_pkt->query);
-    vip_init_query(ack_query);
   }
   //printf("B: [Test] Name:%s | Thread:%s\n",PROCESS_CURRENT()->name, PROCESS_CURRENT()->thread);
   //process_post_synch(&tcpip_process, tcpip_event, NULL);
@@ -212,6 +211,7 @@ handler_vrr(vip_message_t *rcv_pkt) {
   }
 
   /* Set payload for ack */
+  vip_init_query(ack_query);
   vip_make_query_nonce(ack_query, strlen(ack_query), nonce);
   vip_make_query_timer(ack_query, strlen(ack_query), 1);
   printf("Test query: %s\n", ack_query);
@@ -244,6 +244,7 @@ handler_vrc(vip_message_t *rcv_pkt) {
     vip_serialize_message(rcv_pkt, buffer);
     process_post(&aa_process, aa_snd_event, (void *)rcv_pkt);
   }
+  vip_init_query(ack_query);
 }
 
 static void
