@@ -97,6 +97,7 @@ static void init()
 static void
 vip_request_callback(coap_callback_request_state_t *res_callback_state) {
   const char *nonce = NULL;
+  const char *timer = NULL;
   coap_request_state_t *state = &res_callback_state->state;
 
   if(state->status == COAP_REQUEST_STATUS_RESPONSE) {
@@ -106,8 +107,11 @@ vip_request_callback(coap_callback_request_state_t *res_callback_state) {
           rcv_nonce = atoi(nonce);
           printf("Nonce:%d\n", rcv_nonce);
         }
+
+        if(coap_get_query_variable(state->response, "timer", &timer)) {
+            res_vr.trigger();
+        }
       }
-      res_vr.trigger();
   }
 }
 

@@ -214,6 +214,7 @@ handler_vrr(vip_message_t *rcv_pkt) {
   /* Set payload for ack */
   vip_init_query(ack_query);
   vip_make_query_nonce(ack_query, strlen(ack_query), nonce);
+  vip_make_query_timer(ack_query, strlen(ack_query), 1);
   vip_set_query(ack_pkt, ack_query);
 }
 
@@ -232,7 +233,7 @@ static void
 handler_vrc(vip_message_t *rcv_pkt) {
   vip_nonce_tuple_t *chk;
   /* if vrc is duplicated, the tuple is null. so nothing to do and just send ack */
-  if (!(chk = check_nonce_table_vrid(rcv_pkt->vr_id)))
+  if (chk = check_nonce_table_vrid(rcv_pkt->vr_id))
   {
     printf("received rcv! from vr(%d)\n", chk->alloc_vr_id);
     /* remove nonce tuple if vrc received */

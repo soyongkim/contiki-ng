@@ -121,6 +121,6 @@ int vip_set_service_list(vip_message_t *vip_pkt, char **service_list, size_t ser
 
 void vip_make_query_src(char* query, int query_len, int src_id);
 void vip_make_query_nonce(char *query, int query_len, int value);
-
+void vip_make_query_timer(char* query, int query_len, int flag);
 
 #endif

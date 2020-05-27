@@ -466,3 +466,20 @@ void vip_make_query_nonce(char *query, int query_len, int value)
     strcat(query, tochar);
 }
 
+void vip_make_query_timer(char* query, int query_len, int flag)
+{
+    if (!query_len)
+    {
+        strcpy(query, "?timer=");
+    }
+    else
+    {
+        strcat(query, "&timer=");
+    }
+
+    char tochar[5];
+    sprintf(tochar, "%d", flag);
+    strcat(query, tochar);
+}
+
+
