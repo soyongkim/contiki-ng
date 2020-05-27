@@ -136,7 +136,7 @@ vip_request() {
     coap_set_header_uri_path(request, snd_pkt->dest_path);
     coap_set_payload(request, snd_pkt->buffer, snd_pkt->total_len);
 
-    if(snd_pkt->query_len > 0)
+    if(snd_pkt->query_len)
       coap_set_header_uri_query(request, snd_pkt->query);
 
     printf("Send to %s\n", snd_pkt->dest_coap_addr);

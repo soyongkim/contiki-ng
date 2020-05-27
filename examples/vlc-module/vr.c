@@ -40,7 +40,7 @@ static struct ctimer ct;
 
 /* using coap callback api */
 static void vip_request_callback(coap_callback_request_state_t *callback_state);
-static void vip_request(vip_message_t *snd_pkt);
+static void vip_request();
 
 
 static void timer_callback(void* data);
@@ -70,7 +70,7 @@ PROCESS_THREAD(vr_process, ev, data)
       PROCESS_WAIT_EVENT();
 
       if(ev == vr_snd_event) {
-        snd_pkt = (vip_message_t *)data;
+        vip_push_snd_buf((vip_message_t *)data);
         init();
       }
   }
@@ -82,7 +82,7 @@ static void
 timer_callback(void* data)
 {
   printf("SEND!\n");
-  vip_request(snd_pkt);
+  vip_request();
 }
 
 static void init()
@@ -112,18 +112,25 @@ vip_request_callback(coap_callback_request_state_t *res_callback_state) {
 }
 
 static void
-vip_request(vip_message_t *snd_pkt) {
-  /* set vip endpoint */
-  coap_endpoint_parse(snd_pkt->dest_coap_addr, strlen(snd_pkt->dest_coap_addr), &dest_ep);
+vip_request() {
+  while(!vip_is_empty())
+  {
+    snd_pkt = vip_front_snd_buf();
 
-  coap_init_message(request, snd_pkt->re_flag, COAP_POST, 0);
+    /* set vip endpoint */
+    coap_endpoint_parse(snd_pkt->dest_coap_addr, strlen(snd_pkt->dest_coap_addr), &dest_ep);
 
-  coap_set_header_uri_path(request, snd_pkt->dest_path);
-  coap_set_payload(request, snd_pkt->buffer, snd_pkt->total_len);
+    coap_init_message(request, snd_pkt->re_flag, COAP_POST, 0);
 
-  if(snd_pkt->query_len > 0)
-    coap_set_header_uri_query(request, snd_pkt->query);
+    coap_set_header_uri_path(request, snd_pkt->dest_path);
+    coap_set_payload(request, snd_pkt->buffer, snd_pkt->total_len);
 
-  printf("Send from %s to %s\n", snd_pkt->query, snd_pkt->dest_coap_addr);
-  coap_send_request(&callback_state, &dest_ep, request, vip_request_callback);
+    if(snd_pkt->query_len)
+      coap_set_header_uri_query(request, snd_pkt->query);
+
+    printf("Send to %s\n", snd_pkt->dest_coap_addr);
+    coap_send_request(&callback_state, &dest_ep, request, vip_request_callback);
+
+    vip_pop_snd_buf();
+  }
 }
