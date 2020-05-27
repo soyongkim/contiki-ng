@@ -112,6 +112,20 @@ check_nonce_table(int vr_node_id) {
   return NULL;
 }
 
+vip_nonce_tuple_t *
+check_nonce_table_vrid(int vr_id)
+{
+  vip_nonce_tuple_t *c;
+  for (c = list_head(vr_nonce_table); c != NULL; c = c->next)
+  {
+    if (c->alloc_vr_id == vr_id)
+    {
+      return c;
+    }
+  }
+  return NULL;
+}
+
 void
 update_nonce_table(int nonce, int vr_id) {
   vip_nonce_tuple_t* c;
@@ -218,10 +232,10 @@ static void
 handler_vrc(vip_message_t *rcv_pkt) {
   vip_nonce_tuple_t *chk;
   /* if vrc is duplicated, the tuple is null. so nothing to do and just send ack */
-  if (!(chk = check_nonce_table(rcv_pkt->query_rcv_id)))
+  if (!(chk = check_nonce_table_vrid(rcv_pkt->vr_id)))
   {
     /* remove nonce tuple if vrc received */
-    //remove_nonce_table(chk);
+    remove_nonce_table(chk);
 
     /* forward vra(vrid) to vt with nonce*/
     vip_set_dest_ep_cooja(rcv_pkt, dest_addr, VIP_VG_ID, VIP_VG_URL);

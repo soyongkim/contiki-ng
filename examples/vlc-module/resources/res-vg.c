@@ -188,7 +188,7 @@ handler_vrc(vip_message_t *rcv_pkt) {
   if (!(chk = check_nonce_table(rcv_pkt->vr_id)))
   {
     /* remove nonce tuple if vrc received */
-    //remove_nonce_table(chk);
+    remove_nonce_table(chk);
 
     printf("vr[%d] cWmplete!\n", rcv_pkt->vr_id);
   }
