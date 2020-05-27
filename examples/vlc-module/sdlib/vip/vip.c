@@ -429,7 +429,8 @@ int vip_set_payload(vip_message_t *vip_pkt, void *payload, size_t payload_len)
     return 1;
 }
 
-void vip_init_query(char *query) {
+void vip_init_query(vip_message_t *vip_pkt, char *query) {
+    vip_pkt->query_len = 0;
     memset(query, 0, sizeof(char)*VIP_MAX_QUERY_SIZE);
 }
 
