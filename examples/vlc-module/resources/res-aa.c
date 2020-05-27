@@ -233,7 +233,7 @@ static void
 handler_vrc(vip_message_t *rcv_pkt) {
   vip_nonce_tuple_t *chk;
   /* if vrc is duplicated, the tuple is null. so nothing to do and just send ack */
-  if (chk = check_nonce_table_vrid(rcv_pkt->vr_id))
+  if ((chk = check_nonce_table_vrid(rcv_pkt->vr_id)))
   {
     printf("received rcv! from vr(%d)\n", chk->alloc_vr_id);
     /* remove nonce tuple if vrc received */
