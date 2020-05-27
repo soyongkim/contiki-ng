@@ -103,6 +103,7 @@ vip_request_callback(coap_callback_request_state_t *res_callback_state) {
   if(state->status == COAP_REQUEST_STATUS_RESPONSE) {
       printf("Ack:%d - mid(%x)\n", state->response->code, state->response->mid);
       if(state->response->code < 100) {
+
         if(coap_get_query_variable(state->response, "nonce", &nonce)) {
           rcv_nonce = atoi(nonce);
           printf("Nonce:%d\n", rcv_nonce);
@@ -110,6 +111,11 @@ vip_request_callback(coap_callback_request_state_t *res_callback_state) {
 
         if(coap_get_query_variable(state->response, "timer", &timer)) {
             res_vr.trigger();
+        }
+
+        if(state->response->uri_query)
+        {
+          printf("Q: %s\n", state->response->uri_query);
         }
       }
   }
