@@ -98,10 +98,10 @@ coap_request_callback(void *callback_data, coap_message_t *response)
   state->response = response;
 
   //LOG_DBG("request callback\n");
-  printf("request callback\n");
+  printf("[callback-api] request callback\n");
 
   if(!state->response) {
-    printf("Server not responding giving up...\n");
+    printf("[callback-api] Server not responding giving up...\n");
     state->status = COAP_REQUEST_STATUS_TIMEOUT;
     callback_state->callback(callback_state);
     return;

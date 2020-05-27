@@ -110,7 +110,6 @@ vip_request_callback(coap_callback_request_state_t *res_callback_state) {
         }
 
         if(coap_get_query_variable(state->response, "timer", &timer)) {
-            printf("Timer:%d\n", atoi(timer));
             res_vr.trigger();
         }
 
@@ -119,6 +118,11 @@ vip_request_callback(coap_callback_request_state_t *res_callback_state) {
           printf("Q: %s\n", state->response->uri_query);
         }
       }
+  }
+
+  if(state->status == COAP_REQUEST_STATUS_TIMEOUT)
+  {
+    res_vr.trigger();
   }
 }
 
