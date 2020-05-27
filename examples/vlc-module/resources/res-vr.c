@@ -133,9 +133,9 @@ handler_vra(vip_message_t *rcv_pkt) {
     retransmit_off();
 
     /* send vrc */
-    // vip_init_message(snd_pkt, VIP_TYPE_VRC, aa_id, vt_id, vr_id);
-    // vip_serialize_message(snd_pkt, buffer);
-    // vip_request(snd_pkt);
+    vip_init_message(snd_pkt, VIP_TYPE_VRC, aa_id, vt_id, vr_id);
+    vip_serialize_message(snd_pkt, buffer);
+    process_post(&vr_process, vr_snd_event, (void *)snd_pkt);
   }
 }
 

@@ -124,12 +124,7 @@ vip_request() {
   while(!vip_is_empty())
   {
     snd_pkt = vip_front_snd_buf();
-
-    printf("------------------- test -----\n");
-    printf("addr:%s\n", snd_pkt->dest_coap_addr);
-    printf("path:%s\n", snd_pkt->dest_path);
-
-
+    
     coap_endpoint_parse(snd_pkt->dest_coap_addr, strlen(snd_pkt->dest_coap_addr), &dest_ep);
 
     coap_init_message(request, snd_pkt->re_flag, COAP_POST, 0);
