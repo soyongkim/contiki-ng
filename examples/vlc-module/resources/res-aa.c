@@ -248,7 +248,7 @@ handler_sea(vip_message_t *rcv_pkt) {
 
 static void
 handler_sec(vip_message_t *rcv_pkt) {
-  session_t *chk;
+  se_cache_t *chk;
   /* if vrc is duplicated, the tuple is already freed. so nothing to do and just send ack */
   if ((chk = check_se_cache(rcv_pkt->vr_id, rcv_pkt->session_id)))
   {
