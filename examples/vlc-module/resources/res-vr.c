@@ -177,6 +177,9 @@ handler_sea(vip_message_t *rcv_pkt) {
   vip_serialize_message(snd_pkt, buffer);
   vip_set_dest_ep_cooja(snd_pkt, dest_addr, aa_id, VIP_AA_URL);
   process_post(&vr_process, vr_snd_event, (void *)snd_pkt);
+
+  /* trigger of vsd */
+  timer_init(1)
 }
 
 static void
