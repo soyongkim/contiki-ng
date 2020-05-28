@@ -212,7 +212,7 @@ handler_vsd(vip_message_t *rcv_pkt) {
       // If received 100's data, Goal in*/
       if (rcv_pkt->seq == goal_vg_seq)
       {
-        printf("------------------------------------------------ Goal ---\n");
+        printf("--------------------------------------------------------------------------------------------------- Goal\n");
         return;
       }
 
@@ -282,7 +282,7 @@ loss_handler() {
   if(loss_count >= 5) {
     /* Send recently sent pkt */
     loss_count = 0;
-    printf("----------------------------------VIP RETRANSMIT\n");
+    printf("--------------------------------------------------------------------------VIP RETRANSMIT\n");
     snd_pkt->re_flag = COAP_TYPE_NON;
     process_post(&vr_process, vr_snd_event, (void *)snd_pkt);
   }
