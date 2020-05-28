@@ -202,7 +202,7 @@ int vip_serialize_ser(vip_message_t *vip_pkt)
     index += vip_int_serialize(index, 4, offset, vip_pkt->session_id);
     index += vip_int_serialize(index, 4, offset, vip_pkt->vr_seq);
 
-    printf("[vip] Serialize Session-ID:%x | VR-SEQ:%d\n", vip_pkt->vr_id, vip_pkt->nonce);
+    printf("[vip] Serialize Session-ID:%x | VR-SEQ:%d\n", vip_pkt->session_id, vip_pkt->vr_seq);
 
     return index;
 }
