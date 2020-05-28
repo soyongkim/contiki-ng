@@ -221,7 +221,7 @@ handler_vsd(vip_message_t *rcv_pkt) {
         memset(payload, chk->test_data, 100);
 
         vip_init_message(ack_pkt, VIP_TYPE_VSD, rcv_pkt->aa_id, rcv_pkt->vt_id, rcv_pkt->vr_id);
-        vip_set_field_vsd(ack_pkt, chk->session_id, chk->vg_seq, payload, 100);
+        vip_set_field_vsd(ack_pkt, chk->session_id, chk->vg_seq, (void *)payload, 100);
         vip_serialize_message(ack_pkt, buffer);
       }
     }
