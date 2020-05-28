@@ -9,7 +9,7 @@
 #include "sys/node-id.h"
 
 
-/* ---------------- vip pkt configure -----------------------------------------*/
+/* ----------------------------------------------------------------- vip pkt configure -----------------------------------------*/
 
 void vip_init_message(vip_message_t *vip_pkt, uint8_t type,
                       uint16_t aa_id, uint16_t vt_id, uint32_t vr_id)
@@ -34,7 +34,7 @@ void vip_set_non_flag(vip_message_t* vip_pkt)
 }
 
 
-/* Set Type header field */
+/*  ------------------------------------------- Set Type header field -----------------------------------------------------*/
 void vip_set_field_beacon(vip_message_t* vip_pkt, char* uplink_id)
 {
     vip_pkt->uplink_id = uplink_id;
@@ -140,93 +140,8 @@ vip_parse_int_option(uint8_t *bytes, size_t length)
     return var;
 }
 
-int vip_serialize_message(vip_message_t *vip_pkt, uint8_t *buffer)
-{
-    uint8_t *offset;
-    int total_len = 0;
 
-    /* Initialize */
-    vip_pkt->buffer = buffer;
-    offset = vip_pkt->buffer;
-
-    /* set common header fields without total len*/
-    vip_pkt->buffer[0] = vip_pkt->type;
-
-    vip_pkt->buffer[4] = (uint8_t)(vip_pkt->aa_id >> 8);
-    vip_pkt->buffer[5] = (uint8_t)(vip_pkt->aa_id);
-
-    vip_pkt->buffer[6] = (uint8_t)(vip_pkt->vt_id >> 8);
-    vip_pkt->buffer[7] = (uint8_t)(vip_pkt->vt_id);
-
-    vip_pkt->buffer[8] = (uint8_t)(vip_pkt->vr_id >> 24);
-    vip_pkt->buffer[9] = (uint8_t)(vip_pkt->vr_id >> 16);
-    vip_pkt->buffer[10] = (uint8_t)(vip_pkt->vr_id >> 8);
-    vip_pkt->buffer[11] = (uint8_t)(vip_pkt->vr_id);
-
-    total_len = VIP_COMMON_HEADER_LEN;
-
-    // total_len += vip_int_serialize(total_len, 1, offset, vip_pkt->type);
-
-    // /* for total_length field */
-    // total_len += 3;
-
-    // total_len += vip_int_serialize(total_len, 2, offset, vip_pkt->aa_id);
-    // total_len += vip_int_serialize(total_len, 2, offset, vip_pkt->vt_id);
-    // total_len += vip_int_serialize(total_len, 4, offset, vip_pkt->vr_id);
-
-    /* set Type Specific Fields */
-    switch (vip_pkt->type)
-    {
-    case VIP_TYPE_BEACON:
-        /* code */
-        total_len += vip_serialize_beacon(vip_pkt);
-        break;
-    case VIP_TYPE_VRR:
-        total_len += vip_serialize_VRR(vip_pkt);
-        break;
-    case VIP_TYPE_VRA:
-        /* code */
-        total_len += vip_serialize_VRA(vip_pkt);
-        break;
-    case VIP_TYPE_SER:
-        /* code */
-        total_len += vip_serialize_SER(vip_pkt);
-        break;
-    case VIP_TYPE_SEA:
-        /* code */
-        total_len += vip_serialize_SEA(vip_pkt);
-        break;
-    case VIP_TYPE_SEC:
-        /* code */
-        total_len += vip_serialize_SEC(vip_pkt);
-        break;
-    case VIP_TYPE_SDR:
-        /* code */
-        total_len += vip_serialize_SD(vip_pkt);
-        break;
-    case VIP_TYPE_SDA:
-        /* code */
-        total_len += vip_serialize_SDA(vip_pkt);
-        break;
-    }
-
-    /* serialize paylaod */
-    offset = vip_pkt->buffer + total_len;
-    if (vip_pkt->payload_len)
-    {
-        memmove(offset, vip_pkt->payload, vip_pkt->payload_len);
-        total_len += vip_pkt->payload_len;
-    }
-
-    /* serialize total length */
-    vip_pkt->total_len = total_len;
-    vip_pkt->buffer[1] = (uint8_t)(vip_pkt->total_len >> 16);
-    vip_pkt->buffer[2] = (uint8_t)(vip_pkt->total_len >> 8);
-    vip_pkt->buffer[3] = (uint8_t)(vip_pkt->total_len);
-
-    return total_len;
-}
-
+/* ----------------------------------------------- vip pkt serialize ---------------------------------------------------*/
 static void
 vip_serialize_array(uint8_t *buffer, uint8_t *array, size_t length)
 {
@@ -336,7 +251,95 @@ int vip_serialize_sda(vip_message_t *vip_pkt)
     return index;
 }
 
-/* Data Parsing */
+int vip_serialize_message(vip_message_t *vip_pkt, uint8_t *buffer)
+{
+    uint8_t *offset;
+    int total_len = 0;
+
+    /* Initialize */
+    vip_pkt->buffer = buffer;
+    offset = vip_pkt->buffer;
+
+    /* set common header fields without total len*/
+    vip_pkt->buffer[0] = vip_pkt->type;
+
+    vip_pkt->buffer[4] = (uint8_t)(vip_pkt->aa_id >> 8);
+    vip_pkt->buffer[5] = (uint8_t)(vip_pkt->aa_id);
+
+    vip_pkt->buffer[6] = (uint8_t)(vip_pkt->vt_id >> 8);
+    vip_pkt->buffer[7] = (uint8_t)(vip_pkt->vt_id);
+
+    vip_pkt->buffer[8] = (uint8_t)(vip_pkt->vr_id >> 24);
+    vip_pkt->buffer[9] = (uint8_t)(vip_pkt->vr_id >> 16);
+    vip_pkt->buffer[10] = (uint8_t)(vip_pkt->vr_id >> 8);
+    vip_pkt->buffer[11] = (uint8_t)(vip_pkt->vr_id);
+
+    total_len = VIP_COMMON_HEADER_LEN;
+
+    // total_len += vip_int_serialize(total_len, 1, offset, vip_pkt->type);
+
+    // /* for total_length field */
+    // total_len += 3;
+
+    // total_len += vip_int_serialize(total_len, 2, offset, vip_pkt->aa_id);
+    // total_len += vip_int_serialize(total_len, 2, offset, vip_pkt->vt_id);
+    // total_len += vip_int_serialize(total_len, 4, offset, vip_pkt->vr_id);
+
+    /* set Type Specific Fields */
+    switch (vip_pkt->type)
+    {
+    case VIP_TYPE_BEACON:
+        /* code */
+        total_len += vip_serialize_beacon(vip_pkt);
+        break;
+    case VIP_TYPE_VRR:
+        total_len += vip_serialize_vrr(vip_pkt);
+        break;
+    case VIP_TYPE_VRA:
+        /* code */
+        total_len += vip_serialize_vra(vip_pkt);
+        break;
+    case VIP_TYPE_SER:
+        /* code */
+        total_len += vip_serialize_ser(vip_pkt);
+        break;
+    case VIP_TYPE_SEA:
+        /* code */
+        total_len += vip_serialize_sea(vip_pkt);
+        break;
+    case VIP_TYPE_SEC:
+        /* code */
+        total_len += vip_serialize_sec(vip_pkt);
+        break;
+    case VIP_TYPE_SDR:
+        /* code */
+        total_len += vip_serialize_sdr(vip_pkt);
+        break;
+    case VIP_TYPE_SDA:
+        /* code */
+        total_len += vip_serialize_sda(vip_pkt);
+        break;
+    }
+
+    /* serialize paylaod */
+    offset = vip_pkt->buffer + total_len;
+    if (vip_pkt->payload_len)
+    {
+        memmove(offset, vip_pkt->payload, vip_pkt->payload_len);
+        total_len += vip_pkt->payload_len;
+    }
+
+    /* serialize total length */
+    vip_pkt->total_len = total_len;
+    vip_pkt->buffer[1] = (uint8_t)(vip_pkt->total_len >> 16);
+    vip_pkt->buffer[2] = (uint8_t)(vip_pkt->total_len >> 8);
+    vip_pkt->buffer[3] = (uint8_t)(vip_pkt->total_len);
+
+    return total_len;
+}
+
+
+/*------------------------------------------------------ Data Parsing -----------------------------------------------------------*/
 int vip_parse_common_header(vip_message_t *vip_pkt, uint8_t *data, uint16_t data_len)
 {
     memset(vip_pkt, 0, sizeof(vip_message_t));
@@ -445,6 +448,10 @@ void vip_payload_test(vip_message_t *vip_pkt)
 }
 
 
+
+
+
+/*------------------------------------------------------ coap query handle -----------------------------------------------------------*/
 void vip_init_query(vip_message_t *vip_pkt, char *query) {
     vip_pkt->query_len = 0;
     memset(query, 0, sizeof(char)*VIP_MAX_QUERY_SIZE);
