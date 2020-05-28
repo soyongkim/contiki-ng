@@ -229,7 +229,7 @@ int vip_serialize_sec(vip_message_t *vip_pkt)
     return index;
 }
 
-int vip_serialize_sd(vip_message_t *vip_pkt)
+int vip_serialize_sdr(vip_message_t *vip_pkt)
 {
     uint8_t *offset = vip_pkt->buffer + VIP_COMMON_HEADER_LEN;
     unsigned int index = 0;
