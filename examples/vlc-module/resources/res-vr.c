@@ -47,9 +47,11 @@ static int vr_id, aa_id, vt_id;
 static int vip_timeout_swtich;
 static int loss_count = 0;
 
+/* vip algorithm */
 void retransmit_on();
 void retransmit_off();
 static void loss_handler();
+static bool is_my_vip_pkt(vip_message_t* rcv_pkt);
 
 /* A simple actuator example. Toggles the red led */
 EVENT_RESOURCE(res_vr,
@@ -152,6 +154,9 @@ handler_ser(vip_message_t *rcv_pkt) {
 
 static void
 handler_sea(vip_message_t *rcv_pkt) {
+  if(!is_my_vip_pkt(rcv_pkt))
+    return;
+
   update_session(rcv_pkt->session_id, 0, rcv_pkt->vg_seq);
 
   printf("Thank you! I received vg_seq(%d)\n", rcv_pkt->vg_seq);
@@ -253,6 +258,13 @@ static void timer_init(int flag)
     ctimer_set(&ct, 30000, trigger_sdr, NULL);
     break;
   }
+}
+
+static bool is_my_vip_pkt(vip_message_t* rcv_pkt)
+{
+  if(rcv_pkt->vr_id == vr_id)
+    return true;
+  return false;
 }
 
 
