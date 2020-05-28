@@ -212,11 +212,19 @@ handler_vsd(vip_message_t *rcv_pkt) {
     {
       if(rcv_pkt->seq == chk->vr_seq)
       {
-        printf("Current state - vr(%d) <= vr_seq(%d) / vg_seq(%d)\n", rcv_pkt->vr_id, chk->vr_id, chk->vg_seq);
-        chk->vg_seq++;
+        printf("Current state - vr(%d) <= vr_seq(%d) / vg_seq(%d)\n", rcv_pkt->vr_id, chk->vr_seq, chk->vg_seq);
         chk->vr_seq++;
 
         chk->test_data++;
+        char payload[101];
+        memset(payload, chk->test_data, 100);
+
+        vip_init_message(ack_pkt, VIP_TYPE_VSD, rcv_pkt->aa_id, rcv_pkt->vt_id, rcv_pkt->vr_id);
+        vip_set_field_vsd(ack_pkt, chk->session_id, chk->vg_seq++, (void *)payload, 100);
+        vip_serialize_message(ack_pkt, buffer);
+      }
+      else
+      {
         char payload[101];
         memset(payload, chk->test_data, 100);
 

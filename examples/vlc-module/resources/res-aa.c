@@ -269,6 +269,10 @@ handler_vsd(vip_message_t *rcv_pkt) {
       vip_set_dest_ep_cooja(rcv_pkt, dest_addr, VIP_VG_ID, VIP_VG_URL);
       vip_serialize_message(rcv_pkt, buffer);
       process_post(&aa_process, aa_snd_event, (void *)rcv_pkt);
+
+      vip_init_query(ack_pkt, ack_query);
+      vip_make_query_timer(ack_query, strlen(ack_query), 1);
+      vip_set_query(ack_pkt, ack_query);
     }
     else
     {
