@@ -161,7 +161,7 @@ int vip_serialize_vrr(vip_message_t *vip_pkt)
     unsigned int index = 0;
     index += vip_int_serialize(index, 4, offset, vip_pkt->nonce);
 
-    printf("Serialize VR-ID:%d | Nonce:%d\n", vip_pkt->vr_id, vip_pkt->nonce);
+    printf("[vip] Serialize VR-ID:%d | Nonce:%d\n", vip_pkt->vr_id, vip_pkt->nonce);
     return index;
 }
 
@@ -170,8 +170,6 @@ int vip_serialize_vra(vip_message_t *vip_pkt)
     uint8_t *offset = vip_pkt->buffer + VIP_COMMON_HEADER_LEN;
     unsigned int index = 0;
     index += vip_int_serialize(index, 4, offset, vip_pkt->nonce);
-
-    printf("Serialize VR-ID:%d | Nonce:%d\n", vip_pkt->vr_id, vip_pkt->nonce);
 
     return index;
 }
@@ -203,6 +201,8 @@ int vip_serialize_ser(vip_message_t *vip_pkt)
 
     index += vip_int_serialize(index, 4, offset, vip_pkt->session_id);
     index += vip_int_serialize(index, 4, offset, vip_pkt->vr_seq);
+
+    printf("[vip] Serialize Session-ID:%x | VR-SEQ:%d\n", vip_pkt->vr_id, vip_pkt->nonce);
 
     return index;
 }
@@ -406,6 +406,7 @@ void vip_parse_ser(vip_message_t *vip_pkt)
     vip_pkt->session_id = vip_parse_int_option(offset, 4);
     offset += 4;
     vip_pkt->vr_seq = vip_parse_int_option(offset, 4);
+    printf("[vip] Parse Session-ID:%x VR-ID:%d\n", vip_pkt->session_id, vip_pkt->vr_seq);
 }
 
 void vip_parse_sea(vip_message_t *vip_pkt)

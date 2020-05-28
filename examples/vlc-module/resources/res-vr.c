@@ -216,6 +216,46 @@ loss_handler() {
 }
 
 
+/* --------------------- Trigger for simulation -----------------*/
+static void trigger_ser(void* data)
+{
+  int session_id = rand();
+  int vr_seq = rand() % 100000;
+  add_new_session(session_id, vr_seq);
+
+  printf("Session_id: %x\n", session_id);
+  printf("vr_seq : %d\n", vr_seq);
+
+
+  vip_init_message(snd_pkt, VIP_TYPE_SER, aa_id, vt_id, vr_id);
+  vip_set_field_ser(snd_pkt, session_id, vr_seq);
+  vip_serialize_message(snd_pkt, buffer);
+  vip_set_dest_ep_cooja(snd_pkt, dest_addr, aa_id, VIP_AA_URL);
+  process_post(&vr_process, vr_snd_event, (void *)snd_pkt);
+}
+
+static void trigger_sdr(void* data)
+{
+
+}
+
+
+static void timer_init(int flag)
+{
+  switch (flag)
+  {
+  case 0:
+    /* session establish scenario */
+    ctimer_set(&ct, 30000, trigger_ser, NULL);
+    break;
+  case 1:
+    /* data transmit scenario */
+    ctimer_set(&ct, 30000, trigger_sdr, NULL);
+    break;
+  }
+}
+
+
 
 /* ------------------------- handle session --------------------*/
 static void add_new_session(int session_id, int vr_seq)
@@ -263,44 +303,4 @@ static session_t* check_session(int session_id)
   }
 
   return NULL;
-}
-
-
-/* --------------------- Trigger for simulation -----------------*/
-static void trigger_ser(void* data)
-{
-  int session_id = rand();
-  int vr_seq = rand() % 100000;
-  add_new_session(session_id, vr_seq);
-
-  printf("Session_id: %x\n", session_id);
-  printf("vr_seq : %d\n", vr_seq);
-
-
-  vip_init_message(snd_pkt, VIP_TYPE_SER, aa_id, vt_id, vr_id);
-  vip_set_field_ser(snd_pkt, session_id, vr_seq);
-  vip_serialize_message(snd_pkt, buffer);
-  vip_set_dest_ep_cooja(snd_pkt, dest_addr, aa_id, VIP_AA_URL);
-  process_post(&vr_process, vr_snd_event, (void *)snd_pkt);
-}
-
-static void trigger_sdr(void* data)
-{
-
-}
-
-
-static void timer_init(int flag)
-{
-  switch (flag)
-  {
-  case 0:
-    /* session establish scenario */
-    ctimer_set(&ct, 30000, trigger_ser, NULL);
-    break;
-  case 1:
-    /* data transmit scenario */
-    ctimer_set(&ct, 30000, trigger_sdr, NULL);
-    break;
-  }
 }
