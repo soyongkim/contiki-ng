@@ -45,7 +45,7 @@ vip_nonce_tuple_t *check_vr_cache_vr_id(int vr_id);
 
 
 /* handle se_cache */
-int add_se_cache(int vr_id, int session_id);
+void add_se_cache(int vr_id, int session_id);
 void remove_se_cache(se_cache_t* tuple);
 void update_se_cache(int vr_id, int session_id, int vg_seq);
 se_cache_t* check_se_cache(int vr_id, int session_id);
@@ -370,7 +370,7 @@ update_vr_cache(int nonce, int vr_id) {
 
 /* ----------------------------- se cache function ------------------------------------------*/
 
-int add_se_cache(int vr_id, int session_id)
+void add_se_cache(int vr_id, int session_id)
 {
   se_cache_t* new = calloc(1, sizeof(se_cache_t));
   new->vr_id = vr_id;
