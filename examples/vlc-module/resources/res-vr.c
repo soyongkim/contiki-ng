@@ -37,6 +37,8 @@ static void terminate_session(session_t *session);
 static void update_session(int session_id, int vr_seq, int vg_seq);
 static session_t* check_session(int session_id);
 
+/* for debug */
+static void show_session_info();
 
 static vip_message_t snd_pkt[1];
 static uint8_t buffer[50];
@@ -158,8 +160,7 @@ handler_sea(vip_message_t *rcv_pkt) {
     return;
 
   update_session(rcv_pkt->session_id, 0, rcv_pkt->vg_seq);
-
-  printf("vr(%d) received vg_seq(%d)\n",vr_id, rcv_pkt->vg_seq);
+  show_session_info();
 
   retransmit_off();
 
@@ -312,4 +313,15 @@ static session_t* check_session(int session_id)
   }
 
   return NULL;
+}
+
+static void show_session_info()
+{
+  session_t *cur;
+  for(cur=list_head(session_info); cur != NULL; cur = cur->next)
+  {
+      printf("Current Session Info\n");
+      printf("vr(%d) - session(%x) - vr_seq(%d) - vg_seq(%d)\n", cur->vr_id, cur->session_id, cur->vr_seq, cur->vg_seq);
+  }
+
 }

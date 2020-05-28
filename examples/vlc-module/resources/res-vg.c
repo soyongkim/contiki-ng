@@ -38,6 +38,8 @@ static void add_new_session(int vr_id, int session_id, int vr_seq, int vg_seq);
 static void terminate_session(session_t *session);
 static void update_session(int vr_id, int session_id, int vr_seq, int vg_seq);
 static session_t* check_session(int vr_id, int session_id);
+/* for debug */
+static void show_session_info();
 
 
 
@@ -190,7 +192,8 @@ handler_sea(vip_message_t *rcv_pkt) {
 
 static void
 handler_sec(vip_message_t *rcv_pkt) {
-
+  printf("Establish Session(%x) - vr(%d)\n", rcv_pkt->session_id, rcv_pkt->vr_id);
+  show_session_info();
 }
 
 static void
@@ -305,3 +308,13 @@ static session_t* check_session(int vr_id, int session_id)
   return NULL;
 }
 
+static void show_session_info()
+{
+  session_t *cur;
+  for(cur=list_head(session_info); cur != NULL; cur = cur->next)
+  {
+      printf("Current Session Info\n");
+      printf("vr(%d) - session(%x) - vr_seq(%d) - vg_seq(%d)\n", cur->vr_id, cur->session_id, cur->vr_seq, cur->vg_seq);
+  }
+
+}
