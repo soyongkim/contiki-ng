@@ -75,6 +75,8 @@ AUTOSTART_PROCESSES(&er_example_client);
 char *service_urls[NUMBER_OF_URLS] =
 { ".well-known/core", "/actuators/toggle", "battery/", "error/in//path", "/test/hello" };
 static int uri_switch = 0;
+static int count = 0;
+
 
 /* This function is will be passed to COAP_BLOCKING_REQUEST() to handle responses. */
 void
@@ -90,6 +92,7 @@ client_chunk_handler(coap_message_t *response)
   int len = coap_get_payload(response, &chunk);
 
   printf("|%.*s", len, (char *)chunk);
+  printf("count:%d\n", ++count);
 }
 
 PROCESS_THREAD(er_example_client, ev, data)
