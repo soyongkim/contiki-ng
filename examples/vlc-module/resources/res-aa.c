@@ -391,7 +391,7 @@ void update_se_cache(int vr_id, int session_id, int vg_seq)
     if(cur->vr_id == vr_id && cur->session_id == session_id)
     {
       cur->vg_seq = vg_seq;
-      printf("Update se_cache : vr(%d)'s session(%d) - vg_seq(%d)\n", vr_id, session_id, vg_seq);
+      printf("Update se_cache : vr(%d)'s session(%x) - vg_seq(%d)\n", vr_id, session_id, vg_seq);
       break;
     }
   }

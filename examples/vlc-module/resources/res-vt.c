@@ -61,7 +61,7 @@ static void handler_sea(vip_message_t *rcv_pkt);
 static void handler_sec(vip_message_t *rcv_pkt);
 static void handler_sdr(vip_message_t *rcv_pkt);
 static void handler_sda(vip_message_t *rcv_pkt);
-static void handler_allow(vip_message_t *rcv_pkt);
+static void handler_alloc(vip_message_t *rcv_pkt);
 
 static int vt_id, aa_id;
 
@@ -90,7 +90,7 @@ PERIODIC_RESOURCE(res_vt,
 /* vip type handler */
 TYPE_HANDLER(vt_type_handler, NULL, handler_vrr, handler_vra, 
               handler_vrc, handler_rel, handler_ser, handler_sea, handler_sec,
-              handler_sdr, handler_sda, handler_allow);
+              handler_sdr, handler_sda, handler_alloc);
 
 
 /* called by coap-engine proc */
@@ -166,7 +166,10 @@ handler_ser(vip_message_t *rcv_pkt) {
 
 static void
 handler_sea(vip_message_t *rcv_pkt) {
-
+  /* VLC! */
+  printf("Broadcast SEA for VR(%d) - vg_seq(%d)\n", rcv_pkt->vr_id, rcv_pkt->vg_seq);
+  vip_set_dest_ep_cooja(rcv_pkt, dest_addr, VIP_BROADCAST, VIP_VR_URL);
+  process_post(&vt_process, vt_snd_event, (void *)rcv_pkt);
 }
 
 static void
@@ -185,7 +188,7 @@ handler_sda(vip_message_t *rcv_pkt) {
 }
 
 static void
-handler_allow(vip_message_t *rcv_pkt) {
+handler_alloc(vip_message_t *rcv_pkt) {
   /* broadcast ad pkt */
   if(!vt_id) {
     vt_id = node_id;

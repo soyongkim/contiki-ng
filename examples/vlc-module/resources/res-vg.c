@@ -177,7 +177,7 @@ handler_ser(vip_message_t *rcv_pkt) {
 
   /* Set payload for ack */
   printf("Setting Ack..\n");
-  vip_init_message(ack_pkt, VIP_TYPE_VRA, rcv_pkt->aa_id, rcv_pkt->vt_id, rcv_pkt->vr_id);
+  vip_init_message(ack_pkt, VIP_TYPE_SEA, rcv_pkt->aa_id, rcv_pkt->vt_id, rcv_pkt->vr_id);
   vip_set_field_sea(ack_pkt, rcv_pkt->session_id, vg_seq);
   vip_serialize_message(ack_pkt, buffer);
 }
