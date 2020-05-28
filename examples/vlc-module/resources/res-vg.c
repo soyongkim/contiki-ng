@@ -124,10 +124,10 @@ handler_vrr(vip_message_t *rcv_pkt)
       printf("handover vr(%d)! => send to aa(%d) - vt(%d)\n", rcv_pkt->vr_id, rcv_pkt->aa_id, rcv_pkt->vt_id);
       /* last received vsd */
       char payload[101];
-      memset(payload, chk->test_data, 100);
+      memset(payload, chk->test_data-1, 100);
 
       vip_init_message(ack_pkt, VIP_TYPE_VSD, rcv_pkt->aa_id, rcv_pkt->vt_id, rcv_pkt->vr_id);
-      vip_set_field_vsd(ack_pkt, chk->session_id, chk->vg_seq, (void *)payload, 100);
+      vip_set_field_vsd(ack_pkt, chk->session_id, chk->vg_seq-1, (void *)payload, 100);
       vip_serialize_message(ack_pkt, buffer);
     }
     return;
@@ -234,10 +234,10 @@ handler_vsd(vip_message_t *rcv_pkt) {
       else
       {
         char payload[101];
-        memset(payload, chk->test_data, 100);
+        memset(payload, chk->test_data-1, 100);
 
         vip_init_message(ack_pkt, VIP_TYPE_VSD, rcv_pkt->aa_id, rcv_pkt->vt_id, rcv_pkt->vr_id);
-        vip_set_field_vsd(ack_pkt, chk->session_id, chk->vg_seq, (void *)payload, 100);
+        vip_set_field_vsd(ack_pkt, chk->session_id, chk->vg_seq-1, (void *)payload, 100);
         vip_serialize_message(ack_pkt, buffer);
       }
     }
