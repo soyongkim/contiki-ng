@@ -204,16 +204,17 @@ handler_vsd(vip_message_t *rcv_pkt) {
     if (rcv_pkt->seq == chk->vg_seq)
     {
       retransmit_off();
+      // Next vg seq data
+      chk->vg_seq++;
+      // Next to send data to vg
+      chk->vr_seq++;
+
       // If received 100's data, Goal in*/
       if (rcv_pkt->seq == goal_vg_seq)
       {
         printf("------------------------------------------------ Goal ---\n");
         return;
       }
-      // Next vg seq data
-      chk->vg_seq++;
-      // Next to send data to vg
-      chk->vr_seq++;
 
       // next payload
       chk->test_data++;
@@ -233,8 +234,22 @@ handler_vsd(vip_message_t *rcv_pkt) {
     }
     else if(rcv_pkt->seq < chk->vg_seq)
     {
-      // Dup Data
+      // AA Handover에서는 vr -> vg 가는 메시지가 씹힐 수 있으므로 이 시나리오가 발생할 수 있음
+      chk->test_data;
+      char payload[101];
+      memset(payload, chk->test_data, 100);
+
       printf("-- Dup Data\n");
+      vip_init_message(snd_pkt, VIP_TYPE_VSD, aa_id, vt_id, vr_id);
+      vip_set_field_vsd(snd_pkt, chk->session_id, chk->vr_seq, (void *)payload, 100);
+      vip_serialize_message(snd_pkt, buffer);
+      vip_set_dest_ep_cooja(snd_pkt, dest_addr, aa_id, VIP_AA_URL);
+
+      vip_init_query(snd_pkt, query);
+      vip_make_query_src(query, strlen(query), vr_id);
+      vip_set_query(snd_pkt, query);
+
+      process_post(&vr_process, vr_snd_event, (void *)snd_pkt);
     }
     
   }
