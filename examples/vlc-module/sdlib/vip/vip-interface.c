@@ -43,7 +43,7 @@ vip_route(vip_message_t *vip_pkt, vip_entity_t *type_handler) {
         type_handler->sec_handler(vip_pkt);
         break;
     case VIP_TYPE_VSD:
-        vip_parse_sdr(vip_pkt);
+        vip_parse_vsd(vip_pkt);
         type_handler->vsd_handler(vip_pkt);
         break;
     case VIP_TYPE_ALLOC:
