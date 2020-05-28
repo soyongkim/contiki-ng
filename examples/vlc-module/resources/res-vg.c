@@ -36,7 +36,7 @@ LIST(session_info);
 static void add_new_session(int vr_id, int session_id, int vr_seq, int vg_seq);
 static void terminate_session(session_t *session);
 static void update_session(int vr_id, int session_id, int vr_seq, int vg_seq);
-static session_t* check_session(int vr_id, int session_id);
+static session_t* check_session(int vr_id);
 
 /* for debug */
 static void show_session_info();
@@ -114,36 +114,45 @@ res_event_handler(void) {
   printf("Init VG..\n");
 }
 
-
-
 static void
-handler_vrr(vip_message_t *rcv_pkt) {
-  if (!rcv_pkt->vr_id)
+handler_vrr(vip_message_t *rcv_pkt)
+{
+  /* case handover */
+  if(rcv_pkt->vr_id)
   {
-    /* case allocation */
-    vip_nonce_tuple_t *chk;
-    int alloc_vr_id;
-    if (!(chk = check_vr_table(rcv_pkt->aa_id, rcv_pkt->nonce)))
+    session_t* chk;
+    if((chk = check_session(rcv_pkt->vr_id)))
     {
-      /* publish new vr-id */
-      alloc_vr_id = add_vr_table(rcv_pkt->aa_id, rcv_pkt->nonce);
-    }
-    else
-    {
-      alloc_vr_id = chk->alloc_vr_id;
-    }
+      /* last received vsd */
+      char payload[101];
+      memset(payload, chk->test_data, 100);
 
-    /* Set payload for ack */
-    printf("Setting Ack..\n");
-    vip_init_message(ack_pkt, VIP_TYPE_VRA, rcv_pkt->aa_id, rcv_pkt->vt_id, alloc_vr_id);
-    vip_set_field_vra(ack_pkt, rcv_pkt->nonce);
-    vip_serialize_message(ack_pkt, buffer);
+      vip_init_message(ack_pkt, VIP_TYPE_VSD, rcv_pkt->aa_id, rcv_pkt->vt_id, rcv_pkt->vr_id);
+      vip_set_field_vsd(ack_pkt, chk->session_id, chk->vg_seq, (void *)payload, 100);
+      vip_serialize_message(ack_pkt, buffer);
+    }
+    return;
+  }
+
+
+  /* case allocation */
+  vip_nonce_tuple_t *chk;
+  int alloc_vr_id;
+  if (!(chk = check_vr_table(rcv_pkt->aa_id, rcv_pkt->nonce)))
+  {
+    /* publish new vr-id */
+    alloc_vr_id = add_vr_table(rcv_pkt->aa_id, rcv_pkt->nonce);
   }
   else
   {
-    /* case handover */
-
+    alloc_vr_id = chk->alloc_vr_id;
   }
+
+  /* Set payload for ack */
+  printf("Setting Ack..\n");
+  vip_init_message(ack_pkt, VIP_TYPE_VRA, rcv_pkt->aa_id, rcv_pkt->vt_id, alloc_vr_id);
+  vip_set_field_vra(ack_pkt, rcv_pkt->nonce);
+  vip_serialize_message(ack_pkt, buffer);
 }
 
 static void
@@ -167,7 +176,7 @@ handler_vrc(vip_message_t *rcv_pkt) {
 static void
 handler_rel(vip_message_t *rcv_pkt) {
   /* not used function collect */
-  terminate_session(check_session(0, 0));
+  terminate_session(check_session(0));
   update_session(0, 0, 0, 0);
 }
 
@@ -175,7 +184,7 @@ static void
 handler_ser(vip_message_t *rcv_pkt) {
   session_t *chk;
   int vg_seq;
-  if (!(chk = check_session(rcv_pkt->vr_id, rcv_pkt->session_id)))
+  if (!(chk = check_session(rcv_pkt->vr_id)))
   {
     /* publish new vr-id */
     vg_seq = rand() % 100000;
@@ -208,7 +217,7 @@ handler_sec(vip_message_t *rcv_pkt) {
 static void
 handler_vsd(vip_message_t *rcv_pkt) {
     session_t *chk;
-    if((chk = check_session(rcv_pkt->vr_id, rcv_pkt->session_id)))
+    if((chk = check_session(rcv_pkt->vr_id)))
     {
       if(rcv_pkt->seq == chk->vr_seq)
       {
@@ -323,12 +332,12 @@ static void update_session(int vr_id, int session_id, int vr_seq, int vg_seq)
   }
 }
 
-static session_t* check_session(int vr_id, int session_id)
+static session_t* check_session(int vr_id)
 {
   session_t *cur;
   for(cur=list_head(session_info); cur != NULL; cur = cur->next)
   {
-    if(cur->vr_id == vr_id && cur->session_id == session_id)
+    if(cur->vr_id == vr_id)
     {
         return cur;
     }

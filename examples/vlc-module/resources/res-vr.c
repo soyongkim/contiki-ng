@@ -97,6 +97,10 @@ static void
 handler_beacon(vip_message_t *rcv_pkt) {
   /* check handover and loss */
   if(aa_id != rcv_pkt->aa_id || vt_id != rcv_pkt->vt_id) {
+
+    /* for handover scenario */
+    retransmit_off();
+
     /* update aa_id, vt_id */
     aa_id = rcv_pkt->aa_id;
     vt_id = rcv_pkt->vt_id;

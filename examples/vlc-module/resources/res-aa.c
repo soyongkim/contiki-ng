@@ -124,6 +124,17 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
 
 static void
 handler_vrr(vip_message_t *rcv_pkt) {
+  /* handover sceanario */
+  if(rcv_pkt->vr_id)
+  {
+    vip_set_dest_ep_cooja(rcv_pkt, dest_addr, VIP_VG_ID, VIP_VG_URL);
+    vip_serialize_message(rcv_pkt, buffer);
+    process_post(&aa_process, aa_snd_event, (void *)rcv_pkt);
+    return;
+  }
+
+
+  /* allocation sceanario */
   vip_nonce_tuple_t *chk;
   int nonce;
   if (!(chk = check_vr_cache_node_id(rcv_pkt->query_rcv_id)))

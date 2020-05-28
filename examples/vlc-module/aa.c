@@ -25,7 +25,6 @@ extern vip_entity_t aa_type_handler;
 process_event_t aa_snd_event;
 
 
-
 /* for send packet */
 static coap_callback_request_state_t callback_state;
 static coap_endpoint_t dest_ep;
@@ -33,7 +32,6 @@ static coap_message_t request[1];
 
 /* vip packet */
 static  vip_message_t* snd_pkt;
-
 static struct ctimer ct;
 
 
