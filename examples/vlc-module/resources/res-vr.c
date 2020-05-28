@@ -299,6 +299,11 @@ static void trigger_vsd(void* data)
     vip_set_field_vsd(snd_pkt, session_id, vr_seq, (void *)payload, 100);
     vip_serialize_message(snd_pkt, buffer);
     vip_set_dest_ep_cooja(snd_pkt, dest_addr, aa_id, VIP_AA_URL);
+
+    vip_init_query(snd_pkt, query);
+    vip_make_query_src(query, strlen(query), vr_id);
+    vip_set_query(snd_pkt, query);
+
     process_post(&vr_process, vr_snd_event, (void *)snd_pkt);
 }
 
