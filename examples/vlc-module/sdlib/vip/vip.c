@@ -411,7 +411,7 @@ void vip_parse_vsd(vip_message_t *vip_pkt)
     vip_pkt->seq = vip_parse_int_option(offset, 4);
     offset += 4;
 
-    memcpy(vip_pkt->payload, offset, vip_pkt->total_len - (VIP_COMMON_HEADER_LEN + 12));
+    memcpy(vip_pkt->payload, offset, vip_pkt->total_len - (VIP_COMMON_HEADER_LEN + 8));
 }
 
 void vip_payload_test(vip_message_t *vip_pkt)
