@@ -488,4 +488,22 @@ void vip_make_query_timer(char* query, int query_len, int flag)
     strcat(query, tochar);
 }
 
+void vip_make_query_goal(char* query, int query_len, int flag)
+{
+    if (!query_len)
+    {
+        strcpy(query, "?goal=");
+    }
+    else
+    {
+        strcat(query, "&goal=");
+    }
+
+    char tochar[5];
+    sprintf(tochar, "%d", flag);
+    strcat(query, tochar);
+}
+
+
+
 

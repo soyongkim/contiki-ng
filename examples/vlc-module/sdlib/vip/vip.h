@@ -95,6 +95,7 @@ void vip_set_query(vip_message_t *message, char *query);
 void vip_make_query_src(char* query, int query_len, int src_id);
 void vip_make_query_nonce(char *query, int query_len, int value);
 void vip_make_query_timer(char* query, int query_len, int flag);
+void vip_make_query_goal(char* query, int query_len, int flag);
 
 /* Parse the vip-pkt on vip-interface.c */
 int vip_parse_common_header(vip_message_t *message, uint8_t *data, uint16_t data_len);

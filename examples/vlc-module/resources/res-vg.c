@@ -79,6 +79,7 @@ static void
 res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset)
 {
   const char *src = NULL;
+  const char *goal = NULL;
   printf("Received - mid(%x)\n", request->mid);
 
   static vip_message_t rcv_pkt[1];
@@ -90,6 +91,12 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
 
   if(coap_get_query_variable(request, "src", &src)) {
     rcv_pkt->query_rcv_id = atoi(src);
+  }
+
+  if(coap_get_query_variable(request, "goal", &goal))
+  {
+      /* End simulation */
+      return;
   }
 
   vip_route(rcv_pkt, &vg_type_handler);

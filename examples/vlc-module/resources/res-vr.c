@@ -198,7 +198,7 @@ handler_vsd(vip_message_t *rcv_pkt) {
     return;
 
   retransmit_off();
-  
+
   session_t *chk;
   if ((chk = check_session(rcv_pkt->session_id)))
   {
@@ -210,12 +210,6 @@ handler_vsd(vip_message_t *rcv_pkt) {
       // Next to send data to vg
       chk->vr_seq++;
 
-      // If received 100's data, Goal in*/
-      if (rcv_pkt->seq == goal_vg_seq)
-      {
-        printf("--------------------------------------------------------------------------------------------------- Goal\n");
-        return;
-      }
 
       // next payload
       chk->test_data++;
@@ -229,6 +223,13 @@ handler_vsd(vip_message_t *rcv_pkt) {
 
       vip_init_query(snd_pkt, query);
       vip_make_query_src(query, strlen(query), vr_id);
+
+      // If received 100's data, Goal in*/
+      if (rcv_pkt->seq == goal_vg_seq)
+      {
+        printf("--------------------------------------------------------------------------------------------------- Goal\n");
+        vip_make_query_goal(query, strlen(query), 1);
+      }
       vip_set_query(snd_pkt, query);
 
       process_post(&vr_process, vr_snd_event, (void *)snd_pkt);
