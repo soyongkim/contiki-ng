@@ -422,7 +422,7 @@ void vip_parse_sec(vip_message_t* vip_pkt)
     vip_parse_sea(vip_pkt);
 }
 
-void vip_parse_sd(vip_message_t *vip_pkt)
+void vip_parse_sdr(vip_message_t *vip_pkt)
 {
     uint8_t *offset = vip_pkt->buffer + VIP_COMMON_HEADER_LEN;
     vip_pkt->session_id = vip_parse_int_option(offset, 4);
