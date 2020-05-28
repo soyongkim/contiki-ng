@@ -168,6 +168,7 @@ static void
 handler_rel(vip_message_t *rcv_pkt) {
   /* not used function collect */
   terminate_session(check_session(0, 0));
+  update_session(0, 0, 0, 0);
 }
 
 static void
