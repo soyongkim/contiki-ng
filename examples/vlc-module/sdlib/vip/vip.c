@@ -9,21 +9,6 @@
 #include "sys/node-id.h"
 
 
-/* Serialize Type Specific Header */
-int vip_serialize_beacon(vip_message_t *message);
-int vip_serialize_VRR(vip_message_t *message);
-int vip_serialize_VRA(vip_message_t *message);
-int vip_serialize_VRC(vip_message_t *message);
-int vip_serialize_REL(vip_message_t *message);
-int vip_serialize_SER(vip_message_t *message);
-int vip_serialize_SEA(vip_message_t *message);
-int vip_serialize_SEC(vip_message_t *message);
-int vip_serialize_SD(vip_message_t *message);
-int vip_serialize_SDA(vip_message_t *message);
-int vip_serialize_VU(vip_message_t *message);
-int vip_serialize_VM(vip_message_t *message);
-
-
 /* ---------------- vip pkt configure -----------------------------------------*/
 
 void vip_init_message(vip_message_t *vip_pkt, uint8_t type,
@@ -255,7 +240,7 @@ int vip_serialize_beacon(vip_message_t *vip_pkt)
     return strlen(vip_pkt->uplink_id);
 }
 
-int vip_serialize_VRR(vip_message_t *vip_pkt)
+int vip_serialize_vrr(vip_message_t *vip_pkt)
 {
     uint8_t *offset = vip_pkt->buffer + VIP_COMMON_HEADER_LEN;
     unsigned int index = 0;
@@ -265,7 +250,7 @@ int vip_serialize_VRR(vip_message_t *vip_pkt)
     return index;
 }
 
-int vip_serialize_VRA(vip_message_t *vip_pkt)
+int vip_serialize_vra(vip_message_t *vip_pkt)
 {
     uint8_t *offset = vip_pkt->buffer + VIP_COMMON_HEADER_LEN;
     unsigned int index = 0;
@@ -276,7 +261,7 @@ int vip_serialize_VRA(vip_message_t *vip_pkt)
     return index;
 }
 
-int vip_serialize_VRC(vip_message_t *vip_pkt)
+int vip_serialize_vrc(vip_message_t *vip_pkt)
 {
     uint8_t *offset = vip_pkt->buffer + VIP_COMMON_HEADER_LEN;
     unsigned int index = 0;
@@ -286,7 +271,7 @@ int vip_serialize_VRC(vip_message_t *vip_pkt)
     return index;
 }
 
-int vip_serialize_REL(vip_message_t *vip_pkt)
+int vip_serialize_rel(vip_message_t *vip_pkt)
 {
     uint8_t *offset = vip_pkt->buffer + VIP_COMMON_HEADER_LEN;
     unsigned int index = 0;
@@ -296,7 +281,7 @@ int vip_serialize_REL(vip_message_t *vip_pkt)
     return index;
 }
 
-int vip_serialize_SER(vip_message_t *vip_pkt)
+int vip_serialize_ser(vip_message_t *vip_pkt)
 {
     uint8_t *offset = vip_pkt->buffer + VIP_COMMON_HEADER_LEN;
     unsigned int index = 0;
@@ -307,7 +292,7 @@ int vip_serialize_SER(vip_message_t *vip_pkt)
     return index;
 }
 
-int vip_serialize_SEA(vip_message_t *vip_pkt)
+int vip_serialize_sea(vip_message_t *vip_pkt)
 {
     uint8_t *offset = vip_pkt->buffer + VIP_COMMON_HEADER_LEN;
     unsigned int index = 0;
@@ -318,7 +303,7 @@ int vip_serialize_SEA(vip_message_t *vip_pkt)
     return index;
 }
 
-int vip_serialize_SEC(vip_message_t *vip_pkt)
+int vip_serialize_sec(vip_message_t *vip_pkt)
 {
     uint8_t *offset = vip_pkt->buffer + VIP_COMMON_HEADER_LEN;
     unsigned int index = 0;
@@ -329,7 +314,7 @@ int vip_serialize_SEC(vip_message_t *vip_pkt)
     return index;
 }
 
-int vip_serialize_SD(vip_message_t *vip_pkt)
+int vip_serialize_sd(vip_message_t *vip_pkt)
 {
     uint8_t *offset = vip_pkt->buffer + VIP_COMMON_HEADER_LEN;
     unsigned int index = 0;
@@ -340,7 +325,7 @@ int vip_serialize_SD(vip_message_t *vip_pkt)
     return index;
 }
 
-int vip_serialize_SDA(vip_message_t *vip_pkt)
+int vip_serialize_sda(vip_message_t *vip_pkt)
 {
     uint8_t *offset = vip_pkt->buffer + VIP_COMMON_HEADER_LEN;
     unsigned int index = 0;
@@ -388,31 +373,31 @@ void vip_parse_beacon(vip_message_t *vip_pkt)
     vip_pkt->uplink_id[(vip_pkt->total_len) - VIP_COMMON_HEADER_LEN + 1] = '\0';
 }
 
-void vip_parse_VRR(vip_message_t *vip_pkt)
+void vip_parse_vrr(vip_message_t *vip_pkt)
 {
     uint8_t *offset = vip_pkt->buffer + VIP_COMMON_HEADER_LEN;
     vip_pkt->nonce = vip_parse_int_option(offset, 4);
 }
 
-void vip_parse_VRA(vip_message_t *vip_pkt)
+void vip_parse_vra(vip_message_t *vip_pkt)
 {
     uint8_t *offset = vip_pkt->buffer + VIP_COMMON_HEADER_LEN;
     vip_pkt->nonce = vip_parse_int_option(offset, 4);
 }
 
-void vip_parse_VRC(vip_message_t *vip_pkt)
+void vip_parse_vrc(vip_message_t *vip_pkt)
 {
     uint8_t *offset = vip_pkt->buffer + VIP_COMMON_HEADER_LEN;
     vip_pkt->nonce = vip_parse_int_option(offset, 4);
 }
 
-void vip_parse_REL(vip_message_t *vip_pkt)
+void vip_parse_rel(vip_message_t *vip_pkt)
 {
     uint8_t *offset = vip_pkt->buffer + VIP_COMMON_HEADER_LEN;
     vip_pkt->nonce = vip_parse_int_option(offset, 4);
 }
 
-void vip_parse_SER(vip_message_t *vip_pkt)
+void vip_parse_ser(vip_message_t *vip_pkt)
 {
     uint8_t *offset = vip_pkt->buffer + VIP_COMMON_HEADER_LEN;
     vip_pkt->session_id = vip_parse_int_option(offset, 4);
@@ -420,7 +405,7 @@ void vip_parse_SER(vip_message_t *vip_pkt)
     vip_pkt->vr_seq = vip_parse_int_option(offset, 4);
 }
 
-void vip_parse_SEA(vip_message_t *vip_pkt)
+void vip_parse_sea(vip_message_t *vip_pkt)
 {
     uint8_t *offset = vip_pkt->buffer + VIP_COMMON_HEADER_LEN;
     vip_pkt->session_id = vip_parse_int_option(offset, 4);
@@ -428,7 +413,7 @@ void vip_parse_SEA(vip_message_t *vip_pkt)
     vip_pkt->vg_seq = vip_parse_int_option(offset, 4);
 }
 
-void vip_parse_SD(vip_message_t *vip_pkt)
+void vip_parse_sd(vip_message_t *vip_pkt)
 {
     uint8_t *offset = vip_pkt->buffer + VIP_COMMON_HEADER_LEN;
     vip_pkt->session_id = vip_parse_int_option(offset, 4);
@@ -439,7 +424,7 @@ void vip_parse_SD(vip_message_t *vip_pkt)
     memcpy(vip_pkt->payload, offset, vip_pkt->total_len - (VIP_COMMON_HEADER_LEN + 12));
 }
 
-void vip_parse_SDA(vip_message_t *vip_pkt)
+void vip_parse_sda(vip_message_t *vip_pkt)
 {
     uint8_t *offset = vip_pkt->buffer + VIP_COMMON_HEADER_LEN;
     vip_pkt->session_id = vip_parse_int_option(offset, 4);

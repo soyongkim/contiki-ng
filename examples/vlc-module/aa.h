@@ -13,7 +13,6 @@ struct se_cache_s {
     int vr_id;
     int session_id;
     int vg_seq;
-    uint8_t* data;
 };
 
 

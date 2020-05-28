@@ -17,11 +17,11 @@ vip_route(vip_message_t *vip_pkt, vip_entity_t *type_handler) {
         type_handler->beacon_handler(vip_pkt);
         break;
     case VIP_TYPE_VRR:
-        vip_parse_VRR(vip_pkt);
+        vip_parse_vrr(vip_pkt);
         type_handler->vrr_handler(vip_pkt);
         break;
     case VIP_TYPE_VRA:
-        vip_parse_VRA(vip_pkt);
+        vip_parse_vra(vip_pkt);
         type_handler->vra_handler(vip_pkt);
         break;
     case VIP_TYPE_VRC:
@@ -31,24 +31,23 @@ vip_route(vip_message_t *vip_pkt, vip_entity_t *type_handler) {
         type_handler->rel_handler(vip_pkt);
         break;
     case VIP_TYPE_SER:
-        vip_parse_SER(vip_pkt);
+        vip_parse_ser(vip_pkt);
         type_handler->ser_handler(vip_pkt);
         break;
     case VIP_TYPE_SEA:
-        vip_parse_SEA(vip_pkt);
+        vip_parse_sea(vip_pkt);
         type_handler->sea_handler(vip_pkt);
         break;
     case VIP_TYPE_SEC:
-        /* echo SEA */
-        vip_parse_SEA(vip_pkt);
+        vip_parse_sec(vip_pkt);
         type_handler->sec_handler(vip_pkt);
         break;
     case VIP_TYPE_SD:
-        vip_parse_SD(vip_pkt);
+        vip_parse_sd(vip_pkt);
         type_handler->sd_handler(vip_pkt);
         break;
     case VIP_TYPE_SDA:
-        vip_parse_SDA(vip_pkt);
+        vip_parse_sda(vip_pkt);
         type_handler->sda_handler(vip_pkt);
         break;
     case VIP_TYPE_ALLOC:

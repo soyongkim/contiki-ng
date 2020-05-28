@@ -112,4 +112,20 @@ void vip_parse_sda(vip_message_t *message);
 
 void vip_payload_test(vip_message_t * message);
 
+
+
+// /* Serialize Type Specific Header */
+// int vip_serialize_beacon(vip_message_t *message);
+// int vip_serialize_vrr(vip_message_t *message);
+// int vip_serialize_vra(vip_message_t *message);
+// int vip_serialize_vrc(vip_message_t *message);
+// int vip_serialize_rel(vip_message_t *message);
+// int vip_serialize_ser(vip_message_t *message);
+// int vip_serialize_sea(vip_message_t *message);
+// int vip_serialize_sec(vip_message_t *message);
+// int vip_serialize_sd(vip_message_t *message);
+// int vip_serialize_sda(vip_message_t *message);
+
+
+
 #endif
