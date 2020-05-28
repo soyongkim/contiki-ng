@@ -206,7 +206,7 @@ handler_ser(vip_message_t *rcv_pkt) {
 
     /* Send ser to vg */
     vip_init_message(snd_pkt, VIP_TYPE_SER, node_id, rcv_pkt->vt_id, rcv_pkt->vr_id);
-    vip_set_field_ser(snd_pkt, rcv_pkt->session_id, rcv_pkt->vr_id);
+    vip_set_field_ser(snd_pkt, rcv_pkt->session_id, rcv_pkt->vr_seq);
     vip_serialize_message(snd_pkt, buffer);
     vip_set_dest_ep_cooja(snd_pkt, dest_addr, VIP_VG_ID, VIP_VG_URL);
     process_post(&aa_process, aa_snd_event, (void *)snd_pkt);
