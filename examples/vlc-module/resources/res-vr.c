@@ -200,6 +200,7 @@ handler_vsd(vip_message_t *rcv_pkt) {
   session_t *chk;
   if ((chk = check_session(rcv_pkt->session_id)))
   {
+    printf("cur vg_seq(%d) <====> rcvd vg_seq(%d)\n", chk->vg_seq, rcv_pkt->seq);
     if (rcv_pkt->seq == chk->vg_seq)
     {
       retransmit_off();
