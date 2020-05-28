@@ -27,7 +27,7 @@ static void handler_vsd(vip_message_t *rcv_pkt);
 /* Trigger for simul */
 static struct ctimer ct;
 static void trigger_ser(void* data);
-static void trigger_sdr(void* data);
+static void trigger_vsd(void* data);
 static void timer_init(int flag);
 
 LIST(session_info);
@@ -285,7 +285,7 @@ static void trigger_ser(void* data)
 static void trigger_vsd(void* data)
 {
     char payload[101];
-    memset(payload, "ABC", 100);
+    memset(payload, 1, 100);
 
     printf("- START Simulation -\n");
     printf("-- session(%x) - vr_seq(%d) ==> Goal vg_seq(%d) --\n", session_id, vr_seq, goal_vg_seq);
