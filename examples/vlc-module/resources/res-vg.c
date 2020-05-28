@@ -119,10 +119,10 @@ handler_vrr(vip_message_t *rcv_pkt) {
   vip_nonce_tuple_t *chk;
   int alloc_vr_id;
   /* 추후에 aa-id도 같이 체크하도록 수정해야 함 */
-  if (!(chk = check_nonce_table(rcv_pkt->nonce)))
+  if (!(chk = check_vr_table(rcv_pkt->nonce)))
   {
     /* publish new vr-id */
-    alloc_vr_id = add_nonce_table(rcv_pkt->nonce);
+    alloc_vr_id = add_vr_table(rcv_pkt->nonce);
   }
   else
   {
@@ -146,7 +146,7 @@ static void
 handler_vrc(vip_message_t *rcv_pkt) {
   vip_nonce_tuple_t *chk;
   /* if vrc is duplicated, the tuple is null. so nothing to do and just send ack */
-  if ((chk = check_nonce_table(rcv_pkt->vr_id)))
+  if ((chk = check_vr_table(rcv_pkt->vr_id)))
   {
     /* complete allocation. for the other aa, delete nonce value*/
     chk->nonce = 0;
@@ -156,7 +156,8 @@ handler_vrc(vip_message_t *rcv_pkt) {
 
 static void
 handler_rel(vip_message_t *rcv_pkt) {
-
+  /* not used function collect */
+  terminate_session(check_session(0, 0));
 }
 
 static void
