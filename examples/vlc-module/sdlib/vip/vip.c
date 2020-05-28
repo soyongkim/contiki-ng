@@ -200,7 +200,7 @@ int vip_serialize_message(vip_message_t *vip_pkt, uint8_t *buffer)
         /* code */
         total_len += vip_serialize_SEC(vip_pkt);
         break;
-    case VIP_TYPE_SD:
+    case VIP_TYPE_SDR:
         /* code */
         total_len += vip_serialize_SD(vip_pkt);
         break;
