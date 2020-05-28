@@ -36,7 +36,7 @@ vip_nonce_tuple_t* check_vr_table(int nonce);
 LIST(session_info);
 static void add_new_session(int vr_id, int session_id, int vr_seq, int vg_seq);
 static void terminate_session(session_t *session);
-static void update_session(int session_id, int vr_seq, int vg_seq);
+static void update_session(int vr_id, int session_id, int vr_seq, int vg_seq);
 static session_t* check_session(int vr_id, int session_id);
 
 
@@ -194,6 +194,8 @@ handler_sec(vip_message_t *rcv_pkt) {
 
 static void
 handler_sdr(vip_message_t *rcv_pkt) {
+    /* developing ... */
+    update_session(0, 0, 0, 0);
 
 }
 
@@ -268,12 +270,12 @@ static void terminate_session(session_t* session)
   free(session);
 }
 
-static void update_session(int session_id, int vr_seq, int vg_seq)
+static void update_session(int vr_id, int session_id, int vr_seq, int vg_seq)
 {
   session_t *cur;
   for(cur=list_head(session_info); cur != NULL; cur = cur->next)
   {
-    if(cur->session_id == session_id)
+    if(cur->vr_id == vr_id && cur->session_id == session_id)
     {
       if(vr_seq)
       {
