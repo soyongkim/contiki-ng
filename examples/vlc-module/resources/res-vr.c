@@ -93,11 +93,9 @@ handler_beacon(vip_message_t *rcv_pkt) {
 
     /* Recent Received vt-id, aa-id */
     vip_init_message(snd_pkt, VIP_TYPE_VRR, aa_id, vt_id, vr_id);
-    /* send to new aa */
-    vip_set_dest_ep_cooja(snd_pkt, dest_addr, aa_id, VIP_AA_URL);
-    vip_set_type_header_nonce(snd_pkt, 0);
-    /* set vr id to 0. it's mean not allocated*/
+    vip_set_field_vrr(snd_pkt, 0);
     vip_serialize_message(snd_pkt, buffer);
+    vip_set_dest_ep_cooja(snd_pkt, dest_addr, aa_id, VIP_AA_URL);
 
     vip_init_query(snd_pkt, query);
     vip_make_query_src(query, strlen(query), node_id);
