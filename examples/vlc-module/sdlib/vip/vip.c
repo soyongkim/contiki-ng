@@ -416,6 +416,12 @@ void vip_parse_sea(vip_message_t *vip_pkt)
     vip_pkt->vg_seq = vip_parse_int_option(offset, 4);
 }
 
+void vip_parse_sec(vip_message_t* vip_pkt)
+{
+    /* same field */
+    vip_parse_sea(vip_pkt);
+}
+
 void vip_parse_sd(vip_message_t *vip_pkt)
 {
     uint8_t *offset = vip_pkt->buffer + VIP_COMMON_HEADER_LEN;
