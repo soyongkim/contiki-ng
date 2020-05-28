@@ -248,11 +248,11 @@ handler_sea(vip_message_t *rcv_pkt) {
 
 static void
 handler_sec(vip_message_t *rcv_pkt) {
-  vip_nonce_tuple_t *chk;
+  session_t *chk;
   /* if vrc is duplicated, the tuple is already freed. so nothing to do and just send ack */
   if ((chk = check_se_cache(rcv_pkt->vr_id, rcv_pkt->session_id)))
   {
-    printf("received rcv! from vr(%d)\n", chk->alloc_vr_id);
+    printf("received rcv! from vr(%d)\n", chk->vr_id);
     /* remove nonce tuple if vrc received */
     remove_se_cache(chk);
 
