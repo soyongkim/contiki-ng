@@ -101,6 +101,7 @@ handler_beacon(vip_message_t *rcv_pkt) {
     /* for handover scenario */
     retransmit_off();
 
+    printf("aa(%d) => new aa(%d) | vt(%d) => new vt(%d)\n", aa_id, rcv_pkt->aa_id, vt_id, rcv_pkt->vt_id);
     /* update aa_id, vt_id */
     aa_id = rcv_pkt->aa_id;
     vt_id = rcv_pkt->vt_id;

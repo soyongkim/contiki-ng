@@ -49,7 +49,7 @@ static uint8_t buffer[VIP_MAX_PKT_SIZE];
 /* use ack for query */
 static vip_message_t ack_pkt[1];
 
-static mutex_t v, t;
+static mutex_t v;
 
 
 
@@ -78,7 +78,6 @@ TYPE_HANDLER(vg_type_handler, NULL, handler_vrr, handler_vra,
 static void
 res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset)
 {
-  mutex_try_lock(&t);
   const char *src = NULL;
   printf("Received - mid(%x)\n", request->mid);
 
@@ -106,7 +105,6 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
     coap_set_header_uri_query(response, ack_pkt->query);
     ack_pkt->query_len = 0;
   }
-  mutex_unlock(&t);
 }
 
 static void 
@@ -123,6 +121,7 @@ handler_vrr(vip_message_t *rcv_pkt)
     session_t* chk;
     if((chk = check_session(rcv_pkt->vr_id)))
     {
+      printf("handover vr(%d)! => send to aa(%d) - vt(%d)\n", rcv_pkt->vr_id, rcv_pkt->aa_id, rcv_pkt->vt_id);
       /* last received vsd */
       char payload[101];
       memset(payload, chk->test_data, 100);
