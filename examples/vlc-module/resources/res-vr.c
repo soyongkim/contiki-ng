@@ -142,6 +142,7 @@ static void
 handler_rel(vip_message_t *rcv_pkt) {
   /* developing... */
   terminate_session(0);
+  check_session(0);
 }
 
 static void
