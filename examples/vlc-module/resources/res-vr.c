@@ -235,7 +235,6 @@ handler_vsd(vip_message_t *rcv_pkt) {
     else if(rcv_pkt->seq < chk->vg_seq)
     {
       // AA Handover에서는 vr -> vg 가는 메시지가 씹힐 수 있으므로 이 시나리오가 발생할 수 있음
-      chk->test_data;
       char payload[101];
       memset(payload, chk->test_data, 100);
 
