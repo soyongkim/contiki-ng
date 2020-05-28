@@ -154,10 +154,16 @@ static void
 handler_sea(vip_message_t *rcv_pkt) {
   update_session(rcv_pkt->session_id, 0, rcv_pkt->vg_seq);
 
+  printf("Thank you! I received vg_seq(%d)\n", rcv_pkt->vg_seq);
+
+  retransmit_off();
+
   /* send sec = sea's echo */
-  vip_serialize_message(rcv_pkt, buffer);
-  vip_set_dest_ep_cooja(rcv_pkt, dest_addr, aa_id, VIP_AA_URL);
-  process_post(&vr_process, vr_snd_event, (void *)rcv_pkt);
+  vip_init_message(snd_pkt, VIP_TYPE_SEC, aa_id, vt_id, vr_id);
+  vip_set_field_sec(snd_pkt, rcv_pkt->session_id, rcv_pkt->vg_seq);
+  vip_serialize_message(snd_pkt, buffer);
+  vip_set_dest_ep_cooja(snd_pkt, dest_addr, aa_id, VIP_AA_URL);
+  process_post(&vr_process, vr_snd_event, (void *)snd_pkt);
 }
 
 static void

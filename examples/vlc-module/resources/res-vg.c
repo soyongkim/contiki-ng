@@ -169,6 +169,7 @@ handler_ser(vip_message_t *rcv_pkt) {
     /* publish new vr-id */
     vg_seq = rand() % 100000;
     add_new_session(rcv_pkt->vr_id, rcv_pkt->session_id, rcv_pkt->vr_seq, vg_seq);
+    printf("Your seq(vr_seq) is %d? My seq(vg_seq) is %d\n", rcv_pkt->vr_seq, vg_seq);
   }
   else
   {

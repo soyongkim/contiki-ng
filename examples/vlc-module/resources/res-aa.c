@@ -202,7 +202,7 @@ handler_ser(vip_message_t *rcv_pkt) {
   {
     /* cache miss.. */
     add_se_cache(rcv_pkt->vr_id, rcv_pkt->session_id);
-    printf("Add se_cache vr(%d) - session(%d)\n", rcv_pkt->vr_id, rcv_pkt->session_id);
+    printf("Add se_cache vr(%d) - session(%x)\n", rcv_pkt->vr_id, rcv_pkt->session_id);
 
     /* Send ser to vg */
     vip_init_message(snd_pkt, VIP_TYPE_SER, node_id, rcv_pkt->vt_id, rcv_pkt->vr_id);
