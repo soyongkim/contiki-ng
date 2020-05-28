@@ -179,7 +179,7 @@ handler_sea(vip_message_t *rcv_pkt) {
   process_post(&vr_process, vr_snd_event, (void *)snd_pkt);
 
   /* trigger of vsd */
-  timer_init(1)
+  timer_init(1);
 }
 
 static void
