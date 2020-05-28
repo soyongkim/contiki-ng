@@ -159,7 +159,7 @@ handler_sea(vip_message_t *rcv_pkt) {
 
   update_session(rcv_pkt->session_id, 0, rcv_pkt->vg_seq);
 
-  printf("Thank you! I received vg_seq(%d)\n", rcv_pkt->vg_seq);
+  printf("vr(%d) received vg_seq(%d)\n",vr_id, rcv_pkt->vg_seq);
 
   retransmit_off();
 
@@ -228,10 +228,7 @@ static void trigger_ser(void* data)
   int vr_seq = rand() % 100000;
   add_new_session(session_id, vr_seq);
 
-  printf("Session_id: %x\n", session_id);
-  printf("vr_seq : %d\n", vr_seq);
-
-
+  printf("Send SER from vr(%d) with vr_seq(%d)\n", vr_id, vr_seq);
   vip_init_message(snd_pkt, VIP_TYPE_SER, aa_id, vt_id, vr_id);
   vip_set_field_ser(snd_pkt, session_id, vr_seq);
   vip_serialize_message(snd_pkt, buffer);
