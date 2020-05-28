@@ -232,7 +232,7 @@ handler_vsd(vip_message_t *rcv_pkt) {
 
       process_post(&vr_process, vr_snd_event, (void *)snd_pkt);
     }
-    else if(rcv_pkt->seq < chk->vg_seq)
+    else if(rcv_pkt->seq < chk->vg_seq && rcv_pkt->seq < goal_vg_seq)
     {
       // AA Handover에서는 vr -> vg 가는 메시지가 씹힐 수 있으므로 이 시나리오가 발생할 수 있음
       char payload[101];
