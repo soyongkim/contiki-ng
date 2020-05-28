@@ -27,9 +27,7 @@ static void handler_rel(vip_message_t *rcv_pkt);
 static void handler_ser(vip_message_t *rcv_pkt);
 static void handler_sea(vip_message_t *rcv_pkt);
 static void handler_sec(vip_message_t *rcv_pkt);
-static void handler_sdr(vip_message_t *rcv_pkt);
-static void handler_sda(vip_message_t *rcv_pkt);
-
+static void handler_vsd(vip_message_t *rcv_pkt);
 
 /* vr nonce function */
 /* nonce pub */
@@ -61,7 +59,7 @@ LIST(se_cache);
 
 /* for snd-pkt */
 static vip_message_t snd_pkt[1];
-static uint8_t buffer[50];
+static uint8_t buffer[VIP_MAX_PKT_SIZE];
 static char dest_addr[50];
 
 /* use ack for query */
@@ -88,7 +86,7 @@ PERIODIC_RESOURCE(res_aa,
 /* vip type handler */
 TYPE_HANDLER(aa_type_handler, NULL, handler_vrr, handler_vra, 
               handler_vrc, handler_rel, handler_ser, handler_sea, handler_sec,
-              handler_sdr, handler_sda, NULL);
+              handler_vsd, NULL);
 
 
 /* called by coap-engine proc */
@@ -216,7 +214,7 @@ handler_ser(vip_message_t *rcv_pkt) {
     /* cache hit !*/
     if(!chk->vg_seq)
     {
-        printf("Case that the vr retransmit before foward previous ser pkt\n");
+        printf("Case that the vr retransmit before forward previous ser pkt\n");
     }
     else
     {
@@ -264,14 +262,25 @@ handler_sec(vip_message_t *rcv_pkt) {
 }
 
 static void
-handler_sdr(vip_message_t *rcv_pkt) {
+handler_vsd(vip_message_t *rcv_pkt) {
 
+    if(rcv_pkt->query_rcv_id)
+    {
+      // arrived from vr
+      vip_set_dest_ep_cooja(rcv_pkt, dest_addr, VIP_VG_ID, VIP_VG_URL);
+      vip_serialize_message(rcv_pkt, buffer);
+      process_post(&aa_process, aa_snd_event, (void *)rcv_pkt);
+    }
+    else
+    {
+      // arrived from vg
+      vip_set_dest_ep_cooja(rcv_pkt, dest_addr, rcv_pkt->vt_id, VIP_VT_URL);
+      vip_serialize_message(rcv_pkt, buffer);
+      process_post(&aa_process, aa_snd_event, (void *)rcv_pkt);    
+    }
+  
 }
 
-static void
-handler_sda(vip_message_t *rcv_pkt) {
-
-}
 
 static void
 res_periodic_ad_handler(void)

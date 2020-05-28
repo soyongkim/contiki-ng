@@ -35,6 +35,12 @@ void vip_set_non_flag(vip_message_t* vip_pkt)
 
 
 /*  ------------------------------------------- Set Type header field -----------------------------------------------------*/
+void vip_set_payload(vip_message_t* vip_pkt, void* payload, size_t payload_len)
+{
+    vip_pkt->payload = payload;
+    vip_pkt->payload_len = payload_len;
+}
+
 void vip_set_field_beacon(vip_message_t* vip_pkt, char* uplink_id)
 {
     vip_pkt->uplink_id = uplink_id;
@@ -68,28 +74,17 @@ void vip_set_field_sec(vip_message_t *vip_pkt, int session_id, int vg_seq)
     vip_pkt->vg_seq = vg_seq;
 }
 
-void vip_set_field_sdr(vip_message_t *vip_pkt, int session_id, int vr_seq)
+void vip_set_field_vsd(vip_message_t *vip_pkt, int session_id, int seq, void* payload, size_t payload_len)
 {
     vip_pkt->session_id = session_id;
-    vip_pkt->vr_seq = vr_seq;
-}
-
-void vip_set_field_sda(vip_message_t *vip_pkt, int session_id, int vg_seq)
-{
-    vip_pkt->session_id = session_id;
-    vip_pkt->vg_seq = vg_seq;
+    vip_pkt->seq = seq;
+    vip_set_payload(vip_pkt, payload, payload_len);
 }
 
 void vip_set_field_alloc(vip_message_t *vip_pkt, char* uplink_id)
 {
     /* payload test */
     vip_set_payload(vip_pkt, (void *)uplink_id, strlen(uplink_id));
-}
-
-void vip_set_payload(vip_message_t* vip_pkt, void* payload, size_t payload_len)
-{
-    vip_pkt->payload = payload;
-    vip_pkt->payload_len = payload_len;
 }
 
 void vip_set_query(vip_message_t *vip_pkt, char *query)
@@ -229,24 +224,13 @@ int vip_serialize_sec(vip_message_t *vip_pkt)
     return index;
 }
 
-int vip_serialize_sdr(vip_message_t *vip_pkt)
+int vip_serialize_vsd(vip_message_t *vip_pkt)
 {
     uint8_t *offset = vip_pkt->buffer + VIP_COMMON_HEADER_LEN;
     unsigned int index = 0;
 
     index += vip_int_serialize(index, 4, offset, vip_pkt->session_id);
-    index += vip_int_serialize(index, VIP_SEQ_LEN, offset, vip_pkt->vg_seq);
-
-    return index;
-}
-
-int vip_serialize_sda(vip_message_t *vip_pkt)
-{
-    uint8_t *offset = vip_pkt->buffer + VIP_COMMON_HEADER_LEN;
-    unsigned int index = 0;
-
-    index += vip_int_serialize(index, 4, offset, vip_pkt->session_id);
-    index += vip_int_serialize(index, VIP_SEQ_LEN, offset, vip_pkt->vr_seq);
+    index += vip_int_serialize(index, VIP_SEQ_LEN, offset, vip_pkt->seq);
 
     return index;
 }
@@ -311,13 +295,9 @@ int vip_serialize_message(vip_message_t *vip_pkt, uint8_t *buffer)
         /* code */
         total_len += vip_serialize_sec(vip_pkt);
         break;
-    case VIP_TYPE_SDR:
+    case VIP_TYPE_VSD:
         /* code */
-        total_len += vip_serialize_sdr(vip_pkt);
-        break;
-    case VIP_TYPE_SDA:
-        /* code */
-        total_len += vip_serialize_sda(vip_pkt);
+        total_len += vip_serialize_vsd(vip_pkt);
         break;
     }
 
@@ -423,23 +403,12 @@ void vip_parse_sec(vip_message_t* vip_pkt)
     vip_parse_sea(vip_pkt);
 }
 
-void vip_parse_sdr(vip_message_t *vip_pkt)
+void vip_parse_vsd(vip_message_t *vip_pkt)
 {
     uint8_t *offset = vip_pkt->buffer + VIP_COMMON_HEADER_LEN;
     vip_pkt->session_id = vip_parse_int_option(offset, 4);
     offset += 4;
-    vip_pkt->vg_seq = vip_parse_int_option(offset, 4);
-    offset += 4;
-
-    memcpy(vip_pkt->payload, offset, vip_pkt->total_len - (VIP_COMMON_HEADER_LEN + 12));
-}
-
-void vip_parse_sda(vip_message_t *vip_pkt)
-{
-    uint8_t *offset = vip_pkt->buffer + VIP_COMMON_HEADER_LEN;
-    vip_pkt->session_id = vip_parse_int_option(offset, 4);
-    offset += 4;
-    vip_pkt->vr_seq = vip_parse_int_option(offset, 4);
+    vip_pkt->seq = vip_parse_int_option(offset, 4);
     offset += 4;
 
     memcpy(vip_pkt->payload, offset, vip_pkt->total_len - (VIP_COMMON_HEADER_LEN + 12));

@@ -42,13 +42,9 @@ vip_route(vip_message_t *vip_pkt, vip_entity_t *type_handler) {
         vip_parse_sec(vip_pkt);
         type_handler->sec_handler(vip_pkt);
         break;
-    case VIP_TYPE_SDR:
+    case VIP_TYPE_VSD:
         vip_parse_sdr(vip_pkt);
-        type_handler->sd_handler(vip_pkt);
-        break;
-    case VIP_TYPE_SDA:
-        vip_parse_sda(vip_pkt);
-        type_handler->sda_handler(vip_pkt);
+        type_handler->vsd_handler(vip_pkt);
         break;
     case VIP_TYPE_ALLOC:
         if(vip_pkt->total_len > VIP_COMMON_HEADER_LEN) {

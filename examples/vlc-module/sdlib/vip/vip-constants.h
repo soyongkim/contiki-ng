@@ -14,7 +14,7 @@
 
 #define VIP_MAX_SEND_BUF_SIZE 16
 
-#define VIP_PKT_MAX_SIZE 512
+#define VIP_MAX_PKT_SIZE 512
 
 
 /* for test, vg-id is fixed by 1 */
@@ -42,8 +42,7 @@ typedef enum {
   VIP_TYPE_SER,                /* Session Establishment Request */
   VIP_TYPE_SEA,                /* Session Establishment ACK */
   VIP_TYPE_SEC,                /* Session Establishment Confirm */
-  VIP_TYPE_SDR,                 /* Service Data */
-  VIP_TYPE_SDA,                /* Service Data ACK */
+  VIP_TYPE_VSD,                 /* VLC Service Data */
   VIP_TYPE_ALLOC
 } vip_message_type_t;
 

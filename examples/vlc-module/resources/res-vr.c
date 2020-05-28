@@ -22,8 +22,7 @@ static void handler_rel(vip_message_t *rcv_pkt);
 static void handler_ser(vip_message_t *rcv_pkt);
 static void handler_sea(vip_message_t *rcv_pkt);
 static void handler_sec(vip_message_t *rcv_pkt);
-static void handler_sdr(vip_message_t *rcv_pkt);
-static void handler_sda(vip_message_t *rcv_pkt);
+static void handler_vsd(vip_message_t *rcv_pkt);
 
 /* Trigger for simul */
 static struct ctimer ct;
@@ -41,13 +40,20 @@ static session_t* check_session(int session_id);
 static void show_session_info();
 
 static vip_message_t snd_pkt[1];
-static uint8_t buffer[50];
+static uint8_t buffer[VIP_MAX_PKT_SIZE];
 static char dest_addr[50];
 static char query[50];
 
 static int vr_id, aa_id, vt_id;
 static int vip_timeout_swtich;
 static int loss_count = 0;
+
+
+/* for simulation */
+static int session_id;
+static int vr_seq;
+static int goal_vg_seq;
+int data;
 
 /* vip algorithm */
 void retransmit_on();
@@ -68,7 +74,7 @@ EVENT_RESOURCE(res_vr,
 /* vip type handler */
 TYPE_HANDLER(vr_type_handler, handler_beacon, NULL, handler_vra, 
               handler_vrc, handler_rel, handler_ser, handler_sea, handler_sec,
-              handler_sdr, handler_sda, NULL);
+              handler_vsd, NULL);
 
 
 /* called by coap-engine proc */
@@ -161,6 +167,7 @@ handler_sea(vip_message_t *rcv_pkt) {
 
   update_session(rcv_pkt->session_id, 0, rcv_pkt->vg_seq);
   show_session_info();
+  goal_vg_seq = rcv_pkt->seq + 100;
 
   retransmit_off();
 
@@ -178,13 +185,50 @@ handler_sec(vip_message_t *rcv_pkt) {
 }
 
 static void
-handler_sdr(vip_message_t *rcv_pkt) {
+handler_vsd(vip_message_t *rcv_pkt) {
+  if(!is_my_vip_pkt(rcv_pkt))
+    return;
 
-}
+  session_t *chk;
+  if ((chk = check_session(rcv_pkt->session_id)))
+  {
+    if (rcv_pkt->seq == chk->vg_seq)
+    {
+      retransmit_off();
+      // If received 100's data, Goal in*/
+      if (rcv_pkt->seq == goal_vg_seq)
+      {
+        printf("------------------------------------------------ Goal ---\n");
+        return;
+      }
+      // Next vg seq data
+      chk->vg_seq++;
+      // Next to send data to vg
+      chk->vr_seq++;
 
-static void
-handler_sda(vip_message_t *rcv_pkt) {
+      // next payload
+      chk->test_data++;
+      char payload[101];
+      memset(payload, chk->test_data, 100);
 
+      vip_init_message(snd_pkt, VIP_TYPE_VSD, aa_id, vt_id, vr_id);
+      vip_set_field_vsd(snd_pkt, chk->session_id, chk->vr_seq, payload, 100);
+      vip_serialize_message(snd_pkt, buffer);
+      vip_set_dest_ep_cooja(snd_pkt, dest_addr, aa_id, VIP_AA_URL);
+
+      vip_init_query(snd_pkt, query);
+      vip_make_query_src(query, strlen(query), vr_id);
+      vip_set_query(snd_pkt, query);
+
+      process_post(&vr_process, vr_snd_event, (void *)snd_pkt);
+    }
+    else if(rcv_pkt->seq < chk->vg_seq)
+    {
+      // Dup Data
+      printf("-- Dup Data\n");
+    }
+    
+  }
 }
 
 static void 
@@ -223,10 +267,11 @@ loss_handler() {
 
 
 /* --------------------- Trigger for simulation -----------------*/
+
 static void trigger_ser(void* data)
 {
-  int session_id = rand();
-  int vr_seq = rand() % 100000;
+  session_id = rand();
+  vr_seq = rand() % 100000;
   add_new_session(session_id, vr_seq);
 
   printf("Send SER from vr(%d) with vr_seq(%d)\n", vr_id, vr_seq);
@@ -237,9 +282,21 @@ static void trigger_ser(void* data)
   process_post(&vr_process, vr_snd_event, (void *)snd_pkt);
 }
 
-static void trigger_sdr(void* data)
+static void trigger_vsd(void* data)
 {
+    char payload[101];
+    memset(payload, "ABC", 100);
 
+    printf("- START Simulation -\n");
+    printf("-- session(%x) - vr_seq(%d) ==> Goal vg_seq(%d) --\n", session_id, vr_seq, goal_vg_seq);
+    printf("%s\n", payload);
+
+
+    vip_init_message(snd_pkt, VIP_TYPE_VSD, aa_id, vt_id, vr_id);
+    vip_set_field_vsd(snd_pkt, session_id, vr_seq, payload, 100);
+    vip_serialize_message(snd_pkt, buffer);
+    vip_set_dest_ep_cooja(snd_pkt, dest_addr, aa_id, VIP_AA_URL);
+    process_post(&vr_process, vr_snd_event, (void *)snd_pkt);
 }
 
 
@@ -253,7 +310,7 @@ static void timer_init(int flag)
     break;
   case 1:
     /* data transmit scenario */
-    ctimer_set(&ct, 30000, trigger_sdr, NULL);
+    ctimer_set(&ct, 15000, trigger_vsd, NULL);
     break;
   }
 }
@@ -273,6 +330,7 @@ static void add_new_session(int session_id, int vr_seq)
     session_t* new = calloc(1, sizeof(session_t));
     new->session_id = session_id;
     new->vr_seq = vr_seq;
+    new->test_data = 1;
     list_add(session_info, new);
 }
 

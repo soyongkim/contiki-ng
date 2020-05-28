@@ -24,6 +24,8 @@ typedef struct {
     uint32_t session_id;
     uint32_t vr_seq;
     uint32_t vg_seq;
+    /* for vsd parsing and serialization */
+    uint32_t seq;
 
     uint32_t payload_len;
     uint8_t *payload;
@@ -47,6 +49,7 @@ struct vip_vt_tuple {
 
 struct vip_nonce_tuple {
     vip_nonce_tuple_t *next;
+    int aa_id;
     int nonce;
     int vr_node_id;
     int alloc_vr_id;
@@ -59,6 +62,7 @@ struct session_s {
     int vg_seq;
     int session_id;
     uint8_t* data;
+    int test_data;
 };
 
 
@@ -72,6 +76,7 @@ void vip_set_dest_ep_cooja(vip_message_t *message, char *dest_addr, int dest_nod
 void vip_set_non_flag(vip_message_t* message);
 
 /* Set Type header field */
+void vip_set_payload(vip_message_t* message, void* payload, size_t payload_len);
 void vip_set_field_beacon(vip_message_t* message, char* uplink_id);
 
 void vip_set_field_vrr(vip_message_t *message, int nonce);
@@ -81,11 +86,8 @@ void vip_set_field_ser(vip_message_t *message, int session_id, int vr_seq);
 void vip_set_field_sea(vip_message_t *message, int session_id, int vg_seq);
 void vip_set_field_sec(vip_message_t *message, int session_id, int vg_seq);
 
-void vip_set_field_sdr(vip_message_t *message, int session_id, int vr_seq);
-void vip_set_field_sda(vip_message_t *message, int session_id, int vg_seq);
-
+void vip_set_field_vsd(vip_message_t *message, int session_id, int seq, void* payload, size_t payload_len);
 void vip_set_field_alloc(vip_message_t *message, char* uplink_id);
-void vip_set_payload(vip_message_t* message, void* payload, size_t payload_len);
 
 /* coap's query function */
 void vip_init_query(vip_message_t *message, char *query);
@@ -107,8 +109,7 @@ void vip_parse_ser(vip_message_t *message);
 void vip_parse_sea(vip_message_t *message);
 void vip_parse_sec(vip_message_t *message);
 
-void vip_parse_sdr(vip_message_t *message);
-void vip_parse_sda(vip_message_t *message);
+void vip_parse_vsd(vip_message_t *message);
 
 void vip_payload_test(vip_message_t * message);
 
