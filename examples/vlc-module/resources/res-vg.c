@@ -25,7 +25,21 @@ static void handler_sd(vip_message_t *rcv_pkt);
 static void handler_sda(vip_message_t *rcv_pkt);
 
 
-LIST(vr_nonce_table);
+LIST(vr_table);
+int publish_vrid();
+void expire_vrid(int target);
+int add_vr_table(int nonce);
+void remove_vr_table(vip_nonce_tuple_t* tuple);
+vip_nonce_tuple_t* check_vr_table(int nonce);
+
+
+LIST(session_info);
+static void add_new_session(int vr_id, int session_id, int vr_seq, int vg_seq);
+static void terminate_session(session_t *session);
+static void update_session(int session_id, int vr_seq, int vg_seq);
+static session_t* check_session(int vr_id, int session_id);
+
+
 
 /* for snd-pkt */
 static uint8_t buffer[50];
@@ -56,65 +70,6 @@ EVENT_RESOURCE(res_vg,
 TYPE_HANDLER(vg_type_handler, NULL, handler_vrr, handler_vra, 
               handler_vrc, handler_rel, handler_ser, handler_sea, handler_sec,
               handler_sd, handler_sda, NULL);
-
-int
-publish_vrid() {
-  mutex_try_lock(&v);
-  int vr_id = 0;
-  for(int i=1; i<65000; i++) {
-    if(!vr_id_pool[i]) {
-      vr_id_pool[i] = 1;
-      vr_id = i;
-      break;
-    }
-  }
-  mutex_unlock(&v);
-  return vr_id;
-}
-
-void
-expire_vrid(int target) {
-  vr_id_pool[target] = 0;
-}
-
-int
-add_nonce_table(int nonce) {
-  vip_nonce_tuple_t* new_tuple = malloc(sizeof(vip_nonce_tuple_t));
-  new_tuple->alloc_vr_id = publish_vrid();
-  new_tuple->nonce = nonce;
-  list_add(vr_nonce_table, new_tuple);
-
-  return new_tuple->alloc_vr_id;
-}
-
-void
-remove_nonce_table(vip_nonce_tuple_t* tuple) {
-  list_remove(vr_nonce_table, tuple);
-  free(tuple);
-}
-
-vip_nonce_tuple_t*
-check_nonce_table(int nonce) {
-  vip_nonce_tuple_t* c;
-  for(c = list_head(vr_nonce_table); c != NULL; c = c->next) {
-    if(c->nonce == nonce) {
-        return c;
-    }
-  }
-  return NULL;
-}
-
-
-void
-add_session_info(int vr_id, int session_id, int vg_seq, int vr_seq) {
-
-}
-
-/* if vr request new session, update last session info */
-void
-save_session_info(int vr_id, int session_id, int vg_seq, int vr_seq, uint8_t *data) {
-
-}
 
 
 /* called by coap-engine proc */
@@ -177,7 +132,7 @@ handler_vrr(vip_message_t *rcv_pkt) {
   /* Set payload for ack */
   printf("Setting Ack..\n");
   vip_init_message(ack_pkt, VIP_TYPE_VRA, rcv_pkt->aa_id, rcv_pkt->vt_id, alloc_vr_id);
-  vip_set_type_header_nonce(ack_pkt, rcv_pkt->nonce);
+  vip_set_field_vra(ack_pkt, rcv_pkt->nonce);
   vip_serialize_message(ack_pkt, buffer);
 }
 
@@ -193,9 +148,8 @@ handler_vrc(vip_message_t *rcv_pkt) {
   /* if vrc is duplicated, the tuple is null. so nothing to do and just send ack */
   if ((chk = check_nonce_table(rcv_pkt->vr_id)))
   {
-    /* remove nonce tuple if vrc received */
-    remove_nonce_table(chk);
-
+    /* complete allocation. for the other aa, delete nonce value*/
+    chk->nonce = 0;
     printf("vr[%d] complete!\n", rcv_pkt->vr_id);
   }
 }
@@ -207,7 +161,24 @@ handler_rel(vip_message_t *rcv_pkt) {
 
 static void
 handler_ser(vip_message_t *rcv_pkt) {
+  session_t *chk;
+  int vg_seq;
+  if (!(chk = check_session(rcv_pkt->vr_id, rcv_pkt->session_id)))
+  {
+    /* publish new vr-id */
+    vg_seq = rand() % 100000;
+    add_new_session(rcv_pkt->vr_id, rcv_pkt->session_id, rcv_pkt->vr_seq, vg_seq);
+  }
+  else
+  {
+    vg_seq = chk->vg_seq;
+  }
 
+  /* Set payload for ack */
+  printf("Setting Ack..\n");
+  vip_init_message(ack_pkt, VIP_TYPE_VRA, rcv_pkt->aa_id, rcv_pkt->vt_id, rcv_pkt->vr_id);
+  vip_set_field_sea(ack_pkt, rcv_pkt->session_id, vg_seq);
+  vip_serialize_message(ack_pkt, buffer);
 }
 
 static void
@@ -229,3 +200,104 @@ static void
 handler_sda(vip_message_t *rcv_pkt) {
 
 }
+
+
+/* --------------handle vrid-----------------------------------------*/
+int
+publish_vrid() {
+  mutex_try_lock(&v);
+  int vr_id = 0;
+  for(int i=1; i<65000; i++) {
+    if(!vr_id_pool[i]) {
+      vr_id_pool[i] = 1;
+      vr_id = i;
+      break;
+    }
+  }
+  mutex_unlock(&v);
+  return vr_id;
+}
+
+void
+expire_vrid(int target) {
+  vr_id_pool[target] = 0;
+}
+
+int
+add_vr_table(int nonce) {
+  vip_nonce_tuple_t* new_tuple = malloc(sizeof(vip_nonce_tuple_t));
+  new_tuple->alloc_vr_id = publish_vrid();
+  new_tuple->nonce = nonce;
+  list_add(vr_table, new_tuple);
+
+  return new_tuple->alloc_vr_id;
+}
+
+void
+remove_vr_table(vip_nonce_tuple_t* tuple) {
+  list_remove(vr_table, tuple);
+  free(tuple);
+}
+
+vip_nonce_tuple_t*
+check_vr_table(int nonce) {
+  vip_nonce_tuple_t* c;
+  for(c = list_head(vr_table); c != NULL; c = c->next) {
+    if(c->nonce == nonce) {
+        return c;
+    }
+  }
+  return NULL;
+}
+
+
+/* ------------------------- handle session --------------------*/
+static void add_new_session(int vr_id, int session_id, int vr_seq, int vg_seq)
+{
+    session_t* new = calloc(1, sizeof(session_t));
+    new->vr_id = vr_id;
+    new->session_id = session_id;
+    new->vr_seq = vr_seq;
+    new->vg_seq = vg_seq;
+    list_add(session_info, new);
+}
+
+static void terminate_session(session_t* session)
+{
+  free(session);
+}
+
+static void update_session(int session_id, int vr_seq, int vg_seq)
+{
+  session_t *cur;
+  for(cur=list_head(session_info); cur != NULL; cur = cur->next)
+  {
+    if(cur->session_id == session_id)
+    {
+      if(vr_seq)
+      {
+        cur->vr_seq = vr_seq;
+      }
+
+      if(vg_seq)
+      {
+        cur->vg_seq = vg_seq;
+      }
+    }
+  }
+}
+
+static session_t* check_session(int vr_id, int session_id)
+{
+  session_t *cur;
+  for(cur=list_head(session_info); cur != NULL; cur = cur->next)
+  {
+    if(cur->vr_id == vr_id && cur->session_id == session_id)
+    {
+        return cur;
+    }
+  }
+
+  return NULL;
+}
+

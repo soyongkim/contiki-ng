@@ -7,7 +7,6 @@
 #include "vip-buf.h"
 #include "vip-constants.h"
 
-
 extern process_event_t vr_snd_event;
 
 int rcv_nonce;

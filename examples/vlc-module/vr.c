@@ -36,8 +36,6 @@ static coap_message_t request[1];
 static  vip_message_t *snd_pkt;
 
 static struct ctimer ct;
-
-
 /* using coap callback api */
 static void vip_request_callback(coap_callback_request_state_t *callback_state);
 static void vip_request();
@@ -45,7 +43,6 @@ static void vip_request();
 
 static void timer_callback(void* data);
 static void init();
-
 
 PROCESS(vr_process, "VR");
 AUTOSTART_PROCESSES(&vr_process);
@@ -103,26 +100,16 @@ vip_request_callback(coap_callback_request_state_t *res_callback_state) {
   if(state->status == COAP_REQUEST_STATUS_RESPONSE) {
       printf("Ack:%d - mid(%x)\n", state->response->code, state->response->mid);
       if(state->response->code < 100) {
-
         if(coap_get_query_variable(state->response, "nonce", &nonce)) {
           rcv_nonce = atoi(nonce);
-          printf("Nonce:%d\n", rcv_nonce);
+          printf("Nonce:%d\n", atoi(nonce));
         }
 
         if(coap_get_query_variable(state->response, "timer", &timer)) {
-            res_vr.trigger();
-        }
-
-        if(state->response->uri_query)
-        {
-          printf("Q: %s\n", state->response->uri_query);
+            if(atoi(timer) > 0)
+              res_vr.trigger();
         }
       }
-  }
-
-  if(state->status == COAP_REQUEST_STATUS_TIMEOUT)
-  {
-    res_vr.trigger();
   }
 }
 

@@ -44,7 +44,7 @@ typedef enum {
   VIP_TYPE_SEC,                /* Session Establishment Confirm */
   VIP_TYPE_SD,                 /* Service Data */
   VIP_TYPE_SDA,                /* Service Data ACK */
-  VIP_TYPE_ALLOW
+  VIP_TYPE_ALLOC
 } vip_message_type_t;
 
 #endif

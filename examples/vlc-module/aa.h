@@ -6,6 +6,17 @@
 #include "vip-buf.h"
 #include "vip-constants.h"
 
+typedef struct se_cache_s se_cache_t;
+
+struct se_cache_s {
+    se_cache_t* next;
+    int vr_id;
+    int session_id;
+    int vg_seq;
+    uint8_t* data;
+};
+
+
 
 extern process_event_t aa_snd_event;
 

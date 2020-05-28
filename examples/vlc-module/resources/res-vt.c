@@ -131,7 +131,7 @@ beaconing() {
     /* you have to comfirm that the type field is fulled */
     vip_init_message(snd_pkt, VIP_TYPE_BEACON, aa_id, vt_id, 0);
     vip_set_dest_ep_cooja(snd_pkt, dest_addr, VIP_BROADCAST, VIP_VR_URL);
-    vip_set_type_header_uplink_id(snd_pkt, uplink_id);
+    vip_set_field_beacon(snd_pkt, uplink_id);
     vip_serialize_message(snd_pkt, buffer);
     process_post(&vt_process, vt_snd_event, (void *)snd_pkt);
   }

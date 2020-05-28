@@ -5,7 +5,8 @@
 
 typedef struct vip_vt_tuple vip_vt_tuple_t;
 typedef struct vip_nonce_tuple vip_nonce_tuple_t;
-typedef struct vip_vr_session_tuple vip_vr_session_tuple_t;
+typedef struct session_s session_t;
+
 
 /* message struct */
 typedef struct {
@@ -21,8 +22,8 @@ typedef struct {
     char* uplink_id;
     uint32_t vr_id;
     uint32_t session_id;
-    uint32_t vr_seq_number;
-    uint32_t vg_seq_number;
+    uint32_t vr_seq;
+    uint32_t vg_seq;
 
     uint32_t payload_len;
     uint8_t *payload;
@@ -51,18 +52,13 @@ struct vip_nonce_tuple {
     int alloc_vr_id;
 };
 
-typedef struct vip_session_info {
-    int session_id;
-    int vg_seq;
+struct session_s {
+    session_t* next;
+    int vr_id;
     int vr_seq;
-    int nonce;
-    uint8_t *recent_vg_data;
-} vip_session_info_t;
-
-
-struct vip_vr_session_tuple {
-    vip_session_info_t** session_info;
-    vip_session_info_t* recent_session_info;
+    int vg_seq;
+    int session_id;
+    uint8_t* data;
 };
 
 
@@ -70,57 +66,50 @@ struct vip_vr_session_tuple {
 void vip_init_message(vip_message_t *message, uint8_t type, uint16_t aa_id, uint16_t vt_id, uint32_t vr_id);
 void vip_clear_message(vip_message_t *message);
 int vip_serialize_message(vip_message_t *message, uint8_t *buffer);
-/* for cooja, make uri from node id */
+
+/* for cooja, make uri using node id */
 void vip_set_dest_ep_cooja(vip_message_t *message, char *dest_addr, int dest_node_id, char *dest_path);
-void vip_set_query(vip_message_t *message, char *query);
+void vip_set_non_flag(vip_message_t* message);
+
+/* Set Type header field */
+void vip_set_field_beacon(vip_message_t* message, char* uplink_id);
+
+void vip_set_field_vrr(vip_message_t *message, int nonce);
+void vip_set_field_vra(vip_message_t *message, int nonce);
+
+void vip_set_field_ser(vip_message_t *message, int session_id, int vr_seq);
+void vip_set_field_sea(vip_message_t *message, int session_id, int vg_seq);
+void vip_set_field_sec(vip_message_t *message, int session_id, int vg_seq);
+
+void vip_set_field_sdr(vip_message_t *message, int session_id, int vr_seq);
+void vip_set_field_sda(vip_message_t *message, int session_id, int vg_seq);
+
+void vip_set_field_alloc(vip_message_t *message, char* uplink_id);
+void vip_set_payload(vip_message_t* message, void* payload, size_t payload_len);
+
+/* coap's query function */
 void vip_init_query(vip_message_t *message, char *query);
-
-/* Parse the vip-pkt on vip-interface.c */
-int vip_parse_common_header(vip_message_t *message, uint8_t *data, uint16_t data_len);
-uint32_t vip_parse_int_option(uint8_t *bytes, size_t length);
-void vip_parse_beacon(vip_message_t *message);
-void vip_parse_VRR(vip_message_t *message);
-void vip_parse_VRA(vip_message_t *message);
-void vip_parse_VRC(vip_message_t *message);
-void vip_parse_REL(vip_message_t *message);
-void vip_parse_SER(vip_message_t *message);
-void vip_parse_SEA(vip_message_t *message);
-void vip_parse_SEC(vip_message_t *message);
-void vip_parse_SD(vip_message_t *message);
-void vip_parse_SDA(vip_message_t *message);
-void vip_payload_test(vip_message_t * message);
-
-
-/* Data configure */
-int vip_get_header_total_len(vip_message_t *message, uint32_t *total_len);
-int vip_set_header_total_len(vip_message_t *message, uint32_t total_len);
-
-int vip_get_header_aa_id(vip_message_t *message, uint16_t *aa_id);
-int vip_set_header_aa_id(vip_message_t *message, uint16_t aa_id);
-
-int vip_get_header_vt_id(vip_message_t *message, uint16_t *vt_id);
-int vip_set_header_vt_id(vip_message_t *message, uint16_t vt_id);
-
-int vip_get_type_header_uplink_id(vip_message_t *message, char **uplink_id);
-int vip_set_type_header_uplink_id(vip_message_t *message, char *uplink_id); 
-
-int vip_get_type_header_vr_id(vip_message_t *message, uint32_t *vr_id);
-int vip_set_type_header_vr_id(vip_message_t *message, uint32_t vr_id);
-
-int vip_set_type_header_nonce(vip_message_t *message, uint32_t nonce);
-
-int vip_get_type_header_vr_seq_num(vip_message_t *message, uint32_t *vr_seq_number);
-int vip_set_type_header_vr_seq_num(vip_message_t *message, uint32_t vr_seq_number);
-
-int vip_get_type_header_vg_seq_num(vip_message_t *message, uint32_t *vg_seq_number);
-int vip_set_type_header_vg_seq_num(vip_message_t *message, uint32_t vg_seq_number);
-
-int vip_set_payload(vip_message_t *message, void *payload, size_t payload_len);
-
-int vip_set_service_list(vip_message_t *vip_pkt, char **service_list, size_t service_num);
-
+void vip_set_query(vip_message_t *message, char *query);
 void vip_make_query_src(char* query, int query_len, int src_id);
 void vip_make_query_nonce(char *query, int query_len, int value);
 void vip_make_query_timer(char* query, int query_len, int flag);
+
+/* Parse the vip-pkt on vip-interface.c */
+int vip_parse_common_header(vip_message_t *message, uint8_t *data, uint16_t data_len);
+void vip_parse_beacon(vip_message_t *message);
+
+void vip_parse_vrr(vip_message_t *message);
+void vip_parse_vra(vip_message_t *message);
+void vip_parse_vrc(vip_message_t *message);
+void vip_parse_rel(vip_message_t *message);
+
+void vip_parse_ser(vip_message_t *message);
+void vip_parse_sea(vip_message_t *message);
+void vip_parse_sec(vip_message_t *message);
+
+void vip_parse_sdr(vip_message_t *message);
+void vip_parse_sda(vip_message_t *message);
+
+void vip_payload_test(vip_message_t * message);
 
 #endif
