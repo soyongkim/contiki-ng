@@ -35,6 +35,7 @@ void vip_set_non_flag(vip_message_t* vip_pkt)
 
 
 /*  ------------------------------------------- Set Type header field -----------------------------------------------------*/
+
 void vip_set_payload(vip_message_t* vip_pkt, void* payload, size_t payload_len)
 {
     vip_pkt->payload = payload;
@@ -320,6 +321,9 @@ int vip_serialize_message(vip_message_t *vip_pkt, uint8_t *buffer)
 
 
 /*------------------------------------------------------ Data Parsing -----------------------------------------------------------*/
+
+static uint8_t parse_payload[VIP_MAX_PKT_SIZE];
+
 int vip_parse_common_header(vip_message_t *vip_pkt, uint8_t *data, uint16_t data_len)
 {
     memset(vip_pkt, 0, sizeof(vip_message_t));
@@ -411,8 +415,9 @@ void vip_parse_vsd(vip_message_t *vip_pkt)
     vip_pkt->seq = vip_parse_int_option(offset, 4);
     offset += 4;
 
-    printf("close payload\n");
-    //memcpy(vip_pkt->payload, offset, vip_pkt->total_len - (VIP_COMMON_HEADER_LEN + 8));
+    //printf("close payload\n");
+    vip_pkt->payload = (void *)parse_payload;
+    memcpy(vip_pkt->payload, offset, vip_pkt->total_len - (VIP_COMMON_HEADER_LEN + 8));
 }
 
 void vip_payload_test(vip_message_t *vip_pkt)
