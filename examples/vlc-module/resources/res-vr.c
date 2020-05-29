@@ -29,7 +29,6 @@ static struct ctimer ct;
 static void trigger_ser(void* data);
 static void trigger_vsd(void* data);
 static void timer_init(int flag);
-static bool is_end_simul();
 
 LIST(session_info);
 static void add_new_session(int session_id, int vr_seq);
@@ -353,17 +352,6 @@ static bool is_my_vip_pkt(vip_message_t* rcv_pkt)
     return true;
   return false;
 }
-
-static bool is_end_simul(int flag)
-{
-  if(flag)
-    return true;
-  else
-    return false;
-  
-}
-
-
 
 /* ------------------------- handle session --------------------*/
 static void add_new_session(int session_id, int vr_seq)
