@@ -26,7 +26,6 @@ static void handler_vsd(vip_message_t *rcv_pkt);
 
 /* Trigger for simul */
 static struct ctimer ct;
-static int end_flag;
 static void trigger_ser(void* data);
 static void trigger_vsd(void* data);
 static void timer_init(int flag);
@@ -196,7 +195,7 @@ handler_sec(vip_message_t *rcv_pkt) {
 
 static void
 handler_vsd(vip_message_t *rcv_pkt) {
-  if(!is_my_vip_pkt(rcv_pkt) && is_end_simul(end_flag))
+  if(!is_my_vip_pkt(rcv_pkt))
     return;
 
   retransmit_off();
@@ -232,7 +231,6 @@ handler_vsd(vip_message_t *rcv_pkt) {
         printf("--------------------------------------------------------------------------------------------------- Goal\n");
         terminate_session(chk);
         vip_make_query_goal(query, strlen(query), 1);
-        end_flag = 1;
       }
       vip_set_query(snd_pkt, query);
 
@@ -379,6 +377,7 @@ static void add_new_session(int session_id, int vr_seq)
 
 static void terminate_session(session_t* session)
 {
+  session->session_id = 0;
   free(session);
 }
 
