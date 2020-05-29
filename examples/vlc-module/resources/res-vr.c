@@ -365,6 +365,7 @@ static void add_new_session(int session_id, int vr_seq)
 
 static void terminate_session(session_t* session)
 {
+  list_remove(session_info, session);
   session->session_id = 0;
   free(session);
 }
