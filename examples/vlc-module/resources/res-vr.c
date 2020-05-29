@@ -230,6 +230,7 @@ handler_vsd(vip_message_t *rcv_pkt) {
       if (rcv_pkt->seq == goal_vg_seq)
       {
         printf("--------------------------------------------------------------------------------------------------- Goal\n");
+        terminate_session(chk);
         vip_make_query_goal(query, strlen(query), 1);
         end_flag = 1;
       }

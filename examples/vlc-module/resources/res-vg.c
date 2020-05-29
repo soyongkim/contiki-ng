@@ -51,6 +51,7 @@ static vip_message_t ack_pkt[1];
 
 static mutex_t v;
 
+static int goal_flag;
 
 
 /* vr session_array */
@@ -95,8 +96,8 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
 
   if(coap_get_query_variable(request, "goal", &goal))
   {
-      /* End simulation */
-      return;
+      printf("--------------------------------------------------------------------------------------------------- Goal\n");
+      goal_flag = 1;
   }
 
   vip_route(rcv_pkt, &vg_type_handler);
@@ -225,6 +226,12 @@ handler_vsd(vip_message_t *rcv_pkt) {
     session_t *chk;
     if((chk = check_session(rcv_pkt->vr_id)))
     {
+      if(goal_flag)
+      {
+        terminate_session(chk);
+        return;
+      }
+
       if(rcv_pkt->seq == chk->vr_seq)
       {
         printf("Current state - vr(%d) <= vr_seq(%d) / vg_seq(%d)\n", rcv_pkt->vr_id, chk->vr_seq, chk->vg_seq);
