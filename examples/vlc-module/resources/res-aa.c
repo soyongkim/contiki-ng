@@ -68,7 +68,9 @@ static vip_message_t ack_pkt[1];
 static char ack_query[50];
 
 static int nonce_pool[65000];
-//static mutex_t p;
+
+static int goal_flag;
+
 
 static char uplink_id[50] = {"ISL_AA_UPLINK_ID"};
 
@@ -112,10 +114,7 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
   if(coap_get_query_variable(request, "goal", &goal))
   {
       printf("--------------------------------------------------------------------------------------------------- Goal\n");
-      vip_init_query(rcv_pkt, query);
-      vip_make_query_goal(query, strlen(query), 1);
-      vip_set_query(rcv_pkt, query);
-      printf("Q: %s\n", query);
+      goal_flag = 1;
   }
 
   vip_route(rcv_pkt, &aa_type_handler);
@@ -288,14 +287,26 @@ static void
 handler_vsd(vip_message_t *rcv_pkt) {
     if(rcv_pkt->query_rcv_id)
     {
+      if (goal_flag)
+      {
+        /* forward goal flag to vg */
+        vip_init_query(rcv_pkt, query);
+        vip_make_query_goal(query, strlen(query), 1);
+        vip_set_query(rcv_pkt, query);
+        printf("Q: %s\n", query);
+      }
+      else
+      {
+        /* if not goal, turn on vr timer */
+        vip_init_query(ack_pkt, ack_query);
+        vip_make_query_timer(ack_query, strlen(ack_query), 1);
+        vip_set_query(ack_pkt, ack_query);
+      }
+
       // arrived from vr
       vip_set_dest_ep_cooja(rcv_pkt, dest_addr, VIP_VG_ID, VIP_VG_URL);
       vip_serialize_message(rcv_pkt, buffer);
       process_post(&aa_process, aa_snd_event, (void *)rcv_pkt);
-
-      vip_init_query(ack_pkt, ack_query);
-      vip_make_query_timer(ack_query, strlen(ack_query), 1);
-      vip_set_query(ack_pkt, ack_query);
     }
     else
     {
