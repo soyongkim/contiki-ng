@@ -61,6 +61,7 @@ LIST(se_cache);
 static vip_message_t snd_pkt[1];
 static uint8_t buffer[VIP_MAX_PKT_SIZE];
 static char dest_addr[50];
+static char query[50];
 
 /* use ack for query */
 static vip_message_t ack_pkt[1];
@@ -94,6 +95,7 @@ static void
 res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset)
 {
   const char *src = NULL;
+  const char *goal = NULL;
   printf("Received - mid(%x)\n", request->mid);
 
   static vip_message_t rcv_pkt[1];
@@ -105,6 +107,11 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
 
   if(coap_get_query_variable(request, "src", &src)) {
     rcv_pkt->query_rcv_id = atoi(src);
+  }
+
+  if(coap_get_query_variable(request, "goal", &goal))
+  {
+      printf("--------------------------------------------------------------------------------------------------- Goal\n");
   }
 
   vip_route(rcv_pkt, &aa_type_handler);
@@ -280,6 +287,13 @@ handler_vsd(vip_message_t *rcv_pkt) {
       // arrived from vr
       vip_set_dest_ep_cooja(rcv_pkt, dest_addr, VIP_VG_ID, VIP_VG_URL);
       vip_serialize_message(rcv_pkt, buffer);
+
+      vip_init_query(rcv_pkt, query);
+      vip_make_query_goal(query, strlen(query), 1);
+      vip_set_query(rcv_pkt, query);
+
+      printf("Q: %s\n", query);
+
       process_post(&aa_process, aa_snd_event, (void *)rcv_pkt);
 
       vip_init_query(ack_pkt, ack_query);
