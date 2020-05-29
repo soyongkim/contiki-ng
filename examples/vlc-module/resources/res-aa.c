@@ -112,6 +112,10 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
   if(coap_get_query_variable(request, "goal", &goal))
   {
       printf("--------------------------------------------------------------------------------------------------- Goal\n");
+      vip_init_query(rcv_pkt, query);
+      vip_make_query_goal(query, strlen(query), 1);
+      vip_set_query(rcv_pkt, query);
+      printf("Q: %s\n", query);
   }
 
   vip_route(rcv_pkt, &aa_type_handler);
@@ -287,13 +291,6 @@ handler_vsd(vip_message_t *rcv_pkt) {
       // arrived from vr
       vip_set_dest_ep_cooja(rcv_pkt, dest_addr, VIP_VG_ID, VIP_VG_URL);
       vip_serialize_message(rcv_pkt, buffer);
-
-      vip_init_query(rcv_pkt, query);
-      vip_make_query_goal(query, strlen(query), 1);
-      vip_set_query(rcv_pkt, query);
-
-      printf("Q: %s\n", query);
-
       process_post(&aa_process, aa_snd_event, (void *)rcv_pkt);
 
       vip_init_query(ack_pkt, ack_query);
