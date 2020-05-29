@@ -7,14 +7,21 @@
 #include "coap-engine.h"
 #include "coap-callback-api.h"
 #include "net/netstack.h"
+#include "random.h"
+
 
 #include "sys/ctimer.h"
 
 /* for ROOT in RPL */
 #include "contiki-net.h"
 
+
 /* Node ID */
 #include "sys/node-id.h"
+
+
+/* test jitter */
+#define SEND_INTERVAL (60 * CLOCK_SECOND)
 
 
 /*
@@ -85,7 +92,7 @@ timer_callback(void* data)
 static void init()
 {
   int random_incount;
-  random_incount = random_rand() % 20;
+  random_incount = SEND_INTERVAL - CLOCK_SECOND  + random_rand() % SEND_INTERVAL;
   printf("Set Send Timer %d\n", random_incount);
 
   ctimer_set(&ct, random_incount, timer_callback, NULL);
