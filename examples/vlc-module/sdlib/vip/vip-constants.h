@@ -10,7 +10,7 @@
 #define VIP_MAX_UPLINK_ID 1024
 #define VIP_SEQ_LEN 4
 
-#define VIP_MAX_QUERY_SIZE 50
+#define VIP_MAX_QUERY_SIZE 100
 
 #define VIP_MAX_SEND_BUF_SIZE 16
 
