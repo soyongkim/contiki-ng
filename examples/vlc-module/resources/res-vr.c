@@ -189,7 +189,7 @@ handler_sea(vip_message_t *rcv_pkt) {
 
   update_session(rcv_pkt->session_id, 0, rcv_pkt->vg_seq);
   show_session_info();
-  goal_vg_seq = rcv_pkt->vg_seq + 50;
+  goal_vg_seq = rcv_pkt->vg_seq + 100;
 
   retransmit_off();
 
