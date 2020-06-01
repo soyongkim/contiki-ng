@@ -226,12 +226,12 @@ handler_vsd(vip_message_t *rcv_pkt) {
       if (rcv_pkt->start_time)
       {
         uint32_t cur_time = RTIMER_NOW() / 1000;
-        printf("Cur time: %d\n", cur_time);
+        printf("Cur time: %u\n", cur_time);
         rcv_pkt->transmit_time += cur_time - rcv_pkt->start_time;
         printf("time to aa: %u\n", rcv_pkt->transmit_time);
 
         ttd += rcv_pkt->transmit_time;
-        printf("total transmition delay: %d\n", ttd);
+        printf("total transmition delay: %u\n", ttd);
       }
 
       vip_init_query(rcv_pkt, query);

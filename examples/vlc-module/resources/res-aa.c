@@ -127,7 +127,7 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
 
   if(coap_get_query_variable(request, "transmit", &transmit))
   {
-      rcv_pkt->transmit_time = atoi(transmit);
+      rcv_pkt->transmit_time = atoll(transmit);
       printf("rcvd transmit time: %u\n", rcv_pkt->transmit_time);
   }
 
@@ -302,7 +302,7 @@ handler_vsd(vip_message_t *rcv_pkt) {
     if(rcv_pkt->start_time)
     {
       uint32_t cur_time = RTIMER_NOW()/1000;
-      printf("Cur time: %d\n", cur_time);
+      printf("Cur time: %u\n", cur_time);
       rcv_pkt->transmit_time +=  cur_time - rcv_pkt->start_time;
       printf("transmit time: %u\n", rcv_pkt->transmit_time);
     }

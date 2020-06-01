@@ -107,13 +107,13 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
   if(coap_get_query_variable(request, "start", &start))
   {
       rcv_pkt->start_time = atoi(start);
-      printf("rcvd start time: %d\n", rcv_pkt->start_time);
+      printf("rcvd start time: %u\n", rcv_pkt->start_time);
   }
 
   if(coap_get_query_variable(request, "transmit", &transmit))
   {
       rcv_pkt->transmit_time = atoi(transmit);
-      printf("rcvd transmit time: %d\n", rcv_pkt->transmit_time);
+      printf("rcvd transmit time: %u\n", rcv_pkt->transmit_time);
   }
 
   vip_route(rcv_pkt, &vg_type_handler);
@@ -243,9 +243,9 @@ handler_vsd(vip_message_t *rcv_pkt) {
     {
       uint32_t cur_time = RTIMER_NOW()/1000;
       uint32_t time_hop = cur_time - rcv_pkt->start_time;
-      printf("cur time: %d\n", cur_time);
-      printf("rcv start time: %d\n", rcv_pkt->start_time);
-      printf("time hop to hop: %d\n", time_hop);
+      printf("cur time: %u\n", cur_time);
+      printf("rcv start time: %u\n", rcv_pkt->start_time);
+      printf("time hop to hop: %u\n", time_hop);
       rcv_pkt->transmit_time += time_hop;
       printf("time to vg: %u\n", rcv_pkt->transmit_time);
       rcv_pkt->start_time = cur_time;
