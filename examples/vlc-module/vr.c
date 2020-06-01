@@ -127,7 +127,7 @@ vip_request() {
       /* measure transmit time */
       snd_pkt->start_time = RTIMER_NOW();
       printf("time check! %d\n", snd_pkt->start_time);
-      //vip_make_query_start_time(snd_pkt->query, snd_pkt->query_len, snd_pkt->start_time);
+      vip_make_query_start_time(snd_pkt->query, snd_pkt->query_len, snd_pkt->start_time);
     }
 
     /* set vip endpoint */
