@@ -314,8 +314,9 @@ retransmit_off()
 static void
 loss_handler() {
   ++loss_count;
+  printf("---------------- %d ----------------\n", loss_count);
   /* if the vr received same beacon frame, retransmit the pkt */
-  if(loss_count >= 5) {
+  if(loss_count >= 2) {
     /* Send recently sent pkt */
     loss_count = 0;
     printf("--------------------------------------------------------------------------VIP RETRANSMIT\n");
