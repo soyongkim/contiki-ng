@@ -130,6 +130,7 @@ vip_request() {
       vip_init_query(snd_pkt, snd_pkt->query);
       vip_make_query_start_time(snd_pkt->query, snd_pkt->query_len, snd_pkt->start_time);
       vip_make_query_transmit_time(snd_pkt->query, snd_pkt->query_len, snd_pkt->transmit_time);
+      vip_set_query(snd_pkt, snd_pkt->query);
     }
 
     coap_endpoint_parse(snd_pkt->dest_coap_addr, strlen(snd_pkt->dest_coap_addr), &dest_ep);
