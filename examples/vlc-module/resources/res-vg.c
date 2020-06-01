@@ -7,6 +7,7 @@
 
 /* Node ID */
 #include "sys/node-id.h"
+#include "sys/rtimer.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -113,7 +114,6 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
       rcv_pkt->transmit_time = atoi(transmit);
       printf("rcvd transmit time: %d\n", rcv_pkt->transmit_time);
   }
-
 
   vip_route(rcv_pkt, &vg_type_handler);
 
@@ -240,6 +240,7 @@ static void
 handler_vsd(vip_message_t *rcv_pkt) {
     if(rcv_pkt->start_time)
     {
+      printf("rtimer_now:%d\n", RTIMER_NOW());
       printf("cur time: %d | rcv_time: %d\n", clock_time(), rcv_pkt->start_time);
       printf("cur timer second: %ld\n", clock_seconds());
       uint32_t time_hop = clock_time() - rcv_pkt->transmit_time;

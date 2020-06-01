@@ -7,6 +7,7 @@
 
 /* Node ID */
 #include "sys/node-id.h"
+#include "sys/rtimer.h"
 
 /* test pthread */
 #include "os/sys/pt.h"

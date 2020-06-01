@@ -11,6 +11,7 @@
 
 
 #include "sys/ctimer.h"
+#include "sys/rtimer.h"
 
 /* for ROOT in RPL */
 #include "contiki-net.h"
