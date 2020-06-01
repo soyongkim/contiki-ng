@@ -115,13 +115,13 @@ vip_request_callback(coap_callback_request_state_t *res_callback_state) {
         return;
       }
 
-      if (coap_get_query_variable(request, "start", &start))
+      if (coap_get_query_variable(state->response, "start", &start))
       {
         rcv_ack->start_time = atoi(start);
         printf("rcvd start time: %d\n", rcv_ack->start_time);
       }
 
-      if (coap_get_query_variable(request, "transmit", &transmit))
+      if (coap_get_query_variable(state->response, "transmit", &transmit))
       {
         rcv_ack->transmit_time = atoi(transmit);
         printf("rcvd transmit time: %d\n", rcv_ack->transmit_time);
