@@ -120,14 +120,14 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
 
   if(coap_get_query_variable(request, "start", &start))
   {
-      rcv_pkt->start_time = atol(start);
-      printf("rcvd start time: %ld\n", rcv_pkt->start_time);
+      rcv_pkt->start_time = atoi(start);
+      printf("rcvd start time: %u\n", rcv_pkt->start_time);
   }
 
   if(coap_get_query_variable(request, "transmit", &transmit))
   {
-      rcv_pkt->transmit_time = atol(transmit);
-      printf("rcvd transmit time: %ld\n", rcv_pkt->transmit_time);
+      rcv_pkt->transmit_time = atoi(transmit);
+      printf("rcvd transmit time: %u\n", rcv_pkt->transmit_time);
   }
 
 
@@ -302,8 +302,8 @@ static void
 handler_vsd(vip_message_t *rcv_pkt) {
     if(rcv_pkt->start_time)
     {
-      rcv_pkt->transmit_time += clock_seconds() - rcv_pkt->start_time;
-      printf("time to aa: %ld\n", rcv_pkt->transmit_time);
+      rcv_pkt->transmit_time += clock_time() - rcv_pkt->start_time;
+      printf("time to aa: %u\n", rcv_pkt->transmit_time);
     }
 
     vip_init_query(rcv_pkt, query);
