@@ -241,13 +241,14 @@ static void
 handler_vsd(vip_message_t *rcv_pkt) {
     if(rcv_pkt->start_time)
     {
-      uint32_t time_hop = RTIMER_NOW()/1000;
-      printf("cur time: %d\n", time_hop);
+      uint32_t cur_time = RTIMER_NOW()/1000;
+      uint32_t time_hop = cur_time - rcv_pkt->start_time;
+      printf("cur time: %d\n", cur_time);
       printf("rcv start time: %d\n", rcv_pkt->start_time);
-      time_hop -= rcv_pkt->start_time;
       printf("time hop to hop: %d\n", time_hop);
       rcv_pkt->transmit_time += time_hop;
       printf("time to vg: %u\n", rcv_pkt->transmit_time);
+      rcv_pkt->start_time = cur_time;
     }
 
     session_t *chk;
@@ -283,6 +284,7 @@ handler_vsd(vip_message_t *rcv_pkt) {
       }
 
       vip_init_query(ack_pkt, ack_query);
+      vip_make_query_start_time(ack_query, strlen(ack_query), rcv_pkt->start_time);
       vip_make_query_transmit_time(ack_query, strlen(ack_query), rcv_pkt->transmit_time);
       vip_set_query(ack_pkt, ack_query);
     }
