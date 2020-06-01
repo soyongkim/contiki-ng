@@ -49,7 +49,7 @@ static uint8_t buffer[VIP_MAX_PKT_SIZE];
 
 /* use ack for query */
 static vip_message_t ack_pkt[1];
-static ack_query[50];
+static int ack_query[50];
 
 static mutex_t v;
 
