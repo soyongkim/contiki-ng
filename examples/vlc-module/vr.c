@@ -125,7 +125,7 @@ vip_request() {
     if(snd_pkt->query_len)
     {
       /* measure transmit time */
-      snd_pkt->start_time = RTIMER_NOW();
+      snd_pkt->start_time = RTIMER_NOW() / 1000;
       printf("time check! %d\n", snd_pkt->start_time);
       if(snd_pkt->query)
         vip_make_query_start_time(snd_pkt->query, snd_pkt->query_len, (uint32_t)(snd_pkt->start_time));

@@ -240,8 +240,8 @@ static void
 handler_vsd(vip_message_t *rcv_pkt) {
     if(rcv_pkt->start_time)
     {
-      printf("cur time: %d | rcv_time: %d\n", RTIMER_NOW(), rcv_pkt->start_time);
-      uint32_t time_hop = RTIMER_NOW();
+      printf("cur time: %d | rcv_time: %d\n", RTIMER_NOW()/1000, rcv_pkt->start_time);
+      uint32_t time_hop = RTIMER_NOW()/1000;
       time_hop -= rcv_pkt->start_time;
       printf("time hop to hop: %d\n", time_hop);
       rcv_pkt->transmit_time += time_hop;
