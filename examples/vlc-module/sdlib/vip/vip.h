@@ -39,8 +39,8 @@ typedef struct {
     uint32_t query_rcv_id;
 
     /* simul time */
-    unsigned long start_time;
-    unsigned long transmit_time;
+    uint32_t start_time;
+    uint32_t transmit_time;
     int time_flag;
 
     /* flag retransmit */
@@ -101,8 +101,8 @@ void vip_make_query_src(char* query, int query_len, int src_id);
 void vip_make_query_nonce(char *query, int query_len, int value);
 void vip_make_query_timer(char* query, int query_len, int flag);
 void vip_make_query_goal(char* query, int query_len, int flag);
-void vip_make_query_start_time(char* query, int query_len, unsigned long start_time);
-void vip_make_query_transmit_time(char* query, int query_len, unsigned long transmit_time);
+void vip_make_query_start_time(char* query, int query_len, uint32_t start_time);
+void vip_make_query_transmit_time(char* query, int query_len, uint32_t transmit_time);
 /* Parse the vip-pkt on vip-interface.c */
 int vip_parse_common_header(vip_message_t *message, uint8_t *data, uint16_t data_len);
 void vip_parse_beacon(vip_message_t *message);

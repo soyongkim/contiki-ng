@@ -125,7 +125,7 @@ vip_request() {
     {
       printf("time check!\n");
       /* measure transmit time */
-      snd_pkt->start_time = clock_seconds();
+      snd_pkt->start_time = clock_time();
       vip_make_query_start_time(snd_pkt->query, snd_pkt->query_len, snd_pkt->start_time);
     }
 

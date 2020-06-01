@@ -504,7 +504,7 @@ void vip_make_query_goal(char* query, int query_len, int flag)
     strcat(query, tochar);
 }
 
-void vip_make_query_start_time(char *query, int query_len, unsigned long start_time)
+void vip_make_query_start_time(char *query, int query_len, uint32_t start_time)
 {
     if (!query_len)
     {
@@ -520,7 +520,7 @@ void vip_make_query_start_time(char *query, int query_len, unsigned long start_t
     strcat(query, tochar);
 }
 
-void vip_make_query_transmit_time(char *query, int query_len, unsigned long transmit_time)
+void vip_make_query_transmit_time(char *query, int query_len, uint32_t transmit_time)
 {
     if (!query_len)
     {

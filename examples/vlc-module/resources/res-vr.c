@@ -58,8 +58,8 @@ int data;
 
 
 /* test time */
-time_t start_time;
-time_t end_time;
+uint32_t start_time;
+uint32_t end_time;
 
 
 /* vip algorithm */
@@ -338,9 +338,8 @@ static void trigger_vsd(void* data)
     vip_make_query_src(query, strlen(query), vr_id);
     vip_set_query(snd_pkt, query);
 
-    start_time = clock_seconds();
+    start_time = clock_time();
     snd_pkt->transmit_time = 0;
-    snd_pkt->time_flag = 1;
     process_post(&vr_process, vr_snd_event, (void *)snd_pkt);
 }
 
