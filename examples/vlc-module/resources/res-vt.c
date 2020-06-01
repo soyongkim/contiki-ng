@@ -74,8 +74,6 @@ static vip_message_t ack_pkt[1];
 
 static char uplink_id[50];
 
-static int beacon_flag;
-
 /* A simple actuator example. Toggles the red led */
 PERIODIC_RESOURCE(res_vt,
          "title=\"VT\";rt=\"Control\"",
@@ -128,9 +126,6 @@ static void
 beaconing() {
   /* if the vt is complete to register to aa, start beaconing */
   if(aa_id) {
-    if(beacon_flag)
-      return;
-      
     printf("Beaconing...\n");
     /* you have to comfirm that the type field is fulled */
     vip_init_message(snd_pkt, VIP_TYPE_BEACON, aa_id, vt_id, 0);
@@ -138,7 +133,6 @@ beaconing() {
     vip_set_field_beacon(snd_pkt, uplink_id);
     vip_serialize_message(snd_pkt, buffer);
     process_post(&vt_process, vt_snd_event, (void *)snd_pkt);
-    beacon_flag = 1;
   }
 }
 
