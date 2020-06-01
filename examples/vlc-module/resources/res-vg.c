@@ -240,6 +240,8 @@ static void
 handler_vsd(vip_message_t *rcv_pkt) {
     if(rcv_pkt->start_time)
     {
+      printf("cur time: %d | rcv_time: %d\n", clock_time(), rcv_pkt->start_time);
+      printf("cur timer second: %ld", clock_seconds());
       printf("time hop to hop: %u\n",  clock_time() - rcv_pkt->start_time);
       rcv_pkt->transmit_time += clock_time() - rcv_pkt->start_time;
       printf("time to vg: %u\n", rcv_pkt->transmit_time);
