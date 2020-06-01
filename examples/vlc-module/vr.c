@@ -81,7 +81,7 @@ PROCESS_THREAD(vr_process, ev, data)
 static void
 timer_callback(void* data)
 {
-  printf("SEND!\n");
+  printf("SEND! - time:%d\n", clock_time());
   vip_request();
 }
 
