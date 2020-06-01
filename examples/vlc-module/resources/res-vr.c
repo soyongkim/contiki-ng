@@ -300,6 +300,7 @@ res_event_handler(void) {
 void
 retransmit_on()
 {
+  printf("------------- TIMER ON ---------\n");
   vip_timeout_swtich = 1;
 }
 
@@ -307,6 +308,7 @@ retransmit_on()
 void
 retransmit_off()
 {
+  printf("------------- TIMER OFF ---------\n");
   vip_timeout_swtich = 0;
   loss_count = 0;
 }
