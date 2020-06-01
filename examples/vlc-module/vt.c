@@ -147,6 +147,7 @@ vip_request() {
   {
     snd_pkt = vip_front_snd_buf();
 
+    printf("type: %d\n", snd_pkt->type);
     if(snd_pkt->type == VIP_TYPE_VSD)
     {
       int loss_simul_var = random_rand() % 100;
