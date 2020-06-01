@@ -123,10 +123,13 @@ vip_request() {
   {
     snd_pkt = vip_front_snd_buf();
 
-    snd_pkt->start_time = clock_seconds();
-    vip_make_query_start_time(snd_pkt->query, snd_pkt->query_len, snd_pkt->start_time);
-    vip_make_query_transmit_time(snd_pkt->query, snd_pkt->query_len, snd_pkt->transmit_time);
-
+    if (snd_pkt->query_len)
+    {
+      printf("time check!\n");
+      snd_pkt->start_time = clock_seconds();
+      vip_make_query_start_time(snd_pkt->query, snd_pkt->query_len, snd_pkt->start_time);
+      vip_make_query_transmit_time(snd_pkt->query, snd_pkt->query_len, snd_pkt->transmit_time);
+    }
 
     coap_endpoint_parse(snd_pkt->dest_coap_addr, strlen(snd_pkt->dest_coap_addr), &dest_ep);
 

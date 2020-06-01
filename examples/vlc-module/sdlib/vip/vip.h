@@ -41,7 +41,7 @@ typedef struct {
     /* simul time */
     unsigned long start_time;
     unsigned long transmit_time;
-
+    int time_flag;
 
     /* flag retransmit */
     uint32_t re_flag;

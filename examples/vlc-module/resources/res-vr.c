@@ -340,6 +340,7 @@ static void trigger_vsd(void* data)
 
     start_time = clock_seconds();
     snd_pkt->transmit_time = 0;
+    snd_pkt->time_flag = 1;
     process_post(&vr_process, vr_snd_event, (void *)snd_pkt);
 }
 
