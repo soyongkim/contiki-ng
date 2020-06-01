@@ -241,9 +241,10 @@ handler_vsd(vip_message_t *rcv_pkt) {
     if(rcv_pkt->start_time)
     {
       printf("cur time: %d | rcv_time: %d\n", clock_time(), rcv_pkt->start_time);
-      printf("cur timer second: %ld", clock_seconds());
-      printf("time hop to hop: %u\n",  clock_time() - rcv_pkt->start_time);
-      rcv_pkt->transmit_time += clock_time() - rcv_pkt->start_time;
+      printf("cur timer second: %ld\n", clock_seconds());
+      uint32_t time_hop = clock_time() - rcv_pkt->transmit_time;
+      printf("time hop to hop: %d\n", time_hop);
+      rcv_pkt->transmit_time += time_hop;
       printf("time to vg: %u\n", rcv_pkt->transmit_time);
     }
 
