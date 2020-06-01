@@ -317,7 +317,6 @@ handler_vsd(vip_message_t *rcv_pkt) {
     }
 }
 
-
 static void
 res_periodic_ad_handler(void)
 {
@@ -413,7 +412,7 @@ update_vr_cache(int nonce, int vr_id) {
 }
 
 
-/* ----------------------------- se cache function ------------------------------------------*/
+/*----------------------------- se cache function ------------------------------------------*/
 
 void add_se_cache(int vr_id, int session_id)
 {

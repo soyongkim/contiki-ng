@@ -21,7 +21,7 @@
 
 
 /* test jitter */
-#define SEND_INTERVAL (60 * CLOCK_SECOND)
+#define SEND_INTERVAL CLOCK_SECOND
 
 
 /*
@@ -92,7 +92,7 @@ timer_callback(void* data)
 static void init()
 {
   int random_incount;
-  random_incount = SEND_INTERVAL - CLOCK_SECOND  + random_rand() % SEND_INTERVAL;
+  random_incount = random_rand() % 20 + 40;
   printf("Set Send Timer %d\n", random_incount);
 
   ctimer_set(&ct, random_incount, timer_callback, NULL);
