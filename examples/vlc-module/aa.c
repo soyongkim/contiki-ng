@@ -125,7 +125,7 @@ vip_request() {
 
     if (snd_pkt->query_len)
     {
-      snd_pkt->start_time = clock_time();
+      snd_pkt->start_time = RTIMER_NOW();
       vip_make_query_start_time(snd_pkt->query, snd_pkt->query_len, snd_pkt->start_time);
       printf("time check! %d | %d\n", snd_pkt->start_time, snd_pkt->transmit_time);
       printf("Query:%s\n", snd_pkt->query);

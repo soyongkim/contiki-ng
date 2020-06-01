@@ -82,7 +82,7 @@ PROCESS_THREAD(vr_process, ev, data)
 static void
 timer_callback(void* data)
 {
-  printf("SEND! - time:%d\n", clock_time());
+  printf("SEND! - time:%d\n", RTIMER_NOW());
   vip_request();
 }
 
@@ -125,7 +125,7 @@ vip_request() {
     if(snd_pkt->query_len)
     {
       /* measure transmit time */
-      snd_pkt->start_time = clock_time();
+      snd_pkt->start_time = RTIMER_NOW();
       printf("time check! %d | %u\n", snd_pkt->start_time, snd_pkt->start_time);
       vip_make_query_start_time(snd_pkt->query, snd_pkt->query_len, snd_pkt->start_time);
     }
