@@ -7,6 +7,7 @@
 #include "coap-callback-api.h"
 #include "net/netstack.h"
 #include "sys/ctimer.h"
+#include "sys/rtimer.h"
 
 /* for ROOT in RPL */
 #include "contiki-net.h"
