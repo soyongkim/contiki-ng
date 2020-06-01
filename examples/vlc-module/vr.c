@@ -132,6 +132,8 @@ vip_request() {
       printf("time check! %d\n", snd_pkt->start_time);
       if(snd_pkt->query)
         vip_make_query_start_time(snd_pkt->query, snd_pkt->query_len, (uint32_t)(snd_pkt->start_time));
+
+      printf("Query: %s\n", snd_pkt->query);
     }
 
     /* set vip endpoint */
