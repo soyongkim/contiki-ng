@@ -56,12 +56,6 @@ static int vr_seq;
 static int goal_vg_seq;
 int data;
 
-
-/* test time */
-uint32_t start_time;
-uint32_t end_time;
-
-
 /* vip algorithm */
 void retransmit_on();
 void retransmit_off();
@@ -238,9 +232,6 @@ handler_vsd(vip_message_t *rcv_pkt) {
         terminate_session(chk);
         vip_make_query_goal(query, strlen(query), 1);
 
-        end_time = RTIMER_NOW();
-        printf("- init time: %ld | end time: %ld --\n", start_time, end_time);
-        printf("--- time: %ld second\n", end_time-start_time);
       }
       vip_set_query(snd_pkt, query);
 
@@ -338,7 +329,6 @@ static void trigger_vsd(void* data)
     vip_make_query_src(query, strlen(query), vr_id);
     vip_set_query(snd_pkt, query);
 
-    start_time = RTIMER_NOW();
     snd_pkt->transmit_time = 0;
     process_post(&vr_process, vr_snd_event, (void *)snd_pkt);
 }

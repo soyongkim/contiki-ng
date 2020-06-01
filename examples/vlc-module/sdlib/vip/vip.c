@@ -516,7 +516,7 @@ void vip_make_query_start_time(char *query, int query_len, uint32_t start_time)
     }
 
     char tochar[5];
-    sprintf(tochar, "%d", start_time);
+    sprintf(tochar, "%u", start_time);
     strcat(query, tochar);
 }
 
@@ -532,6 +532,6 @@ void vip_make_query_transmit_time(char *query, int query_len, uint32_t transmit_
     }
 
     char tochar[5];
-    sprintf(tochar, "%d", transmit_time);
+    sprintf(tochar, "%u", transmit_time);
     strcat(query, tochar);
 }
