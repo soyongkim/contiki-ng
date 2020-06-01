@@ -325,7 +325,8 @@ loss_handler() {
     snd_pkt->re_flag = COAP_TYPE_NON;
 
     /* if loss, add loss delay(500 msec) */
-    snd_pkt->transmit_time = 500;
+    snd_pkt->transmit_time = (uint32_t)500;
+    vip_make_query_transmit_time(snd_pkt->query, strlen(snd_pkt->query_len), snd_pkt->transmit_time);
 
     process_post(&vr_process, vr_snd_event, (void *)snd_pkt);
   }
