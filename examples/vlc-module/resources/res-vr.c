@@ -238,7 +238,8 @@ handler_vsd(vip_message_t *rcv_pkt) {
         terminate_session(chk);
         vip_make_query_goal(query, strlen(query), 1);
 
-        end_time = clock_time();
+        end_time = clock_seconds();
+        printf("- init time: %ld | end time: %ld --\n", start_time, end_time);
         printf("--- time: %ld second\n", end_time-start_time);
       }
       vip_set_query(snd_pkt, query);
@@ -337,7 +338,7 @@ static void trigger_vsd(void* data)
     vip_make_query_src(query, strlen(query), vr_id);
     vip_set_query(snd_pkt, query);
 
-    start_time = clock_time();
+    start_time = clock_seconds();
     process_post(&vr_process, vr_snd_event, (void *)snd_pkt);
 }
 
