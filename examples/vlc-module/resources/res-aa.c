@@ -323,6 +323,7 @@ handler_vsd(vip_message_t *rcv_pkt) {
       else
       {
         /* if not goal, turn on vr timer */
+        vip_init_query(ack_pkt, ack_query);
         vip_make_query_timer(ack_query, strlen(ack_query), 1);
         vip_set_query(ack_pkt, ack_query);
       }
