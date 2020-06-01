@@ -306,14 +306,16 @@ handler_vsd(vip_message_t *rcv_pkt) {
       printf("time to aa: %ld\n", rcv_pkt->transmit_time);
     }
 
+    vip_init_query(rcv_pkt, query);
+    vip_make_query_start_time(query, strlen(query), rcv_pkt->start_time);
+    vip_make_query_transmit_time(query, strlen(query), rcv_pkt->transmit_time);
+
     if(rcv_pkt->query_rcv_id)
     {
       if (goal_flag)
       {
         /* forward goal flag to vg */
-        vip_init_query(rcv_pkt, query);
         vip_make_query_goal(query, strlen(query), 1);
-        vip_set_query(rcv_pkt, query);
         printf("Q: %s\n", query);
       }
       else
@@ -327,6 +329,7 @@ handler_vsd(vip_message_t *rcv_pkt) {
       // arrived from vr
       vip_set_dest_ep_cooja(rcv_pkt, dest_addr, VIP_VG_ID, VIP_VG_URL);
       vip_serialize_message(rcv_pkt, buffer);
+      vip_set_query(rcv_pkt, query);
       process_post(&aa_process, aa_snd_event, (void *)rcv_pkt);
     }
     else
@@ -334,6 +337,7 @@ handler_vsd(vip_message_t *rcv_pkt) {
       // arrived from vg
       vip_set_dest_ep_cooja(rcv_pkt, dest_addr, rcv_pkt->vt_id, VIP_VT_URL);
       vip_serialize_message(rcv_pkt, buffer);
+      vip_set_query(rcv_pkt, query);
       process_post(&aa_process, aa_snd_event, (void *)rcv_pkt);    
     }
 }
