@@ -121,7 +121,7 @@ static void init()
 {
   // for a lot of vr simul
   //int random_incount = rand() % 500 + 300;
-  int random_incount = rand() % 500 + 1000;
+  int random_incount = rand() % 500 + 700;
   printf("Set Send Timer %d\n", random_incount);
 
   ctimer_set(&ct, random_incount, timer_callback, NULL);
