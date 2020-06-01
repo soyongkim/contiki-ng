@@ -205,6 +205,7 @@ handler_vsd(vip_message_t *rcv_pkt)
 
   vip_init_query(rcv_pkt, query);
   vip_make_query_transmit_time(query, strlen(query), (uint32_t)rcv_pkt->transmit_time);
+  vip_set_query(rcv_pkt, query);
 
   /* VLC! */
   printf("Broadcast VSD for VR(%d) <= seq(%d)\n", rcv_pkt->vr_id, rcv_pkt->seq);
