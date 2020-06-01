@@ -4,6 +4,7 @@
 #include "vr.h"
 #include "cooja_addr.h"
 #include "sys/ctimer.h"
+#include "time.h"
 
 /* Node ID */
 #include "sys/node-id.h"
@@ -54,6 +55,12 @@ static int session_id;
 static int vr_seq;
 static int goal_vg_seq;
 int data;
+
+
+/* test time */
+time_t start_time;
+time_t end_time;
+
 
 /* vip algorithm */
 void retransmit_on();
@@ -230,6 +237,9 @@ handler_vsd(vip_message_t *rcv_pkt) {
         printf("--------------------------------------------------------------------------------------------------- Goal\n");
         terminate_session(chk);
         vip_make_query_goal(query, strlen(query), 1);
+
+        end_time = time(NULL);
+        printf("--- time: %ld second\n", end_time-start_time);
       }
       vip_set_query(snd_pkt, query);
 
@@ -327,6 +337,7 @@ static void trigger_vsd(void* data)
     vip_make_query_src(query, strlen(query), vr_id);
     vip_set_query(snd_pkt, query);
 
+    start_time = time(NULL);
     process_post(&vr_process, vr_snd_event, (void *)snd_pkt);
 }
 
