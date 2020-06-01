@@ -70,7 +70,6 @@ static char ack_query[50];
 static int nonce_pool[65000];
 
 static int goal_flag;
-static unsigned long rcv_time;
 
 static char uplink_id[50] = {"ISL_AA_UPLINK_ID"};
 
