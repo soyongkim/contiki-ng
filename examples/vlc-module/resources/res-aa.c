@@ -307,7 +307,6 @@ handler_vsd(vip_message_t *rcv_pkt) {
     }
 
     vip_init_query(rcv_pkt, query);
-    vip_make_query_start_time(query, strlen(query), rcv_pkt->start_time);
     vip_make_query_transmit_time(query, strlen(query), rcv_pkt->transmit_time);
 
     if(rcv_pkt->query_rcv_id)
@@ -321,7 +320,6 @@ handler_vsd(vip_message_t *rcv_pkt) {
       else
       {
         /* if not goal, turn on vr timer */
-        vip_init_query(ack_pkt, ack_query);
         vip_make_query_timer(ack_query, strlen(ack_query), 1);
         vip_set_query(ack_pkt, ack_query);
       }
