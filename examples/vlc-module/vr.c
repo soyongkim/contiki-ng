@@ -109,8 +109,8 @@ vip_request_callback(coap_callback_request_state_t *res_callback_state) {
         }
 
         if(coap_get_query_variable(state->response, "timer", &timer)) {
-            if(atoi(timer) > 0)
-              res_vr.trigger();
+            printf("------------- TIMER ON ---------\n");
+            res_vr.trigger();
         }
       }
   }
