@@ -115,14 +115,7 @@ static void
 timer_callback(void* data)
 {
   printf("SEND!\n");
-  int loss_simul_var = random_rand() % 100;
-  if(loss_simul_var >= 10)
-  { printf("SUCCESS!\n");
-    vip_request();
-  }
-  else{
-    printf("Loss!\n");
-  }
+  vip_request();
 }
 
 static void init()
@@ -153,6 +146,20 @@ vip_request() {
   while(!vip_is_empty())
   {
     snd_pkt = vip_front_snd_buf();
+
+    if(snd_pkt->type == VIP_TYPE_VSD)
+    {
+      int loss_simul_var = random_rand() % 100;
+      if (loss_simul_var >= 10)
+      {
+        printf("SUCCESS!\n");
+      }
+      else
+      {
+        printf("LOSS! -----------------------------------------------------------------------\n");
+        return;
+      }
+    }
 
     if (snd_pkt->query_len)
     {
