@@ -283,7 +283,6 @@ handler_vsd(vip_message_t *rcv_pkt) {
       }
 
       vip_init_query(ack_pkt, ack_query);
-      vip_make_query_start_time(ack_query, strlen(ack_query), RTIMER_NOW() / 1000);
       vip_make_query_transmit_time(ack_query, strlen(ack_query), rcv_pkt->transmit_time);
       vip_set_query(ack_pkt, ack_query);
     }
