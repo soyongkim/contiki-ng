@@ -45,6 +45,7 @@
 #include "coap-callback-api.h"
 #include "net/netstack.h"
 #include "sys/ctimer.h"
+#include "random.h"
 
 /* Node ID */
 #include "sys/node-id.h"
@@ -114,7 +115,14 @@ static void
 timer_callback(void* data)
 {
   printf("SEND!\n");
-  vip_request();
+  int loss_simul_var = random_rand() % 100;
+  if(loss_simul_var >= 10)
+  { printf("SUCCESS!\n");
+    vip_request();
+  }
+  else{
+    printf("Loss!\n");
+  }
 }
 
 static void init()
@@ -153,7 +161,6 @@ vip_request() {
       printf("time check! %d | %d\n", snd_pkt->start_time, snd_pkt->transmit_time);
       printf("Query:%s\n", snd_pkt->query);
     }
-
 
     coap_endpoint_parse(snd_pkt->dest_coap_addr, strlen(snd_pkt->dest_coap_addr), &dest_ep);
 

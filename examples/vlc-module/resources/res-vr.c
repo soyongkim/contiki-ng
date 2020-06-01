@@ -189,7 +189,7 @@ handler_sea(vip_message_t *rcv_pkt) {
 
   update_session(rcv_pkt->session_id, 0, rcv_pkt->vg_seq);
   show_session_info();
-  goal_vg_seq = rcv_pkt->vg_seq + 100;
+  goal_vg_seq = rcv_pkt->vg_seq + 50;
 
   retransmit_off();
 
@@ -321,6 +321,10 @@ loss_handler() {
     loss_count = 0;
     printf("--------------------------------------------------------------------------VIP RETRANSMIT\n");
     snd_pkt->re_flag = COAP_TYPE_NON;
+
+    /* if loss, add loss delay(500 msec) */
+    snd_pkt->transmit_time = 500;
+
     process_post(&vr_process, vr_snd_event, (void *)snd_pkt);
   }
 }
