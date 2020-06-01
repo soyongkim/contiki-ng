@@ -102,6 +102,8 @@ vip_request_callback(coap_callback_request_state_t *res_callback_state) {
   /* Process ack-pkt from vg */
   if (state->status == COAP_REQUEST_STATUS_RESPONSE)
   {
+    const char *start = NULL;
+    const char *transmit = NULL;
     vip_message_t rcv_ack[1];
 
     printf("[RES] Ack:%d - mid(%x)\n", state->response->code, state->response->mid);
@@ -112,6 +114,19 @@ vip_request_callback(coap_callback_request_state_t *res_callback_state) {
         printf("VIP: Not VIP Packet\n");
         return;
       }
+
+      if (coap_get_query_variable(request, "start", &start))
+      {
+        rcv_ack->start_time = atoi(start);
+        printf("rcvd start time: %d\n", rcv_ack->start_time);
+      }
+
+      if (coap_get_query_variable(request, "transmit", &transmit))
+      {
+        rcv_ack->transmit_time = atoi(transmit);
+        printf("rcvd transmit time: %d\n", rcv_ack->transmit_time);
+      }
+
       vip_route(rcv_ack, &aa_type_handler);
     }
   }

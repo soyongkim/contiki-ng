@@ -54,6 +54,7 @@ static int loss_count = 0;
 static int session_id;
 static int vr_seq;
 static int goal_vg_seq;
+static uint32_t ttd;
 int data;
 
 /* vip algorithm */
@@ -206,6 +207,21 @@ handler_vsd(vip_message_t *rcv_pkt) {
     printf("cur vg_seq(%d) <====> rcvd vg_seq(%d)\n", chk->vg_seq, rcv_pkt->seq);
     if (rcv_pkt->seq == chk->vg_seq)
     {
+
+      if (rcv_pkt->start_time)
+      {
+        uint32_t cur_time = RTIMER_NOW() / 1000;
+        printf("Cur time: %d\n", cur_time);
+        rcv_pkt->transmit_time += cur_time - rcv_pkt->start_time;
+        printf("time to aa: %u\n", rcv_pkt->transmit_time);
+
+        ttd += rcv_pkt->transmit_time;
+        printf("total transmition delay: %d\n", ttd);
+      }
+
+      vip_init_query(rcv_pkt, query);
+      vip_make_query_transmit_time(query, strlen(query), 0);
+
       // Next vg seq data
       chk->vg_seq++;
       // Next to send data to vg

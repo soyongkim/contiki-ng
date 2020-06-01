@@ -68,6 +68,7 @@ static int vt_id, aa_id;
 static vip_message_t snd_pkt[1];
 static uint8_t buffer[VIP_MAX_PKT_SIZE];
 static char dest_addr[50];
+static int query[50];
 
 /* use ack for query */
 static vip_message_t ack_pkt[1];
@@ -96,13 +97,28 @@ TYPE_HANDLER(vt_type_handler, NULL, handler_vrr, handler_vra,
 static void
 res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset)
 {
+
+  const char *start = NULL;
+  const char *transmit = NULL;
   printf("Received - mid(%x)\n", request->mid);
-  
+
   static vip_message_t rcv_pkt[1];
   if (vip_parse_common_header(rcv_pkt, request->payload, request->payload_len) != VIP_NO_ERROR)
   {
-     printf("vip_pkt have problem\n");
-     return;
+    printf("vip_pkt have problem\n");
+    return;
+  }
+
+  if (coap_get_query_variable(request, "start", &start))
+  {
+    rcv_pkt->start_time = atoi(start);
+    printf("rcvd start time: %d\n", rcv_pkt->start_time);
+  }
+
+  if (coap_get_query_variable(request, "transmit", &transmit))
+  {
+    rcv_pkt->transmit_time = atoi(transmit);
+    printf("rcvd transmit time: %d\n", rcv_pkt->transmit_time);
   }
 
   vip_route(rcv_pkt, &vt_type_handler);
@@ -177,15 +193,24 @@ handler_sec(vip_message_t *rcv_pkt) {
 }
 
 static void
-handler_vsd(vip_message_t *rcv_pkt) {
+handler_vsd(vip_message_t *rcv_pkt)
+{
+  if (rcv_pkt->start_time)
+  {
+    uint32_t cur_time = RTIMER_NOW() / 1000;
+    printf("Cur time: %d\n", cur_time);
+    rcv_pkt->transmit_time += cur_time - rcv_pkt->start_time;
+    printf("time to aa: %u\n", rcv_pkt->transmit_time);
+  }
+
+  vip_init_query(rcv_pkt, query);
+  vip_make_query_transmit_time(query, strlen(query), (uint32_t)rcv_pkt->transmit_time);
 
   /* VLC! */
   printf("Broadcast VSD for VR(%d) <= seq(%d)\n", rcv_pkt->vr_id, rcv_pkt->seq);
   vip_set_dest_ep_cooja(rcv_pkt, dest_addr, VIP_BROADCAST, VIP_VR_URL);
   process_post(&vt_process, vt_snd_event, (void *)rcv_pkt);
-
 }
-
 
 static void
 handler_alloc(vip_message_t *rcv_pkt) {

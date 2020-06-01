@@ -49,6 +49,7 @@ static uint8_t buffer[VIP_MAX_PKT_SIZE];
 
 /* use ack for query */
 static vip_message_t ack_pkt[1];
+static ack_query[50];
 
 static mutex_t v;
 
@@ -249,7 +250,6 @@ handler_vsd(vip_message_t *rcv_pkt) {
       printf("time to vg: %u\n", rcv_pkt->transmit_time);
     }
 
-
     session_t *chk;
     if((chk = check_session(rcv_pkt->vr_id)))
     {
@@ -281,6 +281,11 @@ handler_vsd(vip_message_t *rcv_pkt) {
         vip_set_field_vsd(ack_pkt, chk->session_id, chk->vg_seq-1, (void *)payload, 100);
         vip_serialize_message(ack_pkt, buffer);
       }
+
+      vip_init_query(ack_pkt, ack_query);
+      vip_make_query_start_time(ack_query, strlen(ack_query), RTIMER_NOW() / 1000);
+      vip_make_query_transmit_time(ack_query, strlen(ack_query), rcv_pkt->transmit_time);
+      vip_set_query(ack_pkt, ack_query);
     }
 }
 
