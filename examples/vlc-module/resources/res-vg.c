@@ -81,6 +81,8 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
 {
   const char *src = NULL;
   const char *goal = NULL;
+  const char *start = NULL;
+  const char *transmit = NULL;
   printf("Received - mid(%x)\n", request->mid);
 
   static vip_message_t rcv_pkt[1];
@@ -99,6 +101,19 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
       printf("--------------------------------------------------------------------------------------------------- Goal\n");
       goal_flag = 1;
   }
+  
+  if(coap_get_query_variable(request, "start", &start))
+  {
+      rcv_pkt->start_time = atol(start);
+      printf("rcvd start time: %ld\n", rcv_pkt->start_time);
+  }
+
+  if(coap_get_query_variable(request, "transmit", &transmit))
+  {
+      rcv_pkt->transmit_time = atol(transmit);
+      printf("rcvd transmit time: %ld\n", rcv_pkt->transmit_time);
+  }
+
 
   vip_route(rcv_pkt, &vg_type_handler);
 
@@ -223,6 +238,14 @@ handler_sec(vip_message_t *rcv_pkt) {
 
 static void
 handler_vsd(vip_message_t *rcv_pkt) {
+    if(rcv_pkt->start_time)
+    {
+      printf("time hop to hop: %ld\n",  clock_seconds() - rcv_pkt->start_time);
+      rcv_pkt->transmit_time += clock_seconds() - rcv_pkt->start_time;
+      printf("time to vg: %ld\n", rcv_pkt->transmit_time);
+    }
+
+
     session_t *chk;
     if((chk = check_session(rcv_pkt->vr_id)))
     {

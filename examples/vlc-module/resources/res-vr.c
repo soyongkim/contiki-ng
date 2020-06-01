@@ -339,6 +339,7 @@ static void trigger_vsd(void* data)
     vip_set_query(snd_pkt, query);
 
     start_time = clock_seconds();
+    snd_pkt->transmit_time = 0;
     process_post(&vr_process, vr_snd_event, (void *)snd_pkt);
 }
 

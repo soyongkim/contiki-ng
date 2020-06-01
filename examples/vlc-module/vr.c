@@ -38,6 +38,7 @@ static coap_message_t request[1];
 static  vip_message_t *snd_pkt;
 
 static struct ctimer ct;
+int random_incount;
 /* using coap callback api */
 static void vip_request_callback(coap_callback_request_state_t *callback_state);
 static void vip_request();
@@ -86,8 +87,7 @@ timer_callback(void* data)
 
 static void init()
 {
-  int random_incount;
-  random_incount = random_rand() % 30;
+  random_incount = random_rand() % 300 + 300;
   printf("Set Send Timer %d\n", random_incount);
 
   ctimer_set(&ct, random_incount, timer_callback, NULL);
@@ -120,6 +120,10 @@ vip_request() {
   while(!vip_is_empty())
   {
     snd_pkt = vip_front_snd_buf();
+
+    /* measure transmit time */
+    snd_pkt->start_time = clock_seconds();
+    vip_make_query_start_time(snd_pkt->query, snd_pkt->query_len, snd_pkt->start_time);
 
     /* set vip endpoint */
     coap_endpoint_parse(snd_pkt->dest_coap_addr, strlen(snd_pkt->dest_coap_addr), &dest_ep);

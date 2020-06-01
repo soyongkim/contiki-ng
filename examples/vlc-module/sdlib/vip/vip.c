@@ -504,6 +504,34 @@ void vip_make_query_goal(char* query, int query_len, int flag)
     strcat(query, tochar);
 }
 
+void vip_make_query_start_time(char *query, int query_len, unsigned long start_time)
+{
+    if (!query_len)
+    {
+        strcpy(query, "?start=");
+    }
+    else
+    {
+        strcat(query, "&start=");
+    }
 
+    char tochar[5];
+    sprintf(tochar, "%ld", start_time);
+    strcat(query, tochar);
+}
 
+void vip_make_query_transmit_time(char *query, int query_len, unsigned long transmit_time)
+{
+    if (!query_len)
+    {
+        strcpy(query, "?transmit=");
+    }
+    else
+    {
+        strcat(query, "&transmit=");
+    }
 
+    char tochar[5];
+    sprintf(tochar, "%ld", transmit_time);
+    strcat(query, tochar);
+}
