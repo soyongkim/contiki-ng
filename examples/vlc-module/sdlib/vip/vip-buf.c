@@ -44,6 +44,8 @@ vip_snd_node_t* make_vip_pkt_node(vip_message_t* vip_pkt)
     /* con, non type flag */
     node->vip_pkt->re_flag = vip_pkt->re_flag;
 
+    node->vip_pkt->type = vip_pkt->type;
+
     return node;
 }
 

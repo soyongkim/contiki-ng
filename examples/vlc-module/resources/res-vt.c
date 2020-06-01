@@ -208,7 +208,6 @@ handler_vsd(vip_message_t *rcv_pkt)
   vip_set_query(rcv_pkt, query);
 
   /* VLC! */
-  rcv_pkt->type = VIP_TYPE_VSD;
   printf("Broadcast VSD for VR(%d) <= seq(%d)\n", rcv_pkt->vr_id, rcv_pkt->seq);
   vip_set_dest_ep_cooja(rcv_pkt, dest_addr, VIP_BROADCAST, VIP_VR_URL);
   process_post(&vt_process, vt_snd_event, (void *)rcv_pkt);
