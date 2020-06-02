@@ -91,7 +91,7 @@ static void init()
   random_incount = random_rand() % 500 + 500;
   printf("Set Send Timer %d\n", random_incount);
 
-  ctimer_set(&ct, random_incount, timer_callback, NULL);
+  ctimer_set(&ct, 1, timer_callback, NULL);
 }
 
 static void
