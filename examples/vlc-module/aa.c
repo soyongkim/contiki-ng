@@ -37,9 +37,9 @@ static coap_message_t request[1];
 static  vip_message_t* snd_pkt;
 static struct ctimer ct;
 
-/* test multi thead */
-static struct cooja_mt_thread test_thread[1];
 
+/* test multi thead */
+static struct cooja_mtarch_thread test_thread;
 
 /* using coap callback api */
 static void vip_request_callback(coap_callback_request_state_t *callback_state);
@@ -68,7 +68,7 @@ PROCESS_THREAD(aa_process, ev, data)
    */
   coap_activate_resource(&res_aa, VIP_AA_URL);
 
-  cooja_mtarch_start(test_thread, init, NULL);
+  cooja_mtarch_start(&test_thread, init, NULL);
   /* Define application-specific events here. */
   while(1) {
       PROCESS_WAIT_EVENT();
@@ -76,7 +76,7 @@ PROCESS_THREAD(aa_process, ev, data)
       if(ev == aa_snd_event) {
         vip_push_snd_buf((vip_message_t*)data);
         // init();
-        cooja_mtarch_exec(test_thread);
+        cooja_mtarch_exec(&test_thread);
       }
   }
 
