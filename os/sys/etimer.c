@@ -47,6 +47,7 @@
 #include "contiki.h"
 
 #include "sys/etimer.h"
+#include "sys/rtimer.h"
 #include "sys/process.h"
 
 static struct etimer *timerlist;
@@ -64,7 +65,9 @@ update_time(void)
   if(timerlist == NULL) {
     next_expiration = 0;
   } else {
-    now = clock_time();
+    /* [smalldragon] test */
+    //now = clock_time();
+    now = RTIMER_NOW()/1000;
     t = timerlist;
     /* Must calculate distance to next time into account due to wraps */
     tdist = t->timer.start + t->timer.interval - now;
