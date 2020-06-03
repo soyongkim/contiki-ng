@@ -176,4 +176,5 @@ vip_request() {
   }
 
   etimer_pending();
+  printf("etimer_next_expireation_time: %d\n", etimer_next_expiration_time());
 }
