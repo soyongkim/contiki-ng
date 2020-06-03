@@ -347,7 +347,7 @@ Java_org_contikios_cooja_corecomm_CLASSNAME_tick(JNIEnv *env, jobject obj)
 
   /* Save nearest expiration time */
   simEtimerNextExpirationTime = etimer_next_expiration_time();
-  printf("[cooja-platform] sim Etimer Next Expiration Time : %d\n", simEtimerNextExpirationTime);
+  //printf("[cooja-platform] sim Etimer Next Expiration Time : %d\n", simEtimerNextExpirationTime);
 
 }
 /*---------------------------------------------------------------------------*/
