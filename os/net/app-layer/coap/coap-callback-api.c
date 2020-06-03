@@ -98,7 +98,7 @@ coap_request_callback(void *callback_data, coap_message_t *response)
   state->response = response;
 
   //LOG_DBG("request callback\n");
-  printf("[callback-api] request callback\n");
+  printf("[callback-api] request callback - clock_time(%d)\n", clock_time());
 
   if(!state->response) {
     printf("[callback-api] Server not responding giving up...\n");
@@ -111,7 +111,7 @@ coap_request_callback(void *callback_data, coap_message_t *response)
   coap_get_header_block2(state->response, &state->res_block, &state->more, NULL, NULL);
   coap_get_header_block1(state->response, &res_block1, NULL, NULL, NULL);
 
-  printf("Received #%lu%s B1:%lu (%u bytes)\n",
+  LOG_DBG("Received #%lu%s B1:%lu (%u bytes)\n",
           (unsigned long)state->res_block, (unsigned)state->more ? "+" : "",
           (unsigned long)res_block1,
           state->response->payload_len);
