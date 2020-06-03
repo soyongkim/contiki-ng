@@ -38,7 +38,7 @@ static  vip_message_t* snd_pkt;
 static struct ctimer ct;
 
 /* test multi thead */
-static struct cooja_mt_thread test_thread;
+static struct cooja_mt_thread test_thread[1];
 
 
 /* using coap callback api */
