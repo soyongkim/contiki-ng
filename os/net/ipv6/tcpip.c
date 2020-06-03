@@ -826,7 +826,8 @@ PROCESS_THREAD(tcpip_process, ev, data)
 #if UIP_CONF_ICMP6
   tcpip_icmp6_event = process_alloc_event();
 #endif /* UIP_CONF_ICMP6 */
-  etimer_set(&periodic, CLOCK_SECOND / 2);
+  /* [smalldragon] test periodic */
+  etimer_set(&periodic, CLOCK_SECOND / 10);
 
   uip_init();
 #ifdef UIP_FALLBACK_INTERFACE
