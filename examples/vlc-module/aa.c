@@ -35,7 +35,7 @@ static coap_message_t request[1];
 
 /* vip packet */
 static  vip_message_t* snd_pkt;
-static struct ctimer ct;
+//static struct ctimer ct;
 static struct etimer et;
 
 
@@ -65,6 +65,7 @@ PROCESS_THREAD(aa_process, ev, data)
    * All static variables are the same for each URI path.
    */
   coap_activate_resource(&res_aa, VIP_AA_URL);
+  etimer_set(&et, CLOCK_SECOND/100);
 
   /* Define application-specific events here. */
   while(1) {
@@ -100,9 +101,9 @@ static void init()
   random_incount = CLOCK_SECOND/100;
   printf("Set Send Timer %d\n", random_incount);
 
-  //timer_set(&et, CLOCK_SECOND/100);
+  etimer_reset(&et);
 
-  ctimer_set(&ct, random_incount, timer_callback, NULL);
+  //ctimer_set(&ct, random_incount, timer_callback, NULL);
 }
 
 

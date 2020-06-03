@@ -97,6 +97,7 @@ PROCESS_THREAD(vt_process, ev, data)
    */
   coap_activate_resource(&res_vt, VIP_VT_URL);
 
+  etimer_set(&et, CLOCK_SECOND/100);
   /* Define application-specific events here. */
   while(1) {
       PROCESS_WAIT_EVENT();
@@ -129,7 +130,7 @@ static void init()
   int random_incount = rand() % 500 + 300;
   printf("Set Send Timer %d\n", random_incount);
 
-  etimer_set(&et, CLOCK_SECOND/100);
+  etimer_reset(&et);
 }
 
 

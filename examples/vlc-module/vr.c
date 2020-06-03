@@ -64,7 +64,7 @@ PROCESS_THREAD(vr_process, ev, data)
    * All static variables are the same for each URI path.
    */
   coap_activate_resource(&res_vr, "vip/vr");
-
+  etimer_set(&et, CLOCK_SECOND/100);
 
   /* Define application-specific events here. */
   while(1) {
@@ -88,7 +88,7 @@ PROCESS_THREAD(vr_process, ev, data)
 static void
 timer_callback(void* data)
 {
-  printf("SEND! - time:%d\n", RTIMER_NOW());
+  printf("SEND! - time:%d\n", clock_time());
   vip_request();
 }
 
@@ -97,7 +97,7 @@ static void init()
   random_incount = random_rand() % 500 + 500;
   printf("Set Send Timer %d\n", random_incount);
 
-  etimer_set(&et, CLOCK_SECOND/100);
+  etimer_reset(&et);
 }
 
 static void
