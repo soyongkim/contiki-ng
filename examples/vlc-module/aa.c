@@ -68,7 +68,7 @@ PROCESS_THREAD(aa_process, ev, data)
    */
   coap_activate_resource(&res_aa, VIP_AA_URL);
 
-  cooja_mtarch_start(&test_thread, init, NULL);
+  cooja_mtarch_start(&test_thread, timer_callback, NULL);
   /* Define application-specific events here. */
   while(1) {
       PROCESS_WAIT_EVENT();
