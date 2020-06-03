@@ -75,7 +75,7 @@ PROCESS_THREAD(aa_process, ev, data)
         init();
       }
 
-      if(ev == PROCESS_EVENT_TIMER)
+      if(etimer_expired(&et))
       {
         timer_callback(data);
       }
