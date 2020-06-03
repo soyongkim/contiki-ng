@@ -129,7 +129,7 @@ static void init()
   int random_incount = rand() % 500 + 300;
   printf("Set Send Timer %d\n", random_incount);
 
-  etimer_set(&et, CLOCK_SECOND/10);
+  etimer_set(&et, CLOCK_SECOND/100);
 }
 
 
