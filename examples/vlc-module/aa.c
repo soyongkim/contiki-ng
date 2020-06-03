@@ -79,7 +79,8 @@ PROCESS_THREAD(aa_process, ev, data)
         cooja_mtarch_exec(&test_thread);
       }
   }
-
+  /* for complie */
+  init();
   PROCESS_END();
 }
 
