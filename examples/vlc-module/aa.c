@@ -8,6 +8,8 @@
 #include "net/netstack.h"
 #include "sys/ctimer.h"
 #include "sys/rtimer.h"
+#include "sys/cooja_mt.h"
+
 
 /* for ROOT in RPL */
 #include "contiki-net.h"
@@ -34,6 +36,9 @@ static coap_message_t request[1];
 /* vip packet */
 static  vip_message_t* snd_pkt;
 static struct ctimer ct;
+
+/* test multi thead */
+static struct cooja_mt_thread test_thread;
 
 
 /* using coap callback api */
@@ -63,14 +68,15 @@ PROCESS_THREAD(aa_process, ev, data)
    */
   coap_activate_resource(&res_aa, VIP_AA_URL);
 
-
+  cooja_mtarch_start(&test_thread, init, NULL);
   /* Define application-specific events here. */
   while(1) {
       PROCESS_WAIT_EVENT();
 
       if(ev == aa_snd_event) {
         vip_push_snd_buf((vip_message_t*)data);
-        init();
+        // init();
+        cooja_mtarch_exec(&test_thread);
       }
   }
 
@@ -161,4 +167,5 @@ vip_request() {
 
     vip_pop_snd_buf();
   }
+  cooja_mtarch_yield(&test_thread);
 }
