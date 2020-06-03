@@ -344,9 +344,11 @@ Java_org_contikios_cooja_corecomm_CLASSNAME_tick(JNIEnv *env, jobject obj)
 
   /* Do we have any pending timers */
   simEtimerPending = etimer_pending();
+  printf("[cooja-platform] Etimer Pend\n");
 
   /* Save nearest expiration time */
   simEtimerNextExpirationTime = etimer_next_expiration_time();
+  printf("[cooja-platform] sim Etimer Next Expiration Time : %d\n", simEtimerNextExpirationTime)
 
 }
 /*---------------------------------------------------------------------------*/

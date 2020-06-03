@@ -516,7 +516,7 @@ process_callback(coap_timer_t *t)
   resource = coap_timer_get_user_data(t);
   if(resource != NULL && (resource->flags & IS_PERIODIC)
      && resource->periodic != NULL && resource->periodic->period) {
-    printf("[coap-engine] Periodic: timer expired for /%s (period: %"PRIu32")\n",
+    LOG_DBG("[coap-engine] Periodic: timer expired for /%s (period: %"PRIu32")\n",
             resource->url, resource->periodic->period);
 
     if(!is_initialized) {
