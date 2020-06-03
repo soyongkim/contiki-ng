@@ -35,7 +35,7 @@ static coap_message_t request[1];
 
 /* vip packet */
 static  vip_message_t* snd_pkt;
-//static struct ctimer ct;
+static struct ctimer ct;
 static struct etimer et;
 
 
@@ -96,12 +96,13 @@ timer_callback(void* data)
 static void init()
 {
   int random_incount;
-  random_incount = random_rand() % 200 + 100;
+  //random_incount = random_rand() % 200 + 100;
+  random_incount = CLOCK_SECOND/100;
   printf("Set Send Timer %d\n", random_incount);
 
-  etimer_set(&et, CLOCK_SECOND/100);
+  //timer_set(&et, CLOCK_SECOND/100);
 
-  //ctimer_set(&ct, 3, timer_callback, NULL);
+  ctimer_set(&ct, random_incount, timer_callback, NULL);
 }
 
 
