@@ -66,8 +66,7 @@ update_time(void)
     next_expiration = 0;
   } else {
     /* [smalldragon] test */
-    //now = clock_time();
-    now = RTIMER_NOW()/1000;
+    now = clock_time();
     t = timerlist;
     /* Must calculate distance to next time into account due to wraps */
     tdist = t->timer.start + t->timer.interval - now;
