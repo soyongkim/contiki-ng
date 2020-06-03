@@ -167,5 +167,5 @@ vip_request() {
 
     vip_pop_snd_buf();
   }
-  cooja_mtarch_yield(&test_thread);
+  cooja_mtarch_yield();
 }
