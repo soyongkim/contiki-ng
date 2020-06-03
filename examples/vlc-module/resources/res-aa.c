@@ -8,6 +8,7 @@
 /* Node ID */
 #include "sys/node-id.h"
 #include "sys/rtimer.h"
+#include "sys/ctimer.h"
 
 /* test pthread */
 #include "os/sys/pt.h"
@@ -101,6 +102,7 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
   const char *start = NULL;
   const char *transmit = NULL;
   printf("Received - mid(%x) - clock_time(%d)\n", request->mid, clock_time());
+  
 
   static vip_message_t rcv_pkt[1];
   if (vip_parse_common_header(rcv_pkt, request->payload, request->payload_len) != VIP_NO_ERROR)
