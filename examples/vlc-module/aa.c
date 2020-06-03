@@ -68,7 +68,7 @@ PROCESS_THREAD(aa_process, ev, data)
    */
   coap_activate_resource(&res_aa, VIP_AA_URL);
 
-  cooja_mtarch_start(&test_thread, init, NULL);
+  cooja_mtarch_start(test_thread, init, NULL);
   /* Define application-specific events here. */
   while(1) {
       PROCESS_WAIT_EVENT();
@@ -76,7 +76,7 @@ PROCESS_THREAD(aa_process, ev, data)
       if(ev == aa_snd_event) {
         vip_push_snd_buf((vip_message_t*)data);
         // init();
-        cooja_mtarch_exec(&test_thread);
+        cooja_mtarch_exec(test_thread);
       }
   }
 
