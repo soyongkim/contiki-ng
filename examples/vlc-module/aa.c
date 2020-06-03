@@ -81,6 +81,7 @@ PROCESS_THREAD(aa_process, ev, data)
   }
   /* for complie */
   init();
+  vip_request();
   PROCESS_END();
 }
 
@@ -90,7 +91,7 @@ static void
 timer_callback(void* data)
 {
   printf("SEND!\n");
-  vip_request();
+  //vip_request();
 }
 
 static void init()
