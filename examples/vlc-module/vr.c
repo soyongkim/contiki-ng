@@ -64,7 +64,8 @@ PROCESS_THREAD(vr_process, ev, data)
    * All static variables are the same for each URI path.
    */
   coap_activate_resource(&res_vr, "vip/vr");
-  etimer_set(&et, CLOCK_SECOND/10);
+  printf("What? %d\n", CLOCK_SECOND);
+  etimer_set(&et, CLOCK_SECOND);
 
   /* Define application-specific events here. */
   while(1) {
