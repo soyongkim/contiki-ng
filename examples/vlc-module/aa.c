@@ -76,7 +76,7 @@ PROCESS_THREAD(aa_process, ev, data)
       if(ev == aa_snd_event) {
         vip_push_snd_buf((vip_message_t*)data);
         // init();
-        cooja_mt_exec(&test_thread);
+       // cooja_mt_exec(&test_thread);
       }
   }
   /* for complie */
