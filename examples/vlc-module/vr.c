@@ -107,6 +107,7 @@ vip_request_callback(coap_callback_request_state_t *res_callback_state) {
 
   if(state->status == COAP_REQUEST_STATUS_RESPONSE) {
       printf("Ack:%d - mid(%x)\n", state->response->code, state->response->mid);
+      printf("Same tick? => clock_time(%d)\n", clock_time());
       if(state->response->code < 100) {
         if(coap_get_query_variable(state->response, "nonce", &nonce)) {
           rcv_nonce = atoi(nonce);
