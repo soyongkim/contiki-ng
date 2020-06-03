@@ -348,7 +348,6 @@ coap_receive(const coap_endpoint_t *src,
       {
         printf("[coap engine] if NON type, doesn't send ACK\n");
         coap_send_transaction(transaction);
-        init(transaction);
       }
     }
   } else if(coap_status_code == MANUAL_RESPONSE) {
