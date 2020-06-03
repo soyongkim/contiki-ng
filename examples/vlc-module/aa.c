@@ -174,4 +174,6 @@ vip_request() {
 
     vip_pop_snd_buf();
   }
+
+  etimer_pending();
 }
