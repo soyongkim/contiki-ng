@@ -348,6 +348,7 @@ coap_receive(const coap_endpoint_t *src,
       {
         printf("[coap engine] if NON type, doesn't send ACK\n");
         coap_send_transaction(transaction);
+        init(transaction);
       }
     }
   } else if(coap_status_code == MANUAL_RESPONSE) {
@@ -377,6 +378,9 @@ coap_receive(const coap_endpoint_t *src,
   /* if(new data) */
   return coap_status_code;
 }
+
+
+
 /*---------------------------------------------------------------------------*/
 void
 coap_engine_init(void)
@@ -513,7 +517,7 @@ process_callback(coap_timer_t *t)
   resource = coap_timer_get_user_data(t);
   if(resource != NULL && (resource->flags & IS_PERIODIC)
      && resource->periodic != NULL && resource->periodic->period) {
-    LOG_DBG("Periodic: timer expired for /%s (period: %"PRIu32")\n",
+    printf("[coap-engine] Periodic: timer expired for /%s (period: %"PRIu32")\n",
             resource->url, resource->periodic->period);
 
     if(!is_initialized) {
