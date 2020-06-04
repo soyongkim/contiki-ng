@@ -98,7 +98,7 @@ static void init()
   random_incount = random_rand() % 500 + 500;
   printf("Set Send Timer %d\n", random_incount);
 
-  etimer_reset(&et);
+  etimer_restart(&et);
 }
 
 static void

@@ -101,7 +101,7 @@ static void init()
   random_incount = CLOCK_SECOND/100;
   printf("Set Send Timer %d\n", random_incount);
 
-  etimer_reset(&et);
+  etimer_restart(&et);
 
   //ctimer_set(&ct, random_incount, timer_callback, NULL);
 }
