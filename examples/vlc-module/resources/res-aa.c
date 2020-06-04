@@ -9,6 +9,7 @@
 #include "sys/node-id.h"
 #include "sys/rtimer.h"
 #include "sys/ctimer.h"
+#include "clock.h"
 
 /* test pthread */
 #include "os/sys/pt.h"
