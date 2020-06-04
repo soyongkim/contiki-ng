@@ -68,7 +68,7 @@ PROCESS_THREAD(vr_process, ev, data)
   printf("What? %d\n", CLOCK_SECOND);
 
   
-  etimer_set(&et, CLOCK_SECOND);
+  etimer_set(&et, CLOCK_SECOND*100);
 
   /* Define application-specific events here. */
   while (1)
