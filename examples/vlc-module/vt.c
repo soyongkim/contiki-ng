@@ -150,7 +150,7 @@ vip_request() {
       coap_set_header_uri_query(request, snd_pkt->query);
 
 
-    printf("Send to %s\n", snd_pkt->dest_coap_addr);
+    printf("Send to %s - clock_time(%d)\n", snd_pkt->dest_coap_addr, clock_time());
     coap_send_request(&callback_state, &dest_ep, request, vip_request_callback);
 
     vip_pop_snd_buf();
