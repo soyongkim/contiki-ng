@@ -62,8 +62,8 @@
 /* Log configuration */
 #include "coap-log.h"
 #define LOG_MODULE "coap-uip"
-//#define LOG_LEVEL  LOG_LEVEL_COAP
-#define LOG_LEVEL  LOG_LEVEL_DBG
+#define LOG_LEVEL  LOG_LEVEL_COAP
+//#define LOG_LEVEL  LOG_LEVEL_DBG
 
 #ifdef WITH_DTLS
 #include "tinydtls.h"
