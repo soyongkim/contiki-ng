@@ -101,7 +101,7 @@ static void init()
 {
   //ctimer_set(&ct, CLOCK_SECOND/100, timer_callback, NULL);
   printf("Set SendTimer - %d\n", clock_time());
-  etimer_reset(&et);
+  etimer_restart(&et);
 }
 
 static void

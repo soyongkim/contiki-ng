@@ -99,7 +99,7 @@ static void init()
 {
   printf("Set SendTimer - %d\n", clock_time());
   //rtimer_set(&rt, RTIMER_NOW()/1000 + CLOCK_SECOND/100, 0, timer_callback, NULL);
-  etimer_reset(&et);
+  etimer_restart(&et);
   //ctimer_set(&ct, random_incount, timer_callback, NULL);
 }
 
