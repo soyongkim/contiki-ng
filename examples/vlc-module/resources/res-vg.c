@@ -243,7 +243,7 @@ handler_vsd(vip_message_t *rcv_pkt) {
     {
       uint32_t cur_time = RTIMER_NOW()/1000;
       uint32_t time_hop = cur_time - rcv_pkt->start_time;
-      printf("cur time: %u\n", cur_time);
+      printf("cur time: %u\n", clock_time());
       printf("rcv start time: %u\n", rcv_pkt->start_time);
       printf("time hop to hop: %u\n", time_hop);
       rcv_pkt->transmit_time += time_hop;
