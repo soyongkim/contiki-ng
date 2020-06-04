@@ -60,7 +60,7 @@ PROCESS_THREAD(vt_process, ev, data)
    */
   coap_activate_resource(&res_vt, VIP_VT_URL);
 
-  etimer_set(&et, CLOCK_SECOND*100);
+  etimer_set(&et, CLOCK_SECOND/10);
   /* Define application-specific events here. */
   while(1) {
       PROCESS_WAIT_EVENT();
@@ -88,11 +88,7 @@ timer_callback(void* data)
 
 static void init()
 {
-  // for a lot of vr simul
-  //int random_incount = rand() % 500 + 300;
-  int random_incount = rand() % 500 + 300;
-  printf("Set Send Timer %d\n", random_incount);
-
+  printf("Set SendTimer - %d\n", clock_time());
   //ctimer_set(&ct, random_incount, timer_callback, NULL);
   etimer_reset(&et);
 }

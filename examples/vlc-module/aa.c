@@ -67,7 +67,7 @@ PROCESS_THREAD(aa_process, ev, data)
    */
   coap_activate_resource(&res_aa, VIP_AA_URL);
 
-  etimer_set(&et, CLOCK_SECOND*100);
+  etimer_set(&et, CLOCK_SECOND/10);
   /* Define application-specific events here. */
   while (1)
   {
@@ -97,11 +97,7 @@ timer_callback(void *ptr)
 
 static void init()
 {
-  int random_incount;
-  //random_incount = random_rand() % 200 + 100;
-  random_incount = CLOCK_SECOND/100;
-  printf("Set Send Timer %d\n", random_incount);
-
+  printf("Set SendTimer - %d\n", clock_time());
   //rtimer_set(&rt, RTIMER_NOW()/1000 + CLOCK_SECOND/100, 0, timer_callback, NULL);
   etimer_reset(&et);
   //ctimer_set(&ct, random_incount, timer_callback, NULL);

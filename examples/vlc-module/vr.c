@@ -68,7 +68,7 @@ PROCESS_THREAD(vr_process, ev, data)
   printf("What? %d\n", CLOCK_SECOND);
 
   
-  etimer_set(&et, CLOCK_SECOND*100);
+  etimer_set(&et, CLOCK_SECOND/10);
 
   /* Define application-specific events here. */
   while (1)
@@ -99,10 +99,8 @@ timer_callback(void* data)
 
 static void init()
 {
-  random_incount = random_rand() % 50;
-  printf("Set Send Timer %d\n", random_incount);
-
   //ctimer_set(&ct, CLOCK_SECOND/100, timer_callback, NULL);
+  printf("Set SendTimer - %d\n", clock_time());
   etimer_reset(&et);
 }
 
