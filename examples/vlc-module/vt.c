@@ -31,7 +31,7 @@ static coap_message_t request[1];
 /* vip packet */
 static  vip_message_t* snd_pkt;
 
-static struct etimer et;
+//static struct etimer et;
 static struct ctimer ct;
 
 
