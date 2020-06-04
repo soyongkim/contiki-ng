@@ -97,7 +97,6 @@ TYPE_HANDLER(aa_type_handler, NULL, handler_vrr, handler_vra,
 static void
 res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset)
 {
-  cloc`k_wait(CLOCK_SECOND);
   const char *src = NULL;
   const char *goal = NULL;
   const char *start = NULL;
