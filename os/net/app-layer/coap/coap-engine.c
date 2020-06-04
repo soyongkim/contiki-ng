@@ -51,13 +51,9 @@
 
 /* Log configuration */
 #include "coap-log.h"
-// #define LOG_MODULE "coap-eng"
-// #define LOG_LEVEL  LOG_LEVEL_COAP
-
-
-//#include "sys/log.h"
 #define LOG_MODULE "coap-eng"
-#define LOG_LEVEL LOG_LEVEL_DBG
+#define LOG_LEVEL  LOG_LEVEL_COAP
+
 
 static void process_callback(coap_timer_t *t);
 
