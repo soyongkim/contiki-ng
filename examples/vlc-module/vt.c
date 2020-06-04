@@ -60,7 +60,7 @@ PROCESS_THREAD(vt_process, ev, data)
    */
   coap_activate_resource(&res_vt, VIP_VT_URL);
 
-  etimer_set(&et, CLOCK_SECOND);
+  etimer_set(&et, CLOCK_SECOND/100);
   /* Define application-specific events here. */
   while(1) {
       PROCESS_WAIT_EVENT();
