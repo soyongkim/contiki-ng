@@ -35,9 +35,10 @@ static coap_message_t request[1];
 
 /* vip packet */
 static  vip_message_t* snd_pkt;
-static struct ctimer ct;
-//static struct etimer et;
-//static struct rtimer rt;
+
+
+static struct etimer et;
+//static struct ctimer ct;
 
 
 /* using coap callback api */
@@ -57,9 +58,8 @@ PROCESS_THREAD(aa_process, ev, data)
   PROCESS_BEGIN();
   PROCESS_PAUSE();
 
-
   aa_snd_event = process_alloc_event();
-  
+
   /*
    * Bind the resources to their Uri-Path.
    * WARNING: Activating twice only means alternate path, not two instances!
@@ -67,20 +67,26 @@ PROCESS_THREAD(aa_process, ev, data)
    */
   coap_activate_resource(&res_aa, VIP_AA_URL);
 
+  etimer_set(&et, CLOCK_SECOND);
   /* Define application-specific events here. */
-  while(1) {
-      PROCESS_WAIT_EVENT();
+  while (1)
+  {
+    PROCESS_WAIT_EVENT();
 
-      if(ev == aa_snd_event) {
-        vip_push_snd_buf((vip_message_t*)data);
-        init();
-      }
+    if (ev == aa_snd_event)
+    {
+      vip_push_snd_buf((vip_message_t *)data);
+      init();
+    }
+
+    if (etimer_expired(&et))
+    {
+      timer_callback(data);
+    }
   }
   /* for complie */
   PROCESS_END();
 }
-
-
 
 static void
 timer_callback(void *ptr)
@@ -97,8 +103,8 @@ static void init()
   printf("Set Send Timer %d\n", random_incount);
 
   //rtimer_set(&rt, RTIMER_NOW()/1000 + CLOCK_SECOND/100, 0, timer_callback, NULL);
-
-  ctimer_set(&ct, random_incount, timer_callback, NULL);
+  etimer_reset(&et);
+  //ctimer_set(&ct, random_incount, timer_callback, NULL);
 }
 
 
