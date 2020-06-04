@@ -319,7 +319,7 @@ Java_org_contikios_cooja_corecomm_CLASSNAME_setMemory(JNIEnv *env, jobject obj, 
 JNIEXPORT void JNICALL
 Java_org_contikios_cooja_corecomm_CLASSNAME_tick(JNIEnv *env, jobject obj)
 {
-  //printf("current tick: %d\n", clock_time());
+  printf("current tick: %d\n", clock_time());
   simProcessRunValue = 0;
 
   /* Let all simulation interfaces act first */
