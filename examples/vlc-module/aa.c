@@ -45,7 +45,7 @@ static void vip_request_callback(coap_callback_request_state_t *callback_state);
 static void vip_request();
 
 
-static void timer_callback(void* data);
+static void timer_callback(struct rtimer *t, void *ptr);
 static void init();
 
 
