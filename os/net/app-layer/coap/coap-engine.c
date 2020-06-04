@@ -346,7 +346,7 @@ coap_receive(const coap_endpoint_t *src,
     if(transaction) {
       if(message->type != COAP_TYPE_NON)
       {
-        printf("[coap engine] if NON type, doesn't send ACK\n");
+        printf("send ACK\n");
         coap_send_transaction(transaction);
       }
     }

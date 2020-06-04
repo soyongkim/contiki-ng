@@ -113,7 +113,6 @@ vip_request_callback(coap_callback_request_state_t *res_callback_state) {
     vip_message_t rcv_ack[1];
 
     printf("[RES] Ack:%d - mid(%x)\n", state->response->code, state->response->mid);
-    printf("Same tick? => clock_time(%d)\n", clock_time());
     if (state->response->code < 100 && state->response->payload_len)
     {
       if (vip_parse_common_header(rcv_ack, state->response->payload, state->response->payload_len) != VIP_NO_ERROR)

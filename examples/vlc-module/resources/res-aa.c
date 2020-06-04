@@ -101,7 +101,7 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
   const char *goal = NULL;
   const char *start = NULL;
   const char *transmit = NULL;
-  printf("Received - mid(%x) - clock_time(%d)\n", request->mid, clock_time());
+  printf("Received - mid(%x)\n", request->mid);
   
 
   static vip_message_t rcv_pkt[1];
