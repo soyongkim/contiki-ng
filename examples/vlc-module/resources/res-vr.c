@@ -83,7 +83,6 @@ TYPE_HANDLER(vr_type_handler, handler_beacon, NULL, handler_vra,
 static void
 res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset)
 {
-
   const char *start = NULL;
   const char *transmit = NULL;
   printf("Received - mid(%x) - clock_time(%d)\n", request->mid, clock_time());
