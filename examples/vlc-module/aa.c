@@ -83,7 +83,7 @@ PROCESS_THREAD(aa_process, ev, data)
 
 
 static void
-timer_callback(void* data)
+timer_callback(struct rtimer *t, void *ptr)
 {
   printf("SEND!\n");
   vip_request();
