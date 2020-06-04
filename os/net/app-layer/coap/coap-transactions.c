@@ -52,8 +52,8 @@
 /* Log configuration */
 #include "coap-log.h"
 #define LOG_MODULE "coap"
-//#define LOG_LEVEL  LOG_LEVEL_COAP
-#define LOG_LEVEL  LOG_LEVEL_DBG
+#define LOG_LEVEL  LOG_LEVEL_COAP
+//#define LOG_LEVEL  LOG_LEVEL_DBG
 
 /*---------------------------------------------------------------------------*/
 MEMB(transactions_memb, coap_transaction_t, COAP_MAX_OPEN_TRANSACTIONS);
@@ -70,6 +70,7 @@ coap_retransmit_transaction(coap_timer_t *nt)
   }
   ++(t->retrans_counter);
   LOG_DBG("Retransmitting %u (%u)\n", t->mid, t->retrans_counter);
+  printf("[coap-transaction] Retransmitting %u (%u)\n", t->mid, t->retrans_counter);
   coap_send_transaction(t);
 }
 /*---------------------------------------------------------------------------*/
