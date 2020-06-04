@@ -50,12 +50,12 @@
 #include <string.h>
 
 /* Log configuration */
-// #include "coap-log.h"
+#include "coap-log.h"
 // #define LOG_MODULE "coap-eng"
 // #define LOG_LEVEL  LOG_LEVEL_COAP
 
 
-#include "sys/log.h"
+//#include "sys/log.h"
 #define LOG_MODULE "coap-eng"
 #define LOG_LEVEL LOG_LEVEL_DBG
 
