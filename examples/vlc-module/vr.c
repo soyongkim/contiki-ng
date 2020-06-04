@@ -38,7 +38,8 @@ static coap_message_t request[1];
 /* vip packet */
 static  vip_message_t *snd_pkt;
 
-static struct etimer et;
+//static struct etimer et;
+static struct ctimer ct;
 int random_incount;
 /* using coap callback api */
 static void vip_request_callback(coap_callback_request_state_t *callback_state);
@@ -65,7 +66,6 @@ PROCESS_THREAD(vr_process, ev, data)
    */
   coap_activate_resource(&res_vr, "vip/vr");
   printf("What? %d\n", CLOCK_SECOND);
-  etimer_set(&et, CLOCK_SECOND);
 
   /* Define application-specific events here. */
   while(1) {
@@ -74,12 +74,6 @@ PROCESS_THREAD(vr_process, ev, data)
       if(ev == vr_snd_event) {
         vip_push_snd_buf((vip_message_t *)data);
         init();
-      }
-
-
-      if(etimer_expired(&et))
-      {
-        timer_callback(data);
       }
   }
 
@@ -95,10 +89,10 @@ timer_callback(void* data)
 
 static void init()
 {
-  random_incount = random_rand() % 500 + 500;
+  random_incount = random_rand() % 50;
   printf("Set Send Timer %d\n", random_incount);
 
-  etimer_restart(&et);
+  ctimer_set(&ct, CLOCK_SECOND/100, timer_callback, NULL);
 }
 
 static void
