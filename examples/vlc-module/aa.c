@@ -45,7 +45,7 @@ static void vip_request_callback(coap_callback_request_state_t *callback_state);
 static void vip_request();
 
 
-static void timer_callback(struct rtimer *t, void *ptr);
+static void timer_callback(void *ptr);
 static void init();
 
 
@@ -83,7 +83,7 @@ PROCESS_THREAD(aa_process, ev, data)
 
 
 static void
-timer_callback(struct rtimer *t, void *ptr)
+timer_callback(void *ptr)
 {
   printf("SEND!\n");
   vip_request();
