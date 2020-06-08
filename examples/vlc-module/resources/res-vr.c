@@ -79,6 +79,10 @@ void retransmit_off();
 static void loss_handler();
 static bool is_my_vip_pkt(vip_message_t* rcv_pkt);
 
+void sliding_window_handler(vip_message_t* rcv_pkt);
+void sliding_window_loss_search();
+void sliding_window_send_ack();
+
 /* A simple actuator example. Toggles the red led */
 EVENT_RESOURCE(res_vr,
          "title=\"vr\";rt=\"Control\"",
