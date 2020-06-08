@@ -54,7 +54,6 @@ void show_buffer_state(session_t* cur);
 
 /* use ack for query */
 static vip_message_t ack_pkt[1];
-static char ack_query[50];
 
 static mutex_t v;
 
