@@ -116,7 +116,7 @@ vip_request() {
     if(snd_pkt->type == VIP_TYPE_VSD)
     {
       int loss_simul_var = random_rand() % 100;
-      if (loss_simul_var >= 0)
+      if (loss_simul_var >= 5)
       {
         printf("SUCCESS!\n");
       }
