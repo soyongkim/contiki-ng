@@ -259,7 +259,7 @@ handler_vsd(vip_message_t *rcv_pkt) {
 }
 
 static void
-hanlder_vda(vip_message_t *rcv_pkt)
+handler_vda(vip_message_t *rcv_pkt)
 {
     /* vg's vsd */
     session_t *cur;
