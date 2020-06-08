@@ -24,7 +24,8 @@
  * Resources to be activated need to be imported through the extern keyword.
  * The build system automatically compiles the resources in the corresponding sub-directory.
  */
-extern coap_resource_t res_vr;
+//extern coap_resource_t res_vr;
+extern coap_resource_t res_vr_stop_and_wait;
 extern vip_entity_t vr_type_handler;
 
 /* test event process */
@@ -64,9 +65,8 @@ PROCESS_THREAD(vr_process, ev, data)
    * WARNING: Activating twice only means alternate path, not two instances!
    * All static variables are the same for each URI path.
    */
-  coap_activate_resource(&res_vr, "vip/vr");
-  printf("What? %d\n", CLOCK_SECOND);
-
+  //coap_activate_resource(&res_vr, "vip/vr");
+  coap_activate_resource(&res_vr_stop_and_wait, VIP_VR_URL);
   
   etimer_set(&et, CLOCK_SECOND/4);
 
