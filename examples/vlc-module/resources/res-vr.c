@@ -53,8 +53,6 @@ static int loss_count = 0;
 /* for simulation */
 static int session_id;
 static int vr_seq;
-static int goal_vg_seq;
-static uint32_t ttd;
 int data;
 
 static int cumul_ack;
