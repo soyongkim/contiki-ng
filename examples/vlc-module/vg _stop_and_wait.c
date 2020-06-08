@@ -18,7 +18,7 @@
  * Resources to be activated need to be imported through the extern keyword.
  * The build system automatically compiles the resources in the corresponding sub-directory.
  */
-extern coap_resource_t res_vg;
+extern coap_resource_t res_vg_stop_and_wait;
 extern vip_entity_t vg_type_handler;
 
 /* test event process */
@@ -60,7 +60,8 @@ PROCESS_THREAD(vg_process, ev, data)
    * WARNING: Activating twice only means alternate path, not two instances!
    * All static variables are the same for each URI path.
    */
-  coap_activate_resource(&res_vg, VIP_VG_URL);
+  coap_activate_resource(&res_vg_stop_and_wait, VIP_VG_URL);
+
   /* Define application-specific events here. */
   while (1)
   {
@@ -68,7 +69,7 @@ PROCESS_THREAD(vg_process, ev, data)
 
     if (ev == vg_snd_event)
     {
-      //vip_push_snd_buf((vip_message_t *)data);
+      vip_push_snd_buf((vip_message_t *)data);
       init();
     }
 

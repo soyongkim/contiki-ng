@@ -1,12 +1,17 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #include <string.h>
-#include "vg.h"
+#include "vr.h"
 #include "coap-engine.h"
 #include "coap-callback-api.h"
 #include "net/netstack.h"
+#include "random.h"
 
+
+#include "sys/ctimer.h"
+#include "sys/rtimer.h"
 
 /* for ROOT in RPL */
 #include "contiki-net.h"
@@ -14,15 +19,16 @@
 /* Node ID */
 #include "sys/node-id.h"
 
+
 /*
  * Resources to be activated need to be imported through the extern keyword.
  * The build system automatically compiles the resources in the corresponding sub-directory.
  */
-extern coap_resource_t res_vg;
-extern vip_entity_t vg_type_handler;
+extern coap_resource_t res_vr_stop_and_wait;
+extern vip_entity_t vr_type_handler;
 
 /* test event process */
-process_event_t vg_snd_event;
+process_event_t vr_snd_event;
 
 /* for send packet */
 static coap_callback_request_state_t callback_state;
@@ -30,45 +36,48 @@ static coap_endpoint_t dest_ep;
 static coap_message_t request[1];
 
 /* vip packet */
-static  vip_message_t* snd_pkt;
+static  vip_message_t *snd_pkt;
 
 static struct etimer et;
-
-
+//static struct ctimer ct;
+int random_incount;
 /* using coap callback api */
 static void vip_request_callback(coap_callback_request_state_t *callback_state);
 static void vip_request();
 
 
-static void timer_callback(void *ptr);
+static void timer_callback(void* data);
 static void init();
 
-PROCESS(vg_process, "VG");
-AUTOSTART_PROCESSES(&vg_process);
+PROCESS(vr_process, "VR");
+AUTOSTART_PROCESSES(&vr_process);
 
-PROCESS_THREAD(vg_process, ev, data)
+PROCESS_THREAD(vr_process, ev, data)
 {
   PROCESS_BEGIN();
   PROCESS_PAUSE();
 
-  /* you must make this node first on cooja. so set the node id to 1 */
-  printf("Node ID is %d\n", node_id);
+  vr_snd_event = process_alloc_event();
 
-  NETSTACK_ROUTING.root_start();
   /*
    * Bind the resources to their Uri-Path.
    * WARNING: Activating twice only means alternate path, not two instances!
    * All static variables are the same for each URI path.
    */
-  coap_activate_resource(&res_vg, VIP_VG_URL);
+  coap_activate_resource(&res_vr_stop_and_wait, "vip/vr");
+  printf("What? %d\n", CLOCK_SECOND);
+
+  
+  etimer_set(&et, CLOCK_SECOND/4);
+
   /* Define application-specific events here. */
   while (1)
   {
     PROCESS_WAIT_EVENT();
 
-    if (ev == vg_snd_event)
+    if (ev == vr_snd_event)
     {
-      //vip_push_snd_buf((vip_message_t *)data);
+      vip_push_snd_buf((vip_message_t *)data);
       init();
     }
 
@@ -82,75 +91,70 @@ PROCESS_THREAD(vg_process, ev, data)
 }
 
 static void
-timer_callback(void *ptr)
+timer_callback(void* data)
 {
-  printf("SEND!\n");
+  printf("SEND! - time:%d\n", clock_time());
   vip_request();
 }
 
 static void init()
 {
+  //ctimer_set(&ct, CLOCK_SECOND/100, timer_callback, NULL);
   printf("Set SendTimer - %d\n", clock_time());
-  //rtimer_set(&rt, RTIMER_NOW()/1000 + CLOCK_SECOND/100, 0, timer_callback, NULL);
   etimer_restart(&et);
-  //ctimer_set(&ct, random_incount, timer_callback, NULL);
 }
-
 
 static void
 vip_request_callback(coap_callback_request_state_t *res_callback_state) {
+  const char *nonce = NULL;
+  const char *timer = NULL;
   coap_request_state_t *state = &res_callback_state->state;
-  /* Process ack-pkt from vg */
-  if (state->status == COAP_REQUEST_STATUS_RESPONSE)
-  {
-    const char *start = NULL;
-    const char *transmit = NULL;
-    vip_message_t rcv_ack[1];
 
-    printf("[RES] Ack:%d - mid(%x)\n", state->response->code, state->response->mid);
-    if (state->response->code < 100 && state->response->payload_len)
-    {
-      if (vip_parse_common_header(rcv_ack, state->response->payload, state->response->payload_len) != VIP_NO_ERROR)
-      {
-        printf("VIP: Not VIP Packet\n");
-        return;
+  if(state->status == COAP_REQUEST_STATUS_RESPONSE) {
+      printf("Ack:%d - mid(%x)\n", state->response->code, state->response->mid);
+      printf("Same tick? => clock_time(%d)\n", clock_time());
+      if(state->response->code < 100) {
+        if(coap_get_query_variable(state->response, "nonce", &nonce)) {
+          rcv_nonce = atoi(nonce);
+          printf("Nonce:%d\n", atoi(nonce));
+        }
+
+        if(coap_get_query_variable(state->response, "timer", &timer)) {
+            //res_vr.trigger();
+        }
       }
-
-      if (coap_get_query_variable(state->response, "start", &start))
-      {
-        rcv_ack->start_time = atoi(start);
-        printf("rcvd start time: %d\n", rcv_ack->start_time);
-      }
-
-      if (coap_get_query_variable(state->response, "transmit", &transmit))
-      {
-        rcv_ack->transmit_time = atoi(transmit);
-        printf("rcvd transmit time: %d\n", rcv_ack->transmit_time);
-      }
-
-      vip_route(rcv_ack, &vg_type_handler);
-    }
   }
 }
 
 static void
 vip_request() {
-  /* set vip endpoint */
   while(!vip_is_empty())
   {
     snd_pkt = vip_front_snd_buf();
 
-    if (snd_pkt->query_len)
+    if(snd_pkt->query_len)
     {
-      snd_pkt->start_time = RTIMER_NOW()/1000;
-      vip_make_query_start_time(snd_pkt->query, snd_pkt->query_len, (uint32_t)snd_pkt->start_time);
-      printf("time check! %d | %d\n", snd_pkt->start_time, snd_pkt->transmit_time);
-      printf("Query:%s\n", snd_pkt->query);
+      /* measure transmit time */
+      snd_pkt->start_time = RTIMER_NOW() / 1000;
+      printf("time check! %d\n", snd_pkt->start_time);
+      if(snd_pkt->query)
+        vip_make_query_start_time(snd_pkt->query, snd_pkt->query_len, (uint32_t)(snd_pkt->start_time));
+
+      if (snd_pkt->re_flag == COAP_TYPE_NON)
+      {
+        /* if loss, add loss delay(500 msec) */
+        snd_pkt->transmit_time = (uint32_t)500;
+        vip_make_query_transmit_time(snd_pkt->query, snd_pkt->query_len, snd_pkt->transmit_time);
+      }
+
+      printf("Query: %s\n", snd_pkt->query);
     }
 
+    /* set vip endpoint */
     coap_endpoint_parse(snd_pkt->dest_coap_addr, strlen(snd_pkt->dest_coap_addr), &dest_ep);
 
     coap_init_message(request, snd_pkt->re_flag, COAP_POST, 0);
+
     coap_set_header_uri_path(request, snd_pkt->dest_path);
     coap_set_payload(request, snd_pkt->buffer, snd_pkt->total_len);
 
