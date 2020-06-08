@@ -47,11 +47,6 @@ static void show_session_info();
 static vip_message_t snd_pkt[1];
 static uint8_t buffer[VIP_MAX_PKT_SIZE];
 static char dest_addr[50];
-static char query[VIP_MAX_QUERY_SIZE];
-
-/* for simul */
-static int simul_buffer[VIP_SIMUL_DATA];
-int last_rcvd_ack, last_sent_seq;
 
 void sliding_window_transfer(vip_message_t *rcv_pkt, session_t* cur);
 void sliding_window_sack_handler(vip_message_t *rcv_pkt, session_t* cur);
