@@ -260,7 +260,7 @@ handler_vda(vip_message_t *rcv_pkt)
     if((cur = check_session(rcv_pkt->vr_id)))
     {
       /* Trigger for data transfer */
-      sliding_window_sack_handler(rcv_pkt, cur);    
+      sliding_window_sack_handler(rcv_pkt, cur);
     }
 }
 
@@ -340,6 +340,7 @@ sliding_window_sack_handler(vip_message_t *rcv_pkt, session_t* cur)
       vip_set_dest_ep_cooja(snd_pkt, dest_addr, rcv_pkt->aa_id, VIP_AA_URL);
       process_post(&vg_process, vg_snd_event, (void *)snd_pkt);
     }
+    free(rcv_pkt->gap_list);
   }
 }
 
