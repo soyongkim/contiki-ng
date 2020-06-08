@@ -297,7 +297,7 @@ sliding_window_transfer(vip_message_t *rcv_pkt, session_t* cur)
     }
   }
   process_post(&vg_process, vg_snd_event, (void *)snd_pkt);
-  sliding_window_transfer(rcv_pkt, cur);
+  show_buffer_state(cur);
 }
 
 void
