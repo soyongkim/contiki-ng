@@ -72,7 +72,6 @@ static uint32_t gap_list[VIP_SIMUL_DATA];
 /* vip algorithm */
 void retransmit_on();
 void retransmit_off();
-static void loss_handler();
 static bool is_my_vip_pkt(vip_message_t* rcv_pkt);
 
 void sliding_window_handler(vip_message_t* rcv_pkt);
@@ -146,10 +145,6 @@ handler_beacon(vip_message_t *rcv_pkt) {
     vip_set_query(snd_pkt, query);
 
     process_post(&vr_process, vr_snd_event, (void *)snd_pkt);
-  } else {
-    if(vip_timeout_swtich) {
-      loss_handler();
-    }
   }
 }
 
@@ -235,6 +230,7 @@ sliding_window_handler(vip_message_t* rcv_pkt)
 {
   // 먼저 패킷이 중복인지 체크
   int index = rcv_pkt->seq - init_seq;
+  printf("index: %d rcvd_seq:%d init_seq:%d\n", index, rcv_pkt->seq, init_seq);
   if(simul_buffer[index] == 1)
   {
     // 중복 카운트
@@ -346,26 +342,6 @@ retransmit_off()
   vip_timeout_swtich = 0;
   loss_count = 0;
 }
-
-static void
-loss_handler() {
-  ++loss_count;
-  printf("---------------- %d ----------------\n", loss_count);
-  /* if the vr received same beacon frame, retransmit the pkt */
-  if(loss_count >= 5) {
-    /* Send recently sent pkt */
-    loss_count = 0;
-    printf("--------------------------------------------------------------------------VIP RETRANSMIT\n");
-    snd_pkt->re_flag = COAP_TYPE_NON;
-
-    /* if loss, add loss delay(500 msec) */
-    snd_pkt->transmit_time = (uint32_t)500;
-    vip_make_query_transmit_time(snd_pkt->query, snd_pkt->query_len, snd_pkt->transmit_time);
-
-    process_post(&vr_process, vr_snd_event, (void *)snd_pkt);
-  }
-}
-
 
 /* --------------------- Trigger for simulation -----------------*/
 static void trigger_ser(void* data)
