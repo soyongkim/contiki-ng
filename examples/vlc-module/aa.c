@@ -21,7 +21,7 @@
  * Resources to be activated need to be imported through the extern keyword.
  * The build system automatically compiles the resources in the corresponding sub-directory.
  */
-extern coap_resource_t res_aa, res_vg;
+extern coap_resource_t res_vg;
 extern vip_entity_t aa_type_handler;
 
 /* test event process */
