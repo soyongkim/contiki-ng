@@ -464,10 +464,11 @@ void vip_parse_vda(vip_message_t* vip_pkt)
     vip_pkt->ack_seq = vip_parse_int_option(offset, 4);
     offset += 4;
     vip_pkt->gap_len = vip_parse_int_option(offset, 4);
+    offset += 4;
 
-    vip_pkt->gap_list = calloc(VIP_SIMUL_DATA, sizeof(int));
     if(vip_pkt->gap_len)
     {
+        vip_pkt->gap_list = calloc(VIP_SIMUL_DATA, sizeof(uint32_t));
         for(int i=0; i<vip_pkt->gap_len; i++)
         {
             vip_pkt->gap_list[i] = vip_parse_int_option(offset, 4);
