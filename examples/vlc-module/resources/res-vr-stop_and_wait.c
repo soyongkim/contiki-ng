@@ -74,7 +74,7 @@ EVENT_RESOURCE(res_vr_stop_and_wait,
 
 
 /* vip type handler */
-TYPE_HANDLER(vr_type_handler, handler_beacon, NULL, handler_vra, 
+TYPE_HANDLER(vr_stop_type_handler, handler_beacon, NULL, handler_vra, 
               handler_vrc, handler_rel, handler_ser, handler_sea, handler_sec,
               handler_vsd, NULL, NULL);
 
@@ -106,7 +106,7 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
     printf("rcvd transmit time: %u\n", rcv_pkt->transmit_time);
   }
 
-  vip_route(rcv_pkt, &vr_type_handler);
+  vip_route(rcv_pkt, &vr_stop_type_handler);
 }
 
 static void

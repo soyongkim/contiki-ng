@@ -72,7 +72,7 @@ EVENT_RESOURCE(res_vg_stop_and_wait,
          res_event_handler);
 
 /* vip type handler */
-TYPE_HANDLER(vg_type_handler, NULL, handler_vrr, handler_vra, 
+TYPE_HANDLER(vg_stop_type_handler, NULL, handler_vrr, handler_vra, 
               handler_vrc, handler_rel, handler_ser, handler_sea, handler_sec,
               handler_vsd, NULL, NULL);
 
@@ -116,7 +116,7 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
       printf("rcvd transmit time: %u\n", rcv_pkt->transmit_time);
   }
 
-  vip_route(rcv_pkt, &vg_type_handler);
+  vip_route(rcv_pkt, &vg_stop_type_handler);
 
   /* for ack */
   if(ack_pkt->total_len)
