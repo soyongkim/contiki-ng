@@ -261,7 +261,7 @@ sliding_window_transfer(vip_message_t *rcv_pkt, session_t* cur)
 {
   /* window 여유 분 만큼 전송을 하자 last_cumul_ack까지 잘받았다는 의미로 사용하기 때문에
      +1 해주어서 그 다음부터 진행 */
-  int start = cur->last_rcvd_ack - cur->init_seq + 1;
+  int start = (cur->last_rcvd_ack + 1) - cur->init_seq;
   printf("last_ack:%d init_seq:%d start:%d\n", cur->last_rcvd_ack, cur->init_seq, start);
   for(int i = start; i < start + VIP_WINDOW_SIZE; i++)
   {
@@ -300,7 +300,7 @@ sliding_window_sack_handler(vip_message_t *rcv_pkt, session_t* cur)
   {
     printf("Cumulative Ack: %d\n", rcv_pkt->ack_seq);
     // index 이전 까지의 모든 데이터를 잘받았다고 표시
-    int start = cur->last_rcvd_ack - cur->init_seq;
+    int start = cur->last_rcvd_ack - cur->init_seq >= 0 ? cur->last_rcvd_ack - cur->init_seq : 0;
     for(int i = start; i <= index; i++)
     {
       cur->simul_buffer[i] = 2;
@@ -411,7 +411,7 @@ static void add_new_session(int vr_id, int session_id, int vr_seq, int vg_seq)
     new->test_data = 0;
 
     new->init_seq = vg_seq;
-    new->last_rcvd_ack = vg_seq;
+    new->last_rcvd_ack = vg_seq -1;
     new->last_sent_seq = 0;
     new->simul_buffer = calloc(VIP_SIMUL_DATA, sizeof(int));
 
