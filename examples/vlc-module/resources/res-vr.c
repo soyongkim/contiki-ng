@@ -251,10 +251,18 @@ sliding_window_handler(vip_message_t* rcv_pkt)
     if(cumul_ack + 1 == rcv_pkt->seq)
     {
       // 기대했던 패킷이 왔음
-      if(++consecutive_cnt >= 2)
+      if (VIP_WINDOW_SIZE == 1)
       {
+        // window size가 1일 경우, 기다리지않고 바로 ack를 보냄
         ack_flag = 1;
-        consecutive_cnt = 0;
+      }
+      else
+      {
+        if (++consecutive_cnt >= 2)
+        {
+          ack_flag = 1;
+          consecutive_cnt = 0;
+        }
       }
       sliding_window_loss_search();
     }
