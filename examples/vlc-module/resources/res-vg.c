@@ -354,7 +354,7 @@ show_buffer_state(session_t* cur)
 {
   printf("cur-state\n");
   int start = cur->last_rcvd_ack - cur->init_seq;
-  for(start; start < VIP_SIMUL_DATA; start++)
+  for(; start < VIP_SIMUL_DATA; start++)
   {
     printf("[%d] ", cur->simul_buffer[start]);
   }
