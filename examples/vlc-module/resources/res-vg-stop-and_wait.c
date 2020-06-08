@@ -23,7 +23,6 @@ static void handler_ser(vip_message_t *rcv_pkt);
 static void handler_sea(vip_message_t *rcv_pkt);
 static void handler_sec(vip_message_t *rcv_pkt);
 static void handler_vsd(vip_message_t *rcv_pkt);
-static void handler_vda(vip_message_t *rcv_pkt);
 
 
 LIST(vr_table);
@@ -43,19 +42,10 @@ static session_t* check_session(int vr_id);
 /* for debug */
 static void show_session_info();
 
+
+
 /* for snd-pkt */
-static vip_message_t snd_pkt[1];
 static uint8_t buffer[VIP_MAX_PKT_SIZE];
-static char dest_addr[50];
-static char query[VIP_MAX_QUERY_SIZE];
-
-/* for simul */
-static int simul_buffer[VIP_SIMUL_DATA];
-int last_rcvd_ack, last_sent_seq;
-
-void sliding_window_transfer(vip_message_t *rcv_pkt, session_t* cur);
-void sliding_window_sack_handler(vip_message_t *rcv_pkt, session_t* cur);
-void show_buffer_state(session_t* cur);
 
 /* use ack for query */
 static vip_message_t ack_pkt[1];
@@ -84,7 +74,7 @@ EVENT_RESOURCE(res_vg,
 /* vip type handler */
 TYPE_HANDLER(vg_type_handler, NULL, handler_vrr, handler_vra, 
               handler_vrc, handler_rel, handler_ser, handler_sea, handler_sec,
-              handler_vsd, handler_vda, NULL);
+              handler_vsd, NULL);
 
 
 /* called by coap-engine proc */
@@ -249,117 +239,58 @@ handler_sec(vip_message_t *rcv_pkt) {
 
 static void
 handler_vsd(vip_message_t *rcv_pkt) {
-    /* vg's vsd */
-    session_t *cur;
-    if((cur = check_session(rcv_pkt->vr_id)))
+    if(rcv_pkt->start_time)
     {
-      /* Trigger for data transfer */
-      sliding_window_transfer(rcv_pkt, cur);    
+      uint32_t cur_time = RTIMER_NOW()/1000;
+      uint32_t time_hop = cur_time - rcv_pkt->start_time;
+      printf("rtimer time: %u\n", cur_time);
+      printf("rcv start time: %u\n", rcv_pkt->start_time);
+      printf("time hop to hop: %u\n", time_hop);
+      rcv_pkt->transmit_time += time_hop;
+      printf("time to vg: %u\n", rcv_pkt->transmit_time);
+      rcv_pkt->start_time = cur_time;
     }
-}
 
-static void
-hanlder_vda(vip_message_t *rcv_pkt)
-{
-    /* vg's vsd */
-    session_t *cur;
-    if((cur = check_session(rcv_pkt->vr_id)))
+    session_t *chk;
+    if((chk = check_session(rcv_pkt->vr_id)))
     {
-      /* Trigger for data transfer */
-      sliding_window_sack_handler(rcv_pkt, cur);    
-    }
-}
-
-
-/* ----------------- function of sliding window ---------------------*/
-void
-sliding_window_transfer(vip_message_t *rcv_pkt, session_t* cur)
-{
-  /* window 여유 분 만큼 전송을 하자 */
-  int start = cur->last_rcvd_ack - cur->init_seq;
-  for(start; start < start + VIP_WINDOW_SIZE; start++)
-  {
-    // 마지막 데이터
-    if(start >= VIP_SIMUL_DATA)
-      break;
-
-    // 보냈던 데이터를 제외하고 연속 전송
-    if(cur->simul_buffer[start] == 0)
-    {
-      cur->simul_buffer[start] = 1;
-      char payload[100];
-      vip_init_message(snd_pkt, VIP_TYPE_VSD, rcv_pkt->aa_id, rcv_pkt->vt_id, rcv_pkt->aa_id);
-      vip_set_field_vsd(snd_pkt, cur->session_id, cur->init_seq + start, payload, 100);
-      vip_serialize_message(snd_pkt, buffer);
-      vip_set_dest_ep_cooja(snd_pkt, dest_addr, rcv_pkt->aa_id, VIP_AA_URL);
-      process_post(&vg_process, vg_snd_event, (void *)snd_pkt);
-
-      // 최신 데이터라면 갱신
-      if(cur->last_sent_seq <= cur->init_seq + start)
+      if(goal_flag)
       {
-        cur->last_sent_seq = cur->init_seq + start;
+        terminate_session(chk);
+        return;
       }
+
+      if(rcv_pkt->seq == chk->vr_seq)
+      {
+        printf("Current state - vr(%d) <= vr_seq(%d) / vg_seq(%d)\n", rcv_pkt->vr_id, chk->vr_seq, chk->vg_seq);
+        chk->vr_seq++;
+
+        chk->test_data++;
+        char payload[101];
+        memset(payload, chk->test_data, 100);
+
+        vip_init_message(ack_pkt, VIP_TYPE_VSD, rcv_pkt->aa_id, rcv_pkt->vt_id, rcv_pkt->vr_id);
+        vip_set_field_vsd(ack_pkt, chk->session_id, chk->vg_seq++, (void *)payload, 100);
+        vip_serialize_message(ack_pkt, buffer);
+      }
+      else
+      {
+        char payload[101];
+        memset(payload, chk->test_data-1, 100);
+
+        vip_init_message(ack_pkt, VIP_TYPE_VSD, rcv_pkt->aa_id, rcv_pkt->vt_id, rcv_pkt->vr_id);
+        vip_set_field_vsd(ack_pkt, chk->session_id, chk->vg_seq-1, (void *)payload, 100);
+        vip_serialize_message(ack_pkt, buffer);
+      }
+
+      vip_init_query(ack_pkt, ack_query);
+      vip_make_query_start_time(ack_query, strlen(ack_query), rcv_pkt->start_time);
+      vip_make_query_transmit_time(ack_query, strlen(ack_query), rcv_pkt->transmit_time);
+      vip_set_query(ack_pkt, ack_query);
     }
-  }
 }
 
-void
-sliding_window_sack_handler(vip_message_t *rcv_pkt, session_t* cur)
-{
-  int index = rcv_pkt->ack_seq - cur->init_seq;
-  if(cur->simul_buffer[index] == 1)
-  {
-    printf("Cumulative Ack: %d\n", rcv_pkt->ack_seq);
-    // index 이전 까지의 모든 데이터를 잘받았다고 표시
-    int start = cur->last_rcvd_ack - cur->init_seq;
-    for(start; start <= index; start++)
-    {
-      cur->simul_buffer[start] = 2;
-    }
-    // index까지 잘받았으니 last_ack를 옮김
-    cur->last_rcvd_ack = cur->init_seq + index;
 
-    // last data check
-    if(rcv_pkt->ack_seq == cur->init_seq + VIP_SIMUL_DATA)
-    {
-      printf("--------------------------------------GOAL---------------------------\n");
-    }
-
-
-    // 그리고 여유분 전송
-    sliding_window_transfer(rcv_pkt, cur);
-    show_buffer_state(cur);
-  }
- 
-
-  // 갭확인
-  if(rcv_pkt->gap_len)
-  {
-    for(int i=0; i<rcv_pkt->gap_len; i++)
-    {
-      // gap 부분만 다시 보냄
-      char payload[100];
-      vip_init_message(snd_pkt, VIP_TYPE_VSD, rcv_pkt->aa_id, rcv_pkt->vt_id, rcv_pkt->aa_id);
-      // 해당 gap seq를 첨가하여 전송. 테스트니까 페이로드는 모두 같은 값임
-      vip_set_field_vsd(snd_pkt, cur->session_id, rcv_pkt->gap_list[i], payload, 100);
-      vip_serialize_message(snd_pkt, buffer);
-      vip_set_dest_ep_cooja(snd_pkt, dest_addr, rcv_pkt->aa_id, VIP_AA_URL);
-      process_post(&vg_process, vg_snd_event, (void *)snd_pkt);
-    }
-  }
-}
-
-void
-show_buffer_state(session_t* cur)
-{
-  printf("cur-state\n");
-  int start = cur->last_rcvd_ack - cur->init_seq;
-  for(start; start < VIP_SIMUL_DATA; start++)
-  {
-    printf("[%d] ", cur->simul_buffer[start]);
-  }
-  printf("\n");
-}
 /* --------------handle vrid-----------------------------------------*/
 int
 publish_vrid() {
@@ -419,12 +350,6 @@ static void add_new_session(int vr_id, int session_id, int vr_seq, int vg_seq)
     new->vr_seq = vr_seq;
     new->vg_seq = vg_seq;
     new->test_data = 0;
-
-    new->init_seq = vg_seq;
-    new->last_rcvd_ack = vg_seq;
-    new->last_sent_seq = 0;
-    new->simul_buffer = calloc(VIP_SIMUL_DATA, sizeof(int));
-
     list_add(session_info, new);
 }
 
@@ -465,6 +390,7 @@ static session_t* check_session(int vr_id)
         return cur;
     }
   }
+
   return NULL;
 }
 

@@ -46,6 +46,10 @@ vip_route(vip_message_t *vip_pkt, vip_entity_t *type_handler) {
         vip_parse_vsd(vip_pkt);
         type_handler->vsd_handler(vip_pkt);
         break;
+    case VIP_TYPE_VDA:
+        vip_parse_vda(vip_pkt);
+        type_handler->vsd_handler(vip_pkt);
+        break;
     case VIP_TYPE_ALLOC:
         if(vip_pkt->total_len > VIP_COMMON_HEADER_LEN) {
             vip_payload_test(vip_pkt);

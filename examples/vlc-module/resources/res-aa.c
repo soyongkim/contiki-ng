@@ -30,6 +30,7 @@ static void handler_ser(vip_message_t *rcv_pkt);
 static void handler_sea(vip_message_t *rcv_pkt);
 static void handler_sec(vip_message_t *rcv_pkt);
 static void handler_vsd(vip_message_t *rcv_pkt);
+static void handler_vda(vip_message_t *rcv_pkt);
 
 /* vr nonce function */
 /* nonce pub */
@@ -90,7 +91,7 @@ PERIODIC_RESOURCE(res_aa,
 /* vip type handler */
 TYPE_HANDLER(aa_type_handler, NULL, handler_vrr, handler_vra, 
               handler_vrc, handler_rel, handler_ser, handler_sea, handler_sec,
-              handler_vsd, NULL);
+              handler_vsd, handler_vda, NULL);
 
 
 /* called by coap-engine proc */
@@ -438,9 +439,7 @@ update_vr_cache(int nonce, int vr_id) {
   }
 }
 
-
 /*----------------------------- se cache function ------------------------------------------*/
-
 void add_se_cache(int vr_id, int session_id)
 {
   se_cache_t* new = calloc(1, sizeof(se_cache_t));

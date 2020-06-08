@@ -9,13 +9,13 @@
 
 #define VIP_MAX_UPLINK_ID 1024
 #define VIP_SEQ_LEN 4
-
 #define VIP_MAX_QUERY_SIZE 100
-
 #define VIP_MAX_SEND_BUF_SIZE 16
-
 #define VIP_MAX_PKT_SIZE 512
 
+
+#define VIP_SIMUL_DATA 50
+#define VIP_WINDOW_SIZE 4
 
 /* for test, vg-id is fixed by 1 */
 #define VIP_VG_ID 1
@@ -42,7 +42,8 @@ typedef enum {
   VIP_TYPE_SER,                /* Session Establishment Request */
   VIP_TYPE_SEA,                /* Session Establishment ACK */
   VIP_TYPE_SEC,                /* Session Establishment Confirm */
-  VIP_TYPE_VSD,                 /* VLC Service Data */
+  VIP_TYPE_VSD,                /* VLC Service Data */
+  VIP_TYPE_VDA,               /* VLC service Data ACK */
   VIP_TYPE_ALLOC
 } vip_message_type_t;
 

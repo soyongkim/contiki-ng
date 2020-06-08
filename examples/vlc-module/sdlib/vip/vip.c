@@ -82,6 +82,15 @@ void vip_set_field_vsd(vip_message_t *vip_pkt, int session_id, int seq, void* pa
     vip_set_payload(vip_pkt, payload, payload_len);
 }
 
+void vip_set_field_vda(vip_message_t *vip_pkt, int session_id, int ack_seq, int gap_num, int* gap_list)
+{
+    vip_pkt->session_id = session_id;
+    vip_pkt->ack_seq = ack_seq;
+    vip_pkt->gap_len = gap_num;
+    vip_pkt->gap_list = gap_list;
+}
+
+
 void vip_set_field_alloc(vip_message_t *vip_pkt, char* uplink_id)
 {
     /* payload test */
@@ -232,6 +241,30 @@ int vip_serialize_vsd(vip_message_t *vip_pkt)
 
     index += vip_int_serialize(index, 4, offset, vip_pkt->session_id);
     index += vip_int_serialize(index, VIP_SEQ_LEN, offset, vip_pkt->seq);
+
+    return index;
+}
+
+int vip_serialize_vda(vip_message_t *vip_pkt)
+{
+    uint8_t *offset = vip_pkt->buffer + VIP_COMMON_HEADER_LEN;
+    unsigned int index = 0;
+
+    index += vip_int_serialize(index, 4, offset, vip_pkt->session_id);
+    index += vip_int_serialize(index, VIP_SEQ_LEN, offset, vip_pkt->ack_seq);
+    index += vip_int_serialize(index, 4, offset, vip_pkt->gap_len);
+
+    
+    if(!vip_pkt->gap_len)
+    {
+        printf("[vip] thre is no gap\n");
+    }
+
+
+    for(int i=0; i<vip_pkt->gap_len; i++)
+    {
+        index += vip_int_serialize(index, 4, offset, vip_pkt->gap_list[i]);
+    }
 
     return index;
 }
@@ -420,6 +453,30 @@ void vip_parse_vsd(vip_message_t *vip_pkt)
     memcpy(vip_pkt->payload, offset, vip_pkt->total_len - (VIP_COMMON_HEADER_LEN + 8));
 }
 
+void vip_parse_vda(vip_message_t* vip_pkt)
+{
+    uint8_t *offset = vip_pkt->buffer + VIP_COMMON_HEADER_LEN;
+    vip_pkt->session_id = vip_parse_int_option(offset, 4);
+    offset += 4;
+    vip_pkt->ack_seq = vip_parse_int_option(offset, 4);
+    offset += 4;
+    vip_pkt->gap_len = vip_parse_int_option(offset, 4);
+
+    vip_pkt->gap_list = calloc(VIP_SIMUL_DATA, sizeof(int));
+    if(vip_pkt->gap_len)
+    {
+        for(int i=0; i<vip_pkt->gap_len; i++)
+        {
+            vip_pkt->gap_list[i] = vip_parse_int_option(offset, 4);
+            offset += 4;
+        }
+    }
+    else
+    {
+        printf("[vip] thre is no gap\n");
+    }
+}
+
 void vip_payload_test(vip_message_t *vip_pkt)
 {
     uint8_t *offset = vip_pkt->buffer + VIP_COMMON_HEADER_LEN;
@@ -428,8 +485,6 @@ void vip_payload_test(vip_message_t *vip_pkt)
     memcpy(vip_pkt->uplink_id, (char *)offset, (vip_pkt->total_len) - VIP_COMMON_HEADER_LEN + 1);
     vip_pkt->uplink_id[(vip_pkt->total_len) - VIP_COMMON_HEADER_LEN + 1] = '\0';
 }
-
-
 
 
 

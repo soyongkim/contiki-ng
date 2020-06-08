@@ -24,8 +24,6 @@ static void handler_ser(vip_message_t *rcv_pkt);
 static void handler_sea(vip_message_t *rcv_pkt);
 static void handler_sec(vip_message_t *rcv_pkt);
 static void handler_vsd(vip_message_t *rcv_pkt);
-static void handler_vda(vip_message_t *rcv_pkt);
-
 
 /* Trigger for simul */
 static struct ctimer ct;
@@ -59,20 +57,6 @@ static int goal_vg_seq;
 static uint32_t ttd;
 int data;
 
-static int cumul_ack;
-static int init_seq;
-static int last_seq;
-
-static int ack_flag;
-static int out_of_order_flag;
-
-static int dup_cnt;
-static int consecutive_cnt;
-static int simul_buffer[VIP_SIMUL_DATA];
-static int gap_num;
-static int gap_list[VIP_SIMUL_DATA];
-
-
 /* vip algorithm */
 void retransmit_on();
 void retransmit_off();
@@ -92,7 +76,7 @@ EVENT_RESOURCE(res_vr,
 /* vip type handler */
 TYPE_HANDLER(vr_type_handler, handler_beacon, NULL, handler_vra, 
               handler_vrc, handler_rel, handler_ser, handler_sea, handler_sec,
-              handler_vsd, handler_vda, NULL);
+              handler_vsd, NULL);
 
 
 /* called by coap-engine proc */
@@ -130,6 +114,9 @@ handler_beacon(vip_message_t *rcv_pkt) {
   /* check handover and loss */
   if(aa_id != rcv_pkt->aa_id || vt_id != rcv_pkt->vt_id) {
 
+    /* for handover scenario */
+    retransmit_off();
+
     printf("aa(%d) => new aa(%d) | vt(%d) => new vt(%d)\n", aa_id, rcv_pkt->aa_id, vt_id, rcv_pkt->vt_id);
     /* update aa_id, vt_id */
     aa_id = rcv_pkt->aa_id;
@@ -162,6 +149,7 @@ handler_vra(vip_message_t *rcv_pkt) {
   {
     vr_id = rcv_pkt->vr_id;
     printf("I'm allocated vr-id(%d)!\n", vr_id);
+    retransmit_off();
 
     /* send vrc */
     vip_init_message(snd_pkt, VIP_TYPE_VRC, aa_id, vt_id, vr_id);
@@ -200,8 +188,9 @@ handler_sea(vip_message_t *rcv_pkt) {
 
   update_session(rcv_pkt->session_id, 0, rcv_pkt->vg_seq);
   show_session_info();
-  cumul_ack = rcv_pkt->vg_seq - 1;
-  init_seq = rcv_pkt->vg_seq;
+  goal_vg_seq = rcv_pkt->vg_seq + 50;
+
+  retransmit_off();
 
   /* send sec = sea's echo */
   vip_init_message(snd_pkt, VIP_TYPE_SEC, aa_id, vt_id, vr_id);
@@ -224,105 +213,81 @@ handler_vsd(vip_message_t *rcv_pkt) {
   if(!is_my_vip_pkt(rcv_pkt))
     return;
 
-  timer_init(3);
-  sliding_window_handler(rcv_pkt);
+  retransmit_off();
 
-}
-
-/* -------------------------- sliding window ---------------------------*/
-void
-sliding_window_handler(vip_message_t* rcv_pkt)
-{
-  // 먼저 패킷이 중복인지 체크
-  int index = rcv_pkt->seq - init_seq;
-  if(simul_buffer[index] == 1)
+  session_t *chk;
+  if ((chk = check_session(rcv_pkt->session_id)))
   {
-    // 중복 카운트
-    if(++dup_cnt >= 2)
+    printf("cur vg_seq(%d) <====> rcvd vg_seq(%d)\n", chk->vg_seq, rcv_pkt->seq);
+    if (rcv_pkt->seq == chk->vg_seq)
     {
-      ack_flag = 1;
-      dup_cnt = 0;
-    }
-  }
-  else
-  {
-    simul_buffer[index] = 1;
 
-    if(last_seq < rcv_pkt->seq)
-      last_seq = rcv_pkt->seq;
-
-    if(cumul_ack + 1 == rcv_pkt->seq)
-    {
-      // 기대했던 패킷이 왔음
-      if(++consecutive_cnt >= 2)
+      if (rcv_pkt->start_time)
       {
-        ack_flag = 1;
-        consecutive_cnt = 0;
+        uint32_t cur_time = RTIMER_NOW() / 1000;
+        printf("Cur time: %u\n", cur_time);
+        rcv_pkt->transmit_time += cur_time - rcv_pkt->start_time;
+        printf("time to aa: %u\n", rcv_pkt->transmit_time);
+
+        ttd += rcv_pkt->transmit_time;
+        printf("total transmition delay: %u\n", ttd);
       }
-      sliding_window_loss_search();
+
+      vip_init_query(rcv_pkt, query);
+      vip_make_query_transmit_time(query, strlen(query), 0);
+
+      // Next vg seq data
+      chk->vg_seq++;
+      // Next to send data to vg
+      chk->vr_seq++;
+
+
+      // next payload
+      chk->test_data++;
+      char payload[101];
+      memset(payload, chk->test_data, 100);
+
+      vip_init_message(snd_pkt, VIP_TYPE_VSD, aa_id, vt_id, vr_id);
+      vip_set_field_vsd(snd_pkt, chk->session_id, chk->vr_seq, (void *)payload, 100);
+      vip_serialize_message(snd_pkt, buffer);
+      vip_set_dest_ep_cooja(snd_pkt, dest_addr, aa_id, VIP_AA_URL);
+
+      vip_init_query(snd_pkt, query);
+      vip_make_query_src(query, strlen(query), vr_id);
+
+      // If received 100's data, Goal in*/
+      if (rcv_pkt->seq == goal_vg_seq)
+      {
+        printf("--------------------------------------------------------------------------------------------------- Goal\n");
+        terminate_session(chk);
+        vip_make_query_goal(query, strlen(query), 1);
+
+      }
+      vip_set_query(snd_pkt, query);
+
+      process_post(&vr_process, vr_snd_event, (void *)snd_pkt);
     }
-    else if(cumul_ack + 1 < rcv_pkt->seq)
+    else if(rcv_pkt->seq < chk->vg_seq && rcv_pkt->seq < goal_vg_seq)
     {
-      // 기대한 것보다 더 크므로, loss = Out of Order
-      ack_flag = 1;
-      out_of_order_flag = 1;
-      sliding_window_loss_search();
-    }
-    else
-    {
-      // 기대한 것보다 작음 = 중복 패킷임
-       out_of_order_flag = 1;
+      // AA Handover에서는 vr -> vg 가는 메시지가 씹힐 수 있으므로 이 시나리오가 발생할 수 있음
+      char payload[101];
+      memset(payload, chk->test_data, 100);
+
+      printf("-- Dup Data\n");
+      vip_init_message(snd_pkt, VIP_TYPE_VSD, aa_id, vt_id, vr_id);
+      vip_set_field_vsd(snd_pkt, chk->session_id, chk->vr_seq, (void *)payload, 100);
+      vip_serialize_message(snd_pkt, buffer);
+      vip_set_dest_ep_cooja(snd_pkt, dest_addr, aa_id, VIP_AA_URL);
+
+      vip_init_query(snd_pkt, query);
+      vip_make_query_src(query, strlen(query), vr_id);
+      vip_set_query(snd_pkt, query);
+
+      process_post(&vr_process, vr_snd_event, (void *)snd_pkt);
     }
     
-    if(ack_flag)
-      sliding_window_send_ack();
   }
 }
-
-void
-sliding_window_loss_search()
-{
-  int start = cumul_ack - init_seq >= 0 ? cumul_ack - init_seq : 0;
-  int end = last_seq - init_seq;
-
-  int j=0, chk=0;
-
-  gap_num = 0;
-  for(int i = start; i<=end; i++)
-  {
-    if(simul_buffer[i] == 1 && !chk)
-    {
-      cumul_ack = i + init_seq;
-    }
-    else
-    {
-      gap_list[j++] = i + init_seq;
-      chk = 1;
-      gap_num++;
-    }
-  }
-
-  // in-order이 되었다면 ack
-  if(cumul_ack == last_seq && out_of_order_flag)
-  {
-    ack_flag = 1;
-    out_of_order_flag = 0;
-  }
-}
-
-
-void sliding_window_send_ack()
-{
-  vip_init_message(snd_pkt, VIP_TYPE_VDA, aa_id, vt_id, vr_id);
-  vip_set_field_vda(snd_pkt, session_id, cumul_ack, gap_num, gap_list);
-  vip_serialize_message(snd_pkt, buffer);
-  vip_set_dest_ep_cooja(snd_pkt, dest_addr, aa_id, VIP_AA_URL);
-
-  process_post(&vr_process, vr_snd_event, (void *)snd_pkt);
-
-  ack_flag = 0;
-}
-
 
 static void 
 res_event_handler(void) {
@@ -368,6 +333,7 @@ loss_handler() {
 
 
 /* --------------------- Trigger for simulation -----------------*/
+
 static void trigger_ser(void* data)
 {
   session_id = rand();
@@ -388,7 +354,9 @@ static void trigger_vsd(void* data)
     memset(payload, 1, 100);
 
     printf("- START Simulation -\n");
-    printf("-- session(%x) ==> Goal vg_seq(%d) --\n", session_id, init_seq + VIP_SIMUL_DATA);
+    printf("-- session(%x) - vr_seq(%d) ==> Goal vg_seq(%d) --\n", session_id, vr_seq, goal_vg_seq);
+    printf("%s\n", payload);
+
 
     vip_init_message(snd_pkt, VIP_TYPE_VSD, aa_id, vt_id, vr_id);
     vip_set_field_vsd(snd_pkt, session_id, vr_seq, (void *)payload, 100);
@@ -401,19 +369,8 @@ static void trigger_vsd(void* data)
 
     snd_pkt->transmit_time = 0;
     process_post(&vr_process, vr_snd_event, (void *)snd_pkt);
-
-    timer_init(2);
 }
 
-static void trigger_retransmit(void* data)
-{
-  if(vip_timeout_swtich)
-    process_post(&vr_process, vr_snd_event, (void *)snd_pkt);
-  else
-    retransmit_on();
-
-  ack_flag = 0;
-}
 
 static void timer_init(int flag)
 {
@@ -427,11 +384,6 @@ static void timer_init(int flag)
     /* data transmit scenario */
     ctimer_set(&ct, 15000, trigger_vsd, NULL);
     break;
-  case 2:
-    ctimer_set(&ct, 3000, trigger_retransmit, NULL);
-    break;
-  case 3:
-    ctimer_reset(&ct);
   }
 }
 

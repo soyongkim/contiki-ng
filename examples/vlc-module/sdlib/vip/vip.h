@@ -24,8 +24,14 @@ typedef struct {
     uint32_t session_id;
     uint32_t vr_seq;
     uint32_t vg_seq;
+
     /* for vsd parsing and serialization */
     uint32_t seq;
+
+    /* vsa sack */
+    uint32_t ack_seq;
+    uint32_t gap_len;
+    uint32_t* gap_list;
 
     uint32_t payload_len;
     uint8_t *payload;
@@ -37,6 +43,7 @@ typedef struct {
     char *query, *dest_coap_addr, *dest_path;
     uint32_t query_len;
     uint32_t query_rcv_id;
+
 
     /* simul time */
     uint32_t start_time;
@@ -68,6 +75,13 @@ struct session_s {
     int session_id;
     uint8_t* data;
     int test_data;
+
+
+    /* for sliding window */
+    int init_seq;
+    int last_rcvd_ack;
+    int last_sent_seq;
+    int* simul_buffer;
 };
 
 
@@ -92,6 +106,7 @@ void vip_set_field_sea(vip_message_t *message, int session_id, int vg_seq);
 void vip_set_field_sec(vip_message_t *message, int session_id, int vg_seq);
 
 void vip_set_field_vsd(vip_message_t *message, int session_id, int seq, void* payload, size_t payload_len);
+void vip_set_field_vda(vip_message_t *message, int session_id, int ack_seq, int gap_num, uint32_t* gap_list)
 void vip_set_field_alloc(vip_message_t *message, char* uplink_id);
 
 /* coap's query function */
@@ -117,6 +132,9 @@ void vip_parse_sea(vip_message_t *message);
 void vip_parse_sec(vip_message_t *message);
 
 void vip_parse_vsd(vip_message_t *message);
+void vip_parse_vda(vip_message_t *message);
+
+
 
 void vip_payload_test(vip_message_t * message);
 
