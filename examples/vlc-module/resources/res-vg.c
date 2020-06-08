@@ -277,7 +277,7 @@ sliding_window_transfer(vip_message_t *rcv_pkt, session_t* cur)
 {
   /* window 여유 분 만큼 전송을 하자 */
   int start = cur->last_rcvd_ack - cur->init_seq;
-  for(start; start < start + VIP_WINDOW_SIZE; start++)
+  for(; start < start + VIP_WINDOW_SIZE; start++)
   {
     // 마지막 데이터
     if(start >= VIP_SIMUL_DATA)
@@ -312,7 +312,7 @@ sliding_window_sack_handler(vip_message_t *rcv_pkt, session_t* cur)
     printf("Cumulative Ack: %d\n", rcv_pkt->ack_seq);
     // index 이전 까지의 모든 데이터를 잘받았다고 표시
     int start = cur->last_rcvd_ack - cur->init_seq;
-    for(start; start <= index; start++)
+    for(; start <= index; start++)
     {
       cur->simul_buffer[start] = 2;
     }
