@@ -60,7 +60,6 @@ static void handler_ser(vip_message_t *rcv_pkt);
 static void handler_sea(vip_message_t *rcv_pkt);
 static void handler_sec(vip_message_t *rcv_pkt);
 static void handler_vsd(vip_message_t *rcv_pkt);
-static void handler_vda(vip_message_t *rcv_pkt);
 static void handler_alloc(vip_message_t *rcv_pkt);
 
 static int vt_id, aa_id;
@@ -91,7 +90,7 @@ PERIODIC_RESOURCE(res_vt,
 /* vip type handler */
 TYPE_HANDLER(vt_type_handler, NULL, handler_vrr, handler_vra, 
               handler_vrc, handler_rel, handler_ser, handler_sea, handler_sec,
-              handler_vsd, handler_vda, handler_alloc);
+              handler_vsd, NULL, handler_alloc);
 
 
 /* called by coap-engine proc */

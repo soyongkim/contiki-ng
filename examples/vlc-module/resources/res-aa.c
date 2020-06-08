@@ -345,6 +345,18 @@ handler_vsd(vip_message_t *rcv_pkt) {
     }
 }
 
+
+static void 
+handler_vda(vip_message_t *rcv_pkt)
+{
+    // arrived from vg
+    vip_set_dest_ep_cooja(rcv_pkt, dest_addr, rcv_pkt->vt_id, VIP_VT_URL);
+    vip_serialize_message(rcv_pkt, buffer);
+    process_post(&aa_process, aa_snd_event, (void *)rcv_pkt);    
+}
+
+
+
 static void
 res_periodic_ad_handler(void)
 {
