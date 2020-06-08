@@ -219,7 +219,8 @@ handler_vsd(vip_message_t *rcv_pkt) {
   if(!is_my_vip_pkt(rcv_pkt))
     return;
 
-  timer_init(3);
+  retransmit_on();
+  ctimer_reset(&ct);
   sliding_window_handler(rcv_pkt);
 
 }
@@ -304,6 +305,13 @@ sliding_window_loss_search()
     ack_flag = 1;
     out_of_order_flag = 0;
   }
+
+  if(cumul_ack == VIP_SIMUL_DATA-1 && !gap_num)
+  {
+    // 마지막이라면
+    printf("--- goal ---\n");
+    retransmit_off();
+  }
 }
 
 
@@ -330,7 +338,7 @@ res_event_handler(void) {
 void
 retransmit_on()
 {
-  printf("------------- TIMER ON ---------\n");
+  printf("TIMER ON\n");
   vip_timeout_swtich = 1;
 }
 
@@ -338,7 +346,7 @@ retransmit_on()
 void
 retransmit_off()
 {
-  printf("------------- TIMER OFF ---------\n");
+  printf("TIMER OFF\n");
   vip_timeout_swtich = 0;
   loss_count = 0;
 }
@@ -346,6 +354,7 @@ retransmit_off()
 /* --------------------- Trigger for simulation -----------------*/
 static void trigger_ser(void* data)
 {
+  timer_init(2);
   session_id = rand();
   vr_seq = rand() % 100000;
   add_new_session(session_id, vr_seq);
@@ -377,21 +386,17 @@ static void trigger_vsd(void* data)
 
     snd_pkt->transmit_time = 0;
     process_post(&vr_process, vr_snd_event, (void *)snd_pkt);
-
-    timer_init(2);
 }
 
 static void trigger_retransmit(void* data)
 {
-  printf("-----------------TIME OUT ------------------\n");
+  printf("-----------------TIME OUT------------------\n");
   if(vip_timeout_swtich)
   {
     vip_push_snd_buf(snd_pkt);
     process_post(&vr_process, vr_snd_event, (void *)snd_pkt);
+    ctimer_reset(&ct);
   }
-  else
-    retransmit_on();
-
   ack_flag = 0;
 }
 
@@ -410,8 +415,6 @@ static void timer_init(int flag)
   case 2:
     ctimer_set(&ct, 3000, trigger_retransmit, NULL);
     break;
-  case 3:
-    ctimer_reset(&ct);
   }
 }
 
