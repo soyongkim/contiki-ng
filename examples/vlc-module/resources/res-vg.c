@@ -249,7 +249,7 @@ handler_vda(vip_message_t *rcv_pkt)
     session_t *cur;
     if((cur = check_session(rcv_pkt->vr_id)))
     {
-      /* Trigger for data transfer */
+      /* sack handler */
       sliding_window_sack_handler(rcv_pkt, cur);
     }
 }
@@ -294,7 +294,8 @@ void
 sliding_window_sack_handler(vip_message_t *rcv_pkt, session_t* cur)
 {
   int index = rcv_pkt->ack_seq - cur->init_seq;
-  if(cur->simul_buffer[index] == 1)
+  printf("last_ack:%d rcvd_ack:%d index:%d\n", cur->last_rcvd_ack, rcv_pkt->ack_seq, index);
+  if(index >= 0 && cur->simul_buffer[index] == 1)
   {
     printf("Cumulative Ack: %d\n", rcv_pkt->ack_seq);
     // index 이전 까지의 모든 데이터를 잘받았다고 표시
@@ -315,7 +316,6 @@ sliding_window_sack_handler(vip_message_t *rcv_pkt, session_t* cur)
 
     // 그리고 여유분 전송
     sliding_window_transfer(rcv_pkt, cur);
-    show_buffer_state(cur);
   }
  
 
