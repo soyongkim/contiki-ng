@@ -287,7 +287,7 @@ sliding_window_transfer(vip_message_t *rcv_pkt, session_t* cur)
       vip_set_field_vsd(snd_pkt, cur->session_id, cur->init_seq + i, payload, 100);
       vip_serialize_message(snd_pkt, buffer);
       vip_set_dest_ep_cooja(snd_pkt, dest_addr, rcv_pkt->aa_id, VIP_AA_URL);
-      process_post(&vg_process, vg_snd_event, (void *)snd_pkt);
+      vip_push_snd_buf(snd_pkt);
 
       // 최신 데이터라면 갱신
       if(cur->last_sent_seq <= cur->init_seq + i)
@@ -296,6 +296,8 @@ sliding_window_transfer(vip_message_t *rcv_pkt, session_t* cur)
       }
     }
   }
+  process_post(&vg_process, vg_snd_event, (void *)snd_pkt);
+  sliding_window_transfer(rcv_pkt, cur);
 }
 
 void
@@ -339,6 +341,7 @@ sliding_window_sack_handler(vip_message_t *rcv_pkt, session_t* cur)
       vip_set_field_vsd(snd_pkt, cur->session_id, rcv_pkt->gap_list[i], payload, 100);
       vip_serialize_message(snd_pkt, buffer);
       vip_set_dest_ep_cooja(snd_pkt, dest_addr, rcv_pkt->aa_id, VIP_AA_URL);
+      vip_push_snd_buf(snd_pkt);
       process_post(&vg_process, vg_snd_event, (void *)snd_pkt);
     }
     free(rcv_pkt->gap_list);
