@@ -14,7 +14,7 @@
 #define VIP_MAX_PKT_SIZE 512
 
 /* for simulation */
-#define VIP_WINDOW_SIZE 1
+#define VIP_WINDOW_SIZE 8
 #define VIP_SIMUL_DATA 50
 
 /* for test, vg-id is fixed by 1 */
