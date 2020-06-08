@@ -349,10 +349,9 @@ handler_vsd(vip_message_t *rcv_pkt) {
 static void 
 handler_vda(vip_message_t *rcv_pkt)
 {
-    // arrived from vg
-      vip_set_dest_ep_cooja(rcv_pkt, dest_addr, VIP_VG_ID, VIP_VG_URL);
-      vip_serialize_message(rcv_pkt, buffer);
-      process_post(&aa_process, aa_snd_event, (void *)rcv_pkt);
+    vip_set_dest_ep_cooja(rcv_pkt, dest_addr, VIP_VG_ID, VIP_VG_URL);
+    printf("check>> ack_seq:%d gap_len:%d\n", rcv_pkt->ack_seq, rcv_pkt->gap_len);
+    process_post(&aa_process, aa_snd_event, (void *)rcv_pkt);
 }
 
 

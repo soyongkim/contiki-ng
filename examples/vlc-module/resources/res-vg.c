@@ -57,9 +57,6 @@ static vip_message_t ack_pkt[1];
 
 static mutex_t v;
 
-static int goal_flag;
-
-
 /* vr session_array */
 /* array index is "VR-ID" */
 //static vip_vr_session_tuple_t session_arr[65000];
@@ -100,12 +97,6 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
 
   if(coap_get_query_variable(request, "src", &src)) {
     rcv_pkt->query_rcv_id = atoi(src);
-  }
-
-  if(coap_get_query_variable(request, "goal", &goal))
-  {
-      printf("--------------------------------------------------------------------------------------------------- Goal\n");
-      goal_flag = 1;
   }
   
   if(coap_get_query_variable(request, "start", &start))
