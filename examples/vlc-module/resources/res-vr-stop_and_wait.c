@@ -76,7 +76,7 @@ EVENT_RESOURCE(res_vr,
 /* vip type handler */
 TYPE_HANDLER(vr_type_handler, handler_beacon, NULL, handler_vra, 
               handler_vrc, handler_rel, handler_ser, handler_sea, handler_sec,
-              handler_vsd, NULL);
+              handler_vsd, NULL, NULL);
 
 
 /* called by coap-engine proc */
