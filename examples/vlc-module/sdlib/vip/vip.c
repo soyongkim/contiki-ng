@@ -333,6 +333,9 @@ int vip_serialize_message(vip_message_t *vip_pkt, uint8_t *buffer)
         /* code */
         total_len += vip_serialize_vsd(vip_pkt);
         break;
+    case VIP_TYPE_VDA:
+        total_len += vip_serialize_vda(vip_pkt);
+        break;
     }
 
     /* serialize paylaod */
