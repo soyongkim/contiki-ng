@@ -259,8 +259,9 @@ handler_vda(vip_message_t *rcv_pkt)
 void
 sliding_window_transfer(vip_message_t *rcv_pkt, session_t* cur)
 {
-  /* window 여유 분 만큼 전송을 하자 */
-  int start = cur->last_rcvd_ack - cur->init_seq;
+  /* window 여유 분 만큼 전송을 하자 last_cumul_ack까지 잘받았다는 의미로 사용하기 때문에
+     +1 해주어서 그 다음부터 진행 */
+  int start = cur->last_rcvd_ack - cur->init_seq + 1;
   printf("last_ack:%d init_seq:%d start:%d\n", cur->last_rcvd_ack, cur->init_seq, start);
   for(int i = start; i < start + VIP_WINDOW_SIZE; i++)
   {
