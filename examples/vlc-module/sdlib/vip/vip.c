@@ -82,7 +82,7 @@ void vip_set_field_vsd(vip_message_t *vip_pkt, int session_id, int seq, void* pa
     vip_set_payload(vip_pkt, payload, payload_len);
 }
 
-void vip_set_field_vda(vip_message_t *vip_pkt, int session_id, int ack_seq, int gap_num, int* gap_list)
+void vip_set_field_vda(vip_message_t *vip_pkt, int session_id, int ack_seq, int gap_num, uint32_t* gap_list)
 {
     vip_pkt->session_id = session_id;
     vip_pkt->ack_seq = ack_seq;

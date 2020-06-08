@@ -106,7 +106,7 @@ void vip_set_field_sea(vip_message_t *message, int session_id, int vg_seq);
 void vip_set_field_sec(vip_message_t *message, int session_id, int vg_seq);
 
 void vip_set_field_vsd(vip_message_t *message, int session_id, int seq, void* payload, size_t payload_len);
-void vip_set_field_vda(vip_message_t *message, int session_id, int ack_seq, int gap_num, uint32_t* gap_list)
+void vip_set_field_vda(vip_message_t *message, int session_id, int ack_seq, int gap_num, uint32_t* gap_list);
 void vip_set_field_alloc(vip_message_t *message, char* uplink_id);
 
 /* coap's query function */
