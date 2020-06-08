@@ -70,7 +70,7 @@ static int dup_cnt;
 static int consecutive_cnt;
 static int simul_buffer[VIP_SIMUL_DATA];
 static int gap_num;
-static int gap_list[VIP_SIMUL_DATA];
+static uint32_t gap_list[VIP_SIMUL_DATA];
 
 
 /* vip algorithm */
