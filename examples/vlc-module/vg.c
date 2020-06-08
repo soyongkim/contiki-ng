@@ -19,7 +19,6 @@
  * The build system automatically compiles the resources in the corresponding sub-directory.
  */
 extern coap_resource_t res_vg;
-//extern coap_resource_t res_vg_stop_and_wait;
 
 extern vip_entity_t vg_type_handler;
 
@@ -62,7 +61,6 @@ PROCESS_THREAD(vg_process, ev, data)
    * WARNING: Activating twice only means alternate path, not two instances!
    * All static variables are the same for each URI path.
    */
-  //coap_activate_resource(&res_vg, VIP_VG_URL);
   coap_activate_resource(&res_vg, VIP_VG_URL);
   /* Define application-specific events here. */
   while (1)
@@ -93,10 +91,7 @@ timer_callback(void *ptr)
 
 static void init()
 {
-  printf("Set SendTimer - %d\n", clock_time());
-  //rtimer_set(&rt, RTIMER_NOW()/1000 + CLOCK_SECOND/100, 0, timer_callback, NULL);
   etimer_restart(&et);
-  //ctimer_set(&ct, random_incount, timer_callback, NULL);
 }
 
 
@@ -167,5 +162,4 @@ vip_request() {
   }
 
   etimer_pending();
-  printf("etimer_next_expireation_time: %d\n", etimer_next_expiration_time());
 }

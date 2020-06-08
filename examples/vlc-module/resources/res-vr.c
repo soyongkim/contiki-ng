@@ -354,7 +354,6 @@ retransmit_off()
 /* --------------------- Trigger for simulation -----------------*/
 static void trigger_ser(void* data)
 {
-  timer_init(2);
   session_id = rand();
   vr_seq = rand() % 100000;
   add_new_session(session_id, vr_seq);
@@ -386,6 +385,7 @@ static void trigger_vsd(void* data)
 
     snd_pkt->transmit_time = 0;
     process_post(&vr_process, vr_snd_event, (void *)snd_pkt);
+    timer_init(2);
 }
 
 static void trigger_retransmit(void* data)
