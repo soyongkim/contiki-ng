@@ -271,27 +271,28 @@ sliding_window_transfer(vip_message_t *rcv_pkt, session_t* cur)
 {
   /* window 여유 분 만큼 전송을 하자 */
   int start = cur->last_rcvd_ack - cur->init_seq;
-  for(; start < start + VIP_WINDOW_SIZE; start++)
+  printf("last_ack:%d init_seq:%d start:%d\n", cur->last_rcvd_ack, cur->init_seq, start);
+  for(int i = start; i < start + VIP_WINDOW_SIZE; i++)
   {
     // 마지막 데이터
-    if(start >= VIP_SIMUL_DATA)
+    if(i >= VIP_SIMUL_DATA)
       break;
 
     // 보냈던 데이터를 제외하고 연속 전송
-    if(cur->simul_buffer[start] == 0)
+    if(cur->simul_buffer[i] == 0)
     {
-      cur->simul_buffer[start] = 1;
+      cur->simul_buffer[i] = 1;
       char payload[100];
       vip_init_message(snd_pkt, VIP_TYPE_VSD, rcv_pkt->aa_id, rcv_pkt->vt_id, rcv_pkt->aa_id);
-      vip_set_field_vsd(snd_pkt, cur->session_id, cur->init_seq + start, payload, 100);
+      vip_set_field_vsd(snd_pkt, cur->session_id, cur->init_seq + i, payload, 100);
       vip_serialize_message(snd_pkt, buffer);
       vip_set_dest_ep_cooja(snd_pkt, dest_addr, rcv_pkt->aa_id, VIP_AA_URL);
       process_post(&vg_process, vg_snd_event, (void *)snd_pkt);
 
       // 최신 데이터라면 갱신
-      if(cur->last_sent_seq <= cur->init_seq + start)
+      if(cur->last_sent_seq <= cur->init_seq + i)
       {
-        cur->last_sent_seq = cur->init_seq + start;
+        cur->last_sent_seq = cur->init_seq + i;
       }
     }
   }
@@ -306,9 +307,9 @@ sliding_window_sack_handler(vip_message_t *rcv_pkt, session_t* cur)
     printf("Cumulative Ack: %d\n", rcv_pkt->ack_seq);
     // index 이전 까지의 모든 데이터를 잘받았다고 표시
     int start = cur->last_rcvd_ack - cur->init_seq;
-    for(; start <= index; start++)
+    for(int i = start; i <= index; i++)
     {
-      cur->simul_buffer[start] = 2;
+      cur->simul_buffer[i] = 2;
     }
     // index까지 잘받았으니 last_ack를 옮김
     cur->last_rcvd_ack = cur->init_seq + index;
