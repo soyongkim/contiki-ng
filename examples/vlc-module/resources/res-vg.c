@@ -308,7 +308,7 @@ sliding_window_sack_handler(vip_message_t *rcv_pkt, session_t* cur)
     cur->last_rcvd_ack = cur->init_seq + index;
 
     // last data check
-    if(rcv_pkt->ack_seq == cur->init_seq + VIP_SIMUL_DATA)
+    if(rcv_pkt->ack_seq == cur->init_seq + VIP_SIMUL_DATA-1)
     {
       printf("--------------------------------------GOAL---------------------------\n");
     }
@@ -342,7 +342,7 @@ void
 show_buffer_state(session_t* cur)
 {
   printf("cur-state\n");
-  int start = cur->last_rcvd_ack - cur->init_seq;
+  int start = 0;
   for(; start < VIP_SIMUL_DATA; start++)
   {
     printf("[%d] ", cur->simul_buffer[start]);
