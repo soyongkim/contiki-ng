@@ -393,8 +393,7 @@ static void trigger_retransmit(void* data)
   printf("-----------------TIME OUT------------------\n");
   if(vip_timeout_swtich)
   {
-    vip_push_snd_buf(snd_pkt);
-    process_post(&vr_process, vr_snd_event, (void *)snd_pkt);
+    sliding_window_send_ack();
     ctimer_reset(&ct);
   }
   ack_flag = 0;
