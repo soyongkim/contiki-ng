@@ -64,7 +64,7 @@ static void loss_handler();
 static bool is_my_vip_pkt(vip_message_t* rcv_pkt);
 
 /* A simple actuator example. Toggles the red led */
-EVENT_RESOURCE(res_vr,
+EVENT_RESOURCE(res_vr_stop_and_wait,
          "title=\"vr\";rt=\"Control\"",
          NULL,
          res_post_handler,

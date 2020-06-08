@@ -63,7 +63,7 @@ static int goal_flag;
 static int vr_id_pool[65000];
 
 /* A simple actuator example. Toggles the red led */
-EVENT_RESOURCE(res_vg,
+EVENT_RESOURCE(res_vg_stop_and_wait,
          "title=\"VG\";rt=\"Control\"",
          NULL,
          res_post_handler,
