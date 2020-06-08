@@ -15,7 +15,7 @@
 
 
 #define VIP_SIMUL_DATA 50
-#define VIP_WINDOW_SIZE 4
+#define VIP_WINDOW_SIZE 8
 
 /* for test, vg-id is fixed by 1 */
 #define VIP_VG_ID 1
