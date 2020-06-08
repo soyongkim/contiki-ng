@@ -306,7 +306,7 @@ sliding_window_loss_search()
     out_of_order_flag = 0;
   }
 
-  if(cumul_ack == VIP_SIMUL_DATA-1 && !gap_num)
+  if(cumul_ack == init_seq + VIP_SIMUL_DATA-1 && !gap_num)
   {
     // 마지막이라면
     printf("--- goal ---\n");
