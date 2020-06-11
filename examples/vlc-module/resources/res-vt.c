@@ -36,6 +36,9 @@ static uint8_t buffer[VIP_MAX_PKT_SIZE];
 static char dest_addr[50];
 static char query[VIP_MAX_QUERY_SIZE];
 
+/* for simul */
+static int first_send;
+
 /* use ack for query */
 static vip_message_t ack_pkt[1];
 
@@ -186,10 +189,11 @@ send_with_error_rate(vip_message_t* snd_pkt)
     if(snd_pkt->type == VIP_TYPE_VSD)
     {
       int loss_simul_var = random_rand() % 100;
-      if (loss_simul_var >= VIP_ERROR_RATE)
+      if (loss_simul_var >= VIP_ERROR_RATE || !first_send)
       {
         printf("SUCCESS!\n");
         process_post(&vt_process, vt_snd_event, (void *)snd_pkt);
+        first_send = 1;
       }
       else
       {
