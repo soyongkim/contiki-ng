@@ -189,7 +189,7 @@ send_with_error_rate(vip_message_t* snd_pkt)
       if (loss_simul_var >= 5)
       {
         printf("SUCCESS!\n");
-        process_post(&vt_process, vt_snd_event, (void *)rcv_pkt);
+        process_post(&vt_process, vt_snd_event, (void *)snd_pkt);
       }
       else
       {
