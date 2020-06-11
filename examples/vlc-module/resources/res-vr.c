@@ -47,7 +47,7 @@ static char query[VIP_MAX_QUERY_SIZE];
 
 static int vr_id, aa_id, vt_id;
 static int vip_timeout_swtich;
-static int loss_count = 0;
+static int simul_end;
 
 
 /* for simulation */
@@ -367,7 +367,7 @@ retransmit_off()
 {
   printf("TIMER OFF\n");
   vip_timeout_swtich = 0;
-  loss_count = 0;
+  simul_end = 1;
 }
 
 /* --------------------- Trigger for simulation -----------------*/
@@ -413,7 +413,7 @@ static void trigger_vsd(void* data)
 
 static void trigger_retransmit(void* data)
 {
-  if(vip_timeout_swtich)
+  if(vip_timeout_swtich && !simul_end)
   {
     printf("-----------------TIME OUT------------------\n");
     sliding_window_send_ack();
