@@ -5,6 +5,7 @@
 #include "vip-interface.h"
 #include "vt.h"
 #include "cooja_addr.h"
+#include "random.h"
 
 /* Node ID */
 #include "sys/node-id.h"
