@@ -301,7 +301,7 @@ sliding_window_loss_search()
   int j=0, chk=0;
 
   gap_num = 0;
-  for(int i = start; i<end; i++)
+  for(int i = start; i<=end; i++)
   {
     if(simul_buffer[i] == 1)
     {
