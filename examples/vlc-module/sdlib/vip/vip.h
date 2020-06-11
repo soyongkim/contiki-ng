@@ -82,6 +82,8 @@ struct session_s {
     int last_rcvd_ack;
     int last_sent_seq;
     int* simul_buffer;
+
+    int dup_ack;
 };
 
 
