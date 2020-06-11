@@ -247,8 +247,8 @@ int vip_serialize_vsd(vip_message_t *vip_pkt)
 
 int vip_serialize_vda(vip_message_t *vip_pkt)
 {
-    uint8_t *offset = vip_pkt->buffer + VIP_COMMON_HEADER_LEN;
-    unsigned int index = 0;
+    uint8_t *offset = vip_pkt->buffer;
+    unsigned int index = VIP_COMMON_HEADER_LEN;
 
     index += vip_int_serialize(index, 4, offset, vip_pkt->session_id);
     index += vip_int_serialize(index, 4, offset, vip_pkt->ack_seq);
@@ -268,6 +268,8 @@ int vip_serialize_vda(vip_message_t *vip_pkt)
     }
     puts("");
 
+
+    printf("Total_len:%d\n", index);
     return index;
 }
 
