@@ -329,6 +329,7 @@ sliding_window_loss_search()
     // 마지막이라면
     printf("--- Goal ---\n");
     retransmit_off();
+    ack_flag = 1;
   }
 }
 
