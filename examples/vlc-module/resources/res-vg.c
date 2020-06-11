@@ -327,7 +327,7 @@ sliding_window_sack_handler(vip_message_t *rcv_pkt, session_t* cur)
     {
       // gap 부분만 다시 보냄
       char payload[100];
-      vip_init_message(snd_pkt, VIP_TYPE_VSD, rcv_pkt->aa_id, rcv_pkt->vt_id, rcv_pkt->aa_id);
+      vip_init_message(snd_pkt, VIP_TYPE_VSD, rcv_pkt->aa_id, rcv_pkt->vt_id, rcv_pkt->vr_id);
       // 해당 gap seq를 첨가하여 전송. 테스트니까 페이로드는 모두 같은 값임
       vip_set_field_vsd(snd_pkt, cur->session_id, rcv_pkt->gap_list[i], payload, 100);
       vip_serialize_message(snd_pkt, buffer);

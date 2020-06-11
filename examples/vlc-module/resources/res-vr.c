@@ -225,6 +225,7 @@ handler_vsd(vip_message_t *rcv_pkt) {
     return;
 
   retransmit_on();
+  ctimer_stop(&ct);
   ctimer_reset(&ct);
   sliding_window_handler(rcv_pkt);
 
