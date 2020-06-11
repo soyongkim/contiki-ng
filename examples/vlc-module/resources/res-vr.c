@@ -248,6 +248,8 @@ sliding_window_handler(vip_message_t* rcv_pkt)
     if(last_seq < rcv_pkt->seq)
       last_seq = rcv_pkt->seq;
 
+    printf("Cumul Ack:%d - last seq: %d\n", cumul_ack, last_seq);
+
     if(cumul_ack + 1 == rcv_pkt->seq)
     {
       // 기대했던 패킷이 왔음
@@ -329,7 +331,7 @@ void sliding_window_send_ack()
   vip_set_field_vda(snd_pkt, session_id, cumul_ack, gap_num, gap_list);
   vip_serialize_message(snd_pkt, buffer);
   vip_set_dest_ep_cooja(snd_pkt, dest_addr, aa_id, VIP_AA_URL);
-
+  vip_push_snd_buf(snd_pkt);
   process_post(&vr_process, vr_snd_event, (void *)snd_pkt);
 
   ack_flag = 0;
