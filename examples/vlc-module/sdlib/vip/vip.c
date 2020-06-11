@@ -257,14 +257,16 @@ int vip_serialize_vda(vip_message_t *vip_pkt)
     
     if(!vip_pkt->gap_len)
     {
-        printf("[vip] thre is no gap\n");
+        printf("[vip] thre is no gap");
     }
 
 
     for(int i=0; i<vip_pkt->gap_len; i++)
     {
         index += vip_int_serialize(index, 4, offset, vip_pkt->gap_list[i]);
+        printf("[%d] ", vip_pkt->gap_list[i]);
     }
+    puts("");
 
     return index;
 }

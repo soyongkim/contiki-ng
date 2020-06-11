@@ -331,6 +331,7 @@ void sliding_window_send_ack()
   vip_set_field_vda(snd_pkt, session_id, cumul_ack, gap_num, gap_list);
   vip_serialize_message(snd_pkt, buffer);
   vip_set_dest_ep_cooja(snd_pkt, dest_addr, aa_id, VIP_AA_URL);
+
   vip_push_snd_buf(snd_pkt);
   process_post(&vr_process, vr_snd_event, (void *)snd_pkt);
 
@@ -373,6 +374,8 @@ static void trigger_ser(void* data)
   vip_set_field_ser(snd_pkt, session_id, vr_seq);
   vip_serialize_message(snd_pkt, buffer);
   vip_set_dest_ep_cooja(snd_pkt, dest_addr, aa_id, VIP_AA_URL);
+
+  vip_push_snd_buf(snd_pkt);
   process_post(&vr_process, vr_snd_event, (void *)snd_pkt);
 }
 
@@ -394,6 +397,8 @@ static void trigger_vsd(void* data)
     vip_set_query(snd_pkt, query);
 
     snd_pkt->transmit_time = 0;
+
+    vip_push_snd_buf(snd_pkt);
     process_post(&vr_process, vr_snd_event, (void *)snd_pkt);
     timer_init(2);
 }
@@ -404,6 +409,7 @@ static void trigger_retransmit(void* data)
   if(vip_timeout_swtich)
   {
     sliding_window_send_ack();
+    ctimer_stop(&ct);
     ctimer_reset(&ct);
   }
   ack_flag = 0;

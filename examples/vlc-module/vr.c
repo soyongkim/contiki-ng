@@ -77,7 +77,7 @@ PROCESS_THREAD(vr_process, ev, data)
 
     if (ev == vr_snd_event)
     {
-      vip_push_snd_buf((vip_message_t *)data);
+      //vip_push_snd_buf((vip_message_t *)data);
       init();
     }
 
