@@ -108,7 +108,7 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
   static vip_message_t rcv_pkt[1];
   if (vip_parse_common_header(rcv_pkt, request->payload, request->payload_len) != VIP_NO_ERROR)
   {
-    printf("VIP: Not VIP Packet\n");
+    printf("VIP: Not VIP Packet = total_len:%d | coap_payload_len:%d\n", request->payload, request->payload_len);
     return;
   }
 

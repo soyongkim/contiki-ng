@@ -251,7 +251,7 @@ int vip_serialize_vda(vip_message_t *vip_pkt)
     unsigned int index = 0;
 
     index += vip_int_serialize(index, 4, offset, vip_pkt->session_id);
-    index += vip_int_serialize(index, VIP_SEQ_LEN, offset, vip_pkt->ack_seq);
+    index += vip_int_serialize(index, 4, offset, vip_pkt->ack_seq);
     index += vip_int_serialize(index, 4, offset, vip_pkt->gap_len);
 
     
