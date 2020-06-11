@@ -320,6 +320,7 @@ sliding_window_loss_search()
   // in-order이 되었다면 ack
   if(cumul_ack == last_seq && out_of_order_flag)
   {
+    printf("In-Order\n");
     ack_flag = 1;
     out_of_order_flag = 0;
   }
@@ -327,7 +328,7 @@ sliding_window_loss_search()
   if(cumul_ack == init_seq + VIP_SIMUL_DATA-1 && !gap_num)
   {
     // 마지막이라면
-    printf("--- goal ---\n");
+    printf("--- Goal ---\n");
     retransmit_off();
   }
 }
@@ -413,14 +414,14 @@ static void trigger_vsd(void* data)
 
 static void trigger_retransmit(void* data)
 {
-  printf("-----------------TIME OUT------------------\n");
   if(vip_timeout_swtich)
   {
+    printf("-----------------TIME OUT------------------\n");
     sliding_window_send_ack();
     ctimer_stop(&ct);
     ctimer_reset(&ct);
+    ack_flag = 0;
   }
-  ack_flag = 0;
 }
 
 static void timer_init(int flag)
