@@ -144,6 +144,7 @@ handler_beacon(vip_message_t *rcv_pkt) {
     vip_make_query_src(query, strlen(query), node_id);
     vip_set_query(snd_pkt, query);
 
+    vip_push_snd_buf(snd_pkt);
     process_post(&vr_process, vr_snd_event, (void *)snd_pkt);
   }
 }
@@ -162,6 +163,8 @@ handler_vra(vip_message_t *rcv_pkt) {
     vip_init_message(snd_pkt, VIP_TYPE_VRC, aa_id, vt_id, vr_id);
     vip_serialize_message(snd_pkt, buffer);
     vip_set_dest_ep_cooja(snd_pkt, dest_addr, aa_id, VIP_AA_URL);
+
+    vip_push_snd_buf(snd_pkt);
     process_post(&vr_process, vr_snd_event, (void *)snd_pkt);
 
 
@@ -203,6 +206,8 @@ handler_sea(vip_message_t *rcv_pkt) {
   vip_set_field_sec(snd_pkt, rcv_pkt->session_id, rcv_pkt->vg_seq);
   vip_serialize_message(snd_pkt, buffer);
   vip_set_dest_ep_cooja(snd_pkt, dest_addr, aa_id, VIP_AA_URL);
+
+  vip_push_snd_buf(snd_pkt);
   process_post(&vr_process, vr_snd_event, (void *)snd_pkt);
 
   /* trigger of vsd */
