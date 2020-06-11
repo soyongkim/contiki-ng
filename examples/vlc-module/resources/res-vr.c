@@ -294,17 +294,18 @@ sliding_window_handler(vip_message_t* rcv_pkt)
 void
 sliding_window_loss_search()
 {
-  int start = cumul_ack - init_seq >= 0 ? cumul_ack - init_seq : 0;
+  int start = cumul_ack - init_seq + 1;
   int end = last_seq - init_seq;
 
   int j=0, chk=0;
 
   gap_num = 0;
-  for(int i = start; i<=end; i++)
+  for(int i = start; i<end; i++)
   {
-    if(simul_buffer[i] == 1 && !chk)
+    if(simul_buffer[i] == 1)
     {
-      cumul_ack = i + init_seq;
+      if(!chk)
+        cumul_ack = i + init_seq;
     }
     else
     {
