@@ -225,8 +225,7 @@ handler_vsd(vip_message_t *rcv_pkt) {
     return;
 
   retransmit_on();
-  ctimer_stop(&ct);
-  ctimer_reset(&ct);
+  ctimer_restart(&ct);
   sliding_window_handler(rcv_pkt);
 
 }
@@ -418,8 +417,7 @@ static void trigger_retransmit(void* data)
   {
     printf("-----------------TIME OUT------------------\n");
     sliding_window_send_ack();
-    ctimer_stop(&ct);
-    ctimer_reset(&ct);
+    ctimer_restart(&ct);
     ack_flag = 0;
   }
 }
