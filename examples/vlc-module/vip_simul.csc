@@ -207,7 +207,7 @@
   <plugin>
     org.contikios.cooja.plugins.SimControl
     <width>280</width>
-    <z>1</z>
+    <z>3</z>
     <height>160</height>
     <location_x>400</location_x>
     <location_y>0</location_y>
@@ -224,7 +224,7 @@
       <viewport>13.459000311405342 0.0 0.0 13.459000311405342 -750.6321882875739 -349.31260602753355</viewport>
     </plugin_config>
     <width>400</width>
-    <z>3</z>
+    <z>1</z>
     <height>400</height>
     <location_x>1</location_x>
     <location_y>1</location_y>
