@@ -14,7 +14,7 @@
 #define VIP_MAX_PKT_SIZE 512
 
 /* for simulation */
-#define VIP_WINDOW_SIZE 4
+#define VIP_WINDOW_SIZE 1
 #define VIP_ERROR_RATE 50
 #define VIP_SIMUL_DATA 50
 
