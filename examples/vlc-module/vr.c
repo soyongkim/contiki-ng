@@ -100,7 +100,6 @@ timer_callback(void* data)
 static void init()
 {
   //ctimer_set(&ct, CLOCK_SECOND/100, timer_callback, NULL);
-  printf("Set SendTimer - %d\n", clock_time());
   etimer_restart(&et);
 }
 
