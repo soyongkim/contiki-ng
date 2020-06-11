@@ -344,7 +344,7 @@ sliding_window_sack_handler(vip_message_t *rcv_pkt, session_t* cur)
     if (rcv_pkt->ack_seq == cur->dup_ack)
     {
       // 만약 중복 Ack이 원래 전송하고자하는 데이터의 마지막 Ack였다면, 재전송안함
-      if(rcv_pkt->ack_seq != cur->init_seq + VIP_SIMUL_DATA -1)
+      if(rcv_pkt->ack_seq == cur->init_seq + VIP_SIMUL_DATA -1)
         return;
       // 중복 Ack를 받았다면, cumul_ack + 1 ~ last_sent_ack까지 재전송
       int start = (cur->last_rcvd_ack + 1) - cur->init_seq;
