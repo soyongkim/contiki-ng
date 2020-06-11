@@ -15,6 +15,7 @@
 
 /* for simulation */
 #define VIP_WINDOW_SIZE 4
+#define VIP_ERROR_RATE 0
 #define VIP_SIMUL_DATA 50
 
 /* for test, vg-id is fixed by 1 */
