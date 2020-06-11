@@ -186,7 +186,7 @@ send_with_error_rate(vip_message_t* snd_pkt)
     if(snd_pkt->type == VIP_TYPE_VSD)
     {
       int loss_simul_var = random_rand() % 100;
-      if (loss_simul_var >= 5)
+      if (loss_simul_var >= 10)
       {
         printf("SUCCESS!\n");
         process_post(&vt_process, vt_snd_event, (void *)snd_pkt);

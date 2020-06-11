@@ -253,8 +253,6 @@ sliding_window_handler(vip_message_t* rcv_pkt)
     if(last_seq < rcv_pkt->seq)
       last_seq = rcv_pkt->seq;
 
-    printf("Cumul Ack:%d - last seq: %d\n", cumul_ack, last_seq);
-
     if(cumul_ack + 1 == rcv_pkt->seq)
     {
       // 기대했던 패킷이 왔음
@@ -272,13 +270,16 @@ sliding_window_handler(vip_message_t* rcv_pkt)
         }
       }
       sliding_window_loss_search();
+      printf("Cumul Ack:%d - last seq: %d\n", cumul_ack, last_seq);
     }
     else if(cumul_ack + 1 < rcv_pkt->seq)
     {
       // 기대한 것보다 더 크므로, loss = Out of Order
+      printf("Out-of-Order\n");
       ack_flag = 1;
       out_of_order_flag = 1;
       sliding_window_loss_search();
+      printf("Cumul Ack:%d - last seq: %d\n", cumul_ack, last_seq);
     }
     else
     {
