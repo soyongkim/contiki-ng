@@ -270,7 +270,7 @@ int vip_serialize_vda(vip_message_t *vip_pkt)
 
 
     printf("Total_len:%d\n", index);
-    return index;
+    return index - VIP_COMMON_HEADER_LEN;
 }
 
 int vip_serialize_message(vip_message_t *vip_pkt, uint8_t *buffer)
@@ -346,6 +346,7 @@ int vip_serialize_message(vip_message_t *vip_pkt, uint8_t *buffer)
     offset = vip_pkt->buffer + total_len;
     if (vip_pkt->payload_len)
     {
+        printf("There is payload! - %d\n", vip_pkt->payload_len);
         memmove(offset, vip_pkt->payload, vip_pkt->payload_len);
         total_len += vip_pkt->payload_len;
     }
