@@ -99,9 +99,6 @@ static void
 res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset)
 {
   const char *src = NULL;
-  const char *goal = NULL;
-  const char *start = NULL;
-  const char *transmit = NULL;
   printf("Received - mid(%x) - clock_time(%d)\n", request->mid, clock_time());
   
 
@@ -114,24 +111,6 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
 
   if(coap_get_query_variable(request, "src", &src)) {
     rcv_pkt->query_rcv_id = atoi(src);
-  }
-
-  if(coap_get_query_variable(request, "goal", &goal))
-  {
-      printf("--------------------------------------------------------------------------------------------------- Goal\n");
-      goal_flag = 1;
-  }
-
-  if(coap_get_query_variable(request, "start", &start))
-  {
-      rcv_pkt->start_time = atoi(start);
-      printf("rcvd start time: %u\n", rcv_pkt->start_time);
-  }
-
-  if(coap_get_query_variable(request, "transmit", &transmit))
-  {
-      rcv_pkt->transmit_time = atoll(transmit);
-      printf("rcvd transmit time: %u\n", rcv_pkt->transmit_time);
   }
 
   vip_route(rcv_pkt, &aa_type_handler);
@@ -302,37 +281,11 @@ handler_sec(vip_message_t *rcv_pkt) {
 
 static void
 handler_vsd(vip_message_t *rcv_pkt) {
-    if(rcv_pkt->start_time)
-    {
-      uint32_t cur_time = RTIMER_NOW()/1000;
-      printf("Cur time: %u\n", cur_time);
-      rcv_pkt->transmit_time +=  cur_time - rcv_pkt->start_time;
-      printf("transmit time: %u\n", rcv_pkt->transmit_time);
-    }
-
-    vip_init_query(rcv_pkt, query);
-    vip_make_query_transmit_time(query, strlen(query), (uint32_t)rcv_pkt->transmit_time);
-
     if(rcv_pkt->query_rcv_id)
     {
-      if (goal_flag)
-      {
-        /* forward goal flag to vg */
-        vip_make_query_goal(query, strlen(query), 1);
-        printf("Q: %s\n", query);
-      }
-      else
-      {
-        /* if not goal, turn on vr timer */
-        vip_init_query(ack_pkt, ack_query);
-        vip_make_query_timer(ack_query, strlen(ack_query), 1);
-        vip_set_query(ack_pkt, ack_query);
-      }
-
       // arrived from vr
       vip_set_dest_ep_cooja(rcv_pkt, dest_addr, VIP_VG_ID, VIP_VG_URL);
       vip_serialize_message(rcv_pkt, buffer);
-      vip_set_query(rcv_pkt, query);
       process_post(&aa_process, aa_snd_event, (void *)rcv_pkt);
     }
     else
@@ -340,7 +293,6 @@ handler_vsd(vip_message_t *rcv_pkt) {
       // arrived from vg
       vip_set_dest_ep_cooja(rcv_pkt, dest_addr, rcv_pkt->vt_id, VIP_VT_URL);
       vip_serialize_message(rcv_pkt, buffer);
-      vip_set_query(rcv_pkt, query);
       process_post(&aa_process, aa_snd_event, (void *)rcv_pkt);    
     }
 }
@@ -350,7 +302,7 @@ static void
 handler_vda(vip_message_t *rcv_pkt)
 {
     vip_set_dest_ep_cooja(rcv_pkt, dest_addr, VIP_VG_ID, VIP_VG_URL);
-    printf("check>> ack_seq:%d gap_len:%d\n", rcv_pkt->ack_seq, rcv_pkt->gap_len);
+    printf("[vda middle check] ack_seq:%d gap_len:%d\n", rcv_pkt->ack_seq, rcv_pkt->gap_len);
     process_post(&aa_process, aa_snd_event, (void *)rcv_pkt);
 }
 

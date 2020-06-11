@@ -83,8 +83,6 @@ static void
 res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buffer, uint16_t preferred_size, int32_t *offset)
 {
   const char *src = NULL;
-  const char *start = NULL;
-  const char *transmit = NULL;
   printf("Received - mid(%x) - clock_time(%d)\n", request->mid, clock_time());
 
   static vip_message_t rcv_pkt[1];
@@ -98,18 +96,6 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
     rcv_pkt->query_rcv_id = atoi(src);
   }
   
-  if(coap_get_query_variable(request, "start", &start))
-  {
-      rcv_pkt->start_time = atoi(start);
-      printf("rcvd start time: %u\n", rcv_pkt->start_time);
-  }
-
-  if(coap_get_query_variable(request, "transmit", &transmit))
-  {
-      rcv_pkt->transmit_time = atoi(transmit);
-      printf("rcvd transmit time: %u\n", rcv_pkt->transmit_time);
-  }
-
   vip_route(rcv_pkt, &vg_type_handler);
 
   /* for ack */

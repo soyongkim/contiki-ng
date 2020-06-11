@@ -18,6 +18,9 @@
 #define VIP_ERROR_RATE 0
 #define VIP_SIMUL_DATA 50
 
+
+
+
 /* for test, vg-id is fixed by 1 */
 #define VIP_VG_ID 1
 

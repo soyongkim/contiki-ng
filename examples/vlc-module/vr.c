@@ -131,24 +131,6 @@ vip_request() {
   {
     snd_pkt = vip_front_snd_buf();
 
-    if(snd_pkt->query_len)
-    {
-      /* measure transmit time */
-      snd_pkt->start_time = RTIMER_NOW() / 1000;
-      printf("time check! %d\n", snd_pkt->start_time);
-      if(snd_pkt->query)
-        vip_make_query_start_time(snd_pkt->query, snd_pkt->query_len, (uint32_t)(snd_pkt->start_time));
-
-      if (snd_pkt->re_flag == COAP_TYPE_NON)
-      {
-        /* if loss, add loss delay(500 msec) */
-        snd_pkt->transmit_time = (uint32_t)500;
-        vip_make_query_transmit_time(snd_pkt->query, snd_pkt->query_len, snd_pkt->transmit_time);
-      }
-
-      printf("Query: %s\n", snd_pkt->query);
-    }
-
     /* set vip endpoint */
     coap_endpoint_parse(snd_pkt->dest_coap_addr, strlen(snd_pkt->dest_coap_addr), &dest_ep);
 
