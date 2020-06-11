@@ -250,9 +250,9 @@ int vip_serialize_vda(vip_message_t *vip_pkt)
     uint8_t *offset = vip_pkt->buffer;
     unsigned int index = VIP_COMMON_HEADER_LEN;
 
-    index += vip_int_serialize(index, 4, offset, vip_pkt->session_id);
-    index += vip_int_serialize(index, 4, offset, vip_pkt->ack_seq);
-    index += vip_int_serialize(index, 4, offset, vip_pkt->gap_len);
+    index = vip_int_serialize(index, 4, offset, vip_pkt->session_id);
+    index = vip_int_serialize(index, 4, offset, vip_pkt->ack_seq);
+    index = vip_int_serialize(index, 4, offset, vip_pkt->gap_len);
 
     
     if(!vip_pkt->gap_len)
@@ -263,7 +263,7 @@ int vip_serialize_vda(vip_message_t *vip_pkt)
 
     for(int i=0; i<vip_pkt->gap_len; i++)
     {
-        index += vip_int_serialize(index, 4, offset, vip_pkt->gap_list[i]);
+        index = vip_int_serialize(index, 4, offset, vip_pkt->gap_list[i]);
         printf("[%d] ", vip_pkt->gap_list[i]);
     }
     puts("");
