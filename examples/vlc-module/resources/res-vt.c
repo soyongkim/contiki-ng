@@ -25,6 +25,8 @@ static void handler_sec(vip_message_t *rcv_pkt);
 static void handler_vsd(vip_message_t *rcv_pkt);
 static void handler_alloc(vip_message_t *rcv_pkt);
 
+static void send_with_error_rate(vip_message_t* snd_pkt);
+
 static int vt_id, aa_id;
 
 /* for snd-pkt */
@@ -173,8 +175,29 @@ handler_vsd(vip_message_t *rcv_pkt)
   /* VLC! */
   printf("Broadcast VSD for VR(%d) <= seq(%d)\n", rcv_pkt->vr_id, rcv_pkt->seq);
   vip_set_dest_ep_cooja(rcv_pkt, dest_addr, VIP_BROADCAST, VIP_VR_URL);
-  process_post(&vt_process, vt_snd_event, (void *)rcv_pkt);
+  send_with_error_rate(rcv_pkt);
 }
+
+static void
+send_with_error_rate(vip_message_t* snd_pkt)
+{
+    printf("type: %d\n", snd_pkt->type);
+    if(snd_pkt->type == VIP_TYPE_VSD)
+    {
+      int loss_simul_var = random_rand() % 100;
+      if (loss_simul_var >= 5)
+      {
+        printf("SUCCESS!\n");
+        process_post(&vt_process, vt_snd_event, (void *)rcv_pkt);
+      }
+      else
+      {
+        printf("LOSS! -----------------------------------------------------------------------\n");
+      }
+    }
+}
+
+
 
 static void
 handler_alloc(vip_message_t *rcv_pkt) {

@@ -112,22 +112,6 @@ vip_request() {
   {
     snd_pkt = vip_front_snd_buf();
 
-    printf("type: %d\n", snd_pkt->type);
-    if(snd_pkt->type == VIP_TYPE_VSD)
-    {
-      int loss_simul_var = random_rand() % 100;
-      if (loss_simul_var >= 5)
-      {
-        printf("SUCCESS!\n");
-      }
-      else
-      {
-        printf("LOSS! -----------------------------------------------------------------------\n");
-        vip_pop_snd_buf();
-        break;
-      }
-    }
-
     if (snd_pkt->query_len)
     {
       snd_pkt->start_time = RTIMER_NOW()/1000;
