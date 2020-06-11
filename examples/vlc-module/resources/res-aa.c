@@ -64,15 +64,12 @@ LIST(se_cache);
 static vip_message_t snd_pkt[1];
 static uint8_t buffer[VIP_MAX_PKT_SIZE];
 static char dest_addr[50];
-static char query[VIP_MAX_QUERY_SIZE];
 
 /* use ack for query */
 static vip_message_t ack_pkt[1];
 static char ack_query[VIP_MAX_QUERY_SIZE];
 
 static int nonce_pool[65000];
-
-static int goal_flag;
 
 static char uplink_id[50] = {"ISL_AA_UPLINK_ID"};
 
