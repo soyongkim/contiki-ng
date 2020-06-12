@@ -63,6 +63,10 @@ static mutex_t v;
 /* vr id pool */
 static int vr_id_pool[65000];
 
+/* init time for throughput */
+static unsigned long init_time;
+
+
 /* A simple actuator example. Toggles the red led */
 EVENT_RESOURCE(res_vg,
          "title=\"VG\";rt=\"Control\"",
@@ -224,6 +228,7 @@ handler_vsd(vip_message_t *rcv_pkt) {
     if((cur = check_session(rcv_pkt->vr_id)))
     {
       /* Trigger for data transfer */
+      init_time = clock_seconds();
       sliding_window_transfer(rcv_pkt, cur);    
     }
 }
@@ -293,6 +298,10 @@ sliding_window_sack_handler(vip_message_t *rcv_pkt, session_t* cur)
     }
     // index까지 잘받았으니 last_ack를 옮김
     cur->last_rcvd_ack = cur->init_seq + index;
+
+    // last_ack이 옮겨졌으니 throuput 계산
+    unsigned long time = (clock_seconds() / init_time) > 0 ? (clock_seconds() / init_time) : 1;
+    printf("Current Throuput: %d.%d\n", cur->last_rcvd_ack/time, cur->last_rcvd_ack%time);
 
     // last data check
     if(rcv_pkt->ack_seq == cur->init_seq + VIP_SIMUL_DATA-1)
