@@ -230,6 +230,7 @@ handler_vsd(vip_message_t *rcv_pkt) {
       /* Trigger for data transfer */
       init_time = clock_seconds();
       sliding_window_transfer(rcv_pkt, cur);    
+      printf("init_time:%d\n", init_time);
     }
 }
 
@@ -300,6 +301,7 @@ sliding_window_sack_handler(vip_message_t *rcv_pkt, session_t* cur)
     cur->last_rcvd_ack = cur->init_seq + index;
 
     // last_ack이 옮겨졌으니 throuput 계산
+    printf("cur init-time:%d - cur time:%d\n", init_time, clock_seconds());
     unsigned long time = (clock_seconds() / init_time) > 0 ? (clock_seconds() / init_time) : 1;
     printf("Current Throuput: %d.%d - Cur time: %d\n", ((cur->last_rcvd_ack- cur->init_seq)+1)/time, ((cur->last_rcvd_ack- cur->init_seq)+1)%time, time);
 
