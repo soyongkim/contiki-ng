@@ -15,8 +15,8 @@
 
 /* for simulation */
 #define VIP_WINDOW_SIZE 1
-#define VIP_ERROR_RATE 50
-#define VIP_SIMUL_DATA 50
+#define VIP_ERROR_RATE 0
+#define VIP_SIMUL_DATA 20
 
 #define VIP_SEND_JITTER CLOCK_SECOND/16
 //#define VIP_SEND_JITTER 0
