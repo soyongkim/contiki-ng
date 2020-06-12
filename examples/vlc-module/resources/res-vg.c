@@ -302,7 +302,7 @@ sliding_window_sack_handler(vip_message_t *rcv_pkt, session_t* cur)
 
     // last_ack이 옮겨졌으니 throuput 계산
     unsigned long time = (clock_seconds() - init_time) > 0 ? (clock_seconds() - init_time) : 1;
-    printf("Current Throuput: %d.%d - Cur time: %d - Cur Processed Data: %d\n", ((cur->last_rcvd_ack- cur->init_seq)+1)/time, ((cur->last_rcvd_ack- cur->init_seq)+1)%time, time, (cur->last_rcvd_ack- cur->init_seq)+1));
+    printf("Current Throuput: %d.%d - Cur time: %d - Cur Processed Data: %d\n", ((cur->last_rcvd_ack- cur->init_seq)+1)/time, ((cur->last_rcvd_ack- cur->init_seq)+1)%time, time, (cur->last_rcvd_ack- cur->init_seq)+1);
 
     // last data check
     if(rcv_pkt->ack_seq == cur->init_seq + VIP_SIMUL_DATA-1)
