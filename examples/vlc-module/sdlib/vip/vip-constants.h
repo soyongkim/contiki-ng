@@ -14,11 +14,11 @@
 #define VIP_MAX_PKT_SIZE 512
 
 /* for simulation */
-#define VIP_WINDOW_SIZE 5
+#define VIP_WINDOW_SIZE 4
 #define VIP_ERROR_RATE 0
-#define VIP_SIMUL_DATA 100
+#define VIP_SIMUL_DATA 3000
 
-#define VIP_SEND_JITTER CLOCK_SECOND/16
+#define VIP_SEND_JITTER CLOCK_SECOND/12
 //#define VIP_SEND_JITTER 0
 
 
