@@ -51,7 +51,7 @@ PERIODIC_RESOURCE(res_vt,
          res_post_handler,
          NULL,
          NULL,
-         100,
+         5000,
          beaconing);
 
 
