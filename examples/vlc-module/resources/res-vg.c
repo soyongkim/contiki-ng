@@ -152,7 +152,7 @@ handler_vrr(vip_message_t *rcv_pkt)
       {
         // window = 1일 경우, 개선안된 HO 시나리오 수행
         // 일부러 중복 데이터를 2번 보내서 재전송을 유도함
-        printf("Existing Scheme => last_ack:%d\n", cur->last_rcvd_ack);
+        printf("Existing Scheme => last_ack:%d\n", cur->last_rcvd_ack - 1);
         char payload[100];
         vip_init_message(ack_pkt, VIP_TYPE_VSD, rcv_pkt->aa_id, rcv_pkt->vt_id, rcv_pkt->vr_id);
         vip_set_field_vsd(ack_pkt, cur->session_id, cur->last_sent_seq, (void *)payload, 100);
