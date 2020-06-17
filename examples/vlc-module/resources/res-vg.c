@@ -323,10 +323,11 @@ sliding_window_sack_handler(vip_message_t *rcv_pkt, session_t* cur)
     if (prev_time >= 60)
     {
       printf("================================== Total Data =================================\n");
-      for (int i = 0; i <= 60; i++)
+      for (int i = 1; i <= 60; i++)
       {
         printf("[%d]sec\t%d\n", i, time_table[i]);
       }
+      printf("================================== END ========================================\n");
     }
 
     // 그리고 여유분 전송
