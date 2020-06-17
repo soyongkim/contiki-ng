@@ -327,6 +327,17 @@ sliding_window_sack_handler(vip_message_t *rcv_pkt, session_t* cur)
       }
     }
 
+    if (rcv_pkt->ack_seq >= 100)
+    {
+      printf("================================== Total Data =================================\n")
+      for (int i = 0; i < 100; i++)
+      {
+        if (time_table[i])
+        {
+          printf("[%s]sec : %d\n");
+        }
+      }
+    }
 
     // 그리고 여유분 전송
     sliding_window_transfer(rcv_pkt, cur);
