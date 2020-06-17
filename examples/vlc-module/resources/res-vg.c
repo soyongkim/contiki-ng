@@ -66,6 +66,7 @@ static int vr_id_pool[65000];
 /* init time for throughput */
 static unsigned long init_time;
 static unsigned long prev_time;
+static int ho_time;
 static unsigned long time_table[100];
 
 /* A simple actuator example. Toggles the red led */
@@ -131,7 +132,7 @@ handler_vrr(vip_message_t *rcv_pkt)
     if((cur = check_session(rcv_pkt->vr_id)))
     {
       printf("handover vr(%d)! => send to aa(%d) - vt(%d) == Cur time: %d\n", rcv_pkt->vr_id, rcv_pkt->aa_id, rcv_pkt->vt_id, clock_seconds()-init_time);
-
+      ho_time = clock_seconds()-init_time;
       if(VIP_WINDOW_SIZE > 1)
       {
         // HO가 일어나면, 마지막을 보냈던 데이터 재전송 => cumul_ack + 1 ~ last_sent_ack까지 재전송
@@ -371,7 +372,7 @@ sliding_window_sack_handler(vip_message_t *rcv_pkt, session_t* cur)
     if (prev_time >= 65)
     {
       int prev_sec_data;
-      printf("================================== For HO =================================\n");
+      printf("==> Handover Time: %d\n", ho_time);
       for (int i = 61; i <= 65; i++)
       {
         if (time_table[i])
