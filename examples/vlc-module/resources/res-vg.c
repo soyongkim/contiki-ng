@@ -340,6 +340,25 @@ sliding_window_sack_handler(vip_message_t *rcv_pkt, session_t* cur)
       printf("================================== END ========================================\n");
     }
 
+    if (prev_time >= 65)
+    {
+      int prev_sec_data;
+      printf("================================== For HO =================================\n");
+      for (int i = 61; i <= 65; i++)
+      {
+        if (time_table[i])
+        {
+          printf("[%d]sec\t%d\n", i, time_table[i]);
+          prev_sec_data = time_table[i];
+        }
+        else
+        {
+          printf("[%d]sec\t%d\n", i, prev_sec_data);
+        }
+      }
+      printf("================================== HO ========================================\n");
+    }
+
     // 그리고 여유분 전송
     sliding_window_transfer(rcv_pkt, cur);
   }
