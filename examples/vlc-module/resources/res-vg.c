@@ -127,18 +127,43 @@ handler_vrr(vip_message_t *rcv_pkt)
   /* case handover */
   if(rcv_pkt->vr_id)
   {
-    session_t* chk;
-    if((chk = check_session(rcv_pkt->vr_id)))
+    session_t* cur;
+    if((cur = check_session(rcv_pkt->vr_id)))
     {
       printf("handover vr(%d)! => send to aa(%d) - vt(%d)\n", rcv_pkt->vr_id, rcv_pkt->aa_id, rcv_pkt->vt_id);
-      /* last received vsd */
-      char payload[101];
-      memset(payload, chk->test_data-1, 100);
 
-      vip_init_message(ack_pkt, VIP_TYPE_VSD, rcv_pkt->aa_id, rcv_pkt->vt_id, rcv_pkt->vr_id);
-      vip_set_field_vsd(ack_pkt, chk->session_id, chk->vg_seq-1, (void *)payload, 100);
-      vip_serialize_message(ack_pkt, buffer);
+      if(VIP_WINDOW_SIZE >= 1)
+      {
+        // HO가 일어나면, 마지막을 보냈던 데이터 재전송 => cumul_ack + 1 ~ last_sent_ack까지 재전송
+        int start = (cur->last_rcvd_ack + 1) - cur->init_seq;
+        int end = (cur->last_sent_seq) - cur->init_seq;
+        printf("Dup case! => last_ack:%d start:%d\n", cur->last_rcvd_ack, start);
+        for (int i = start; i <= end; i++)
+        {
+          char payload[100];
+          vip_init_message(snd_pkt, VIP_TYPE_VSD, rcv_pkt->aa_id, rcv_pkt->vt_id, rcv_pkt->vr_id);
+          vip_set_field_vsd(snd_pkt, cur->session_id, cur->init_seq + i, payload, 100);
+          vip_serialize_message(snd_pkt, buffer);
+          vip_set_dest_ep_cooja(snd_pkt, dest_addr, rcv_pkt->aa_id, VIP_AA_URL);
+          vip_push_snd_buf(snd_pkt);
+        }
+      }
+      else
+      {
+        // window = 1일 경우, 개선안된 HO 시나리오 수행
+        // 일부러 중복 데이터를 2번 보내서 재전송을 유도함
+        char payload[100];
+        vip_init_message(ack_pkt, VIP_TYPE_VSD, rcv_pkt->aa_id, rcv_pkt->vt_id, rcv_pkt->vr_id);
+        vip_set_field_vsd(ack_pkt, cur->session_id, cur->last_sent_seq, (void *)payload, 100);
+        vip_serialize_message(ack_pkt, buffer);
+        vip_push_snd_buf(snd_pkt);
+        vip_push_snd_buf(snd_pkt);
+      }
+
+      process_post(&vg_process, vg_snd_event, (void *)snd_pkt);
+      show_buffer_state(cur);
     }
+    // handover end
     return;
   }
 
@@ -168,6 +193,8 @@ handler_vra(vip_message_t *rcv_pkt) {
 
 
 }
+
+
 
 static void
 handler_vrc(vip_message_t *rcv_pkt) {
