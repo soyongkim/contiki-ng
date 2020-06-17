@@ -332,11 +332,21 @@ sliding_window_sack_handler(vip_message_t *rcv_pkt, session_t* cur)
     unsigned long time = (clock_seconds() - init_time) > 0 ? (clock_seconds() - init_time) : 1;
     if(time != prev_time)
     {
+      int time_idx;
       if(prev_time < 100)
       {
-        time_table[prev_time] = (cur->last_rcvd_ack - cur->init_seq)+1;
+        if(ho_time && prev_time >= ho_time)
+        {
+          time_idx = prev_time - (ho_time - 30); 
+        }
+        else
+        {
+          time_idx = prev_time;
+        }
+        
+        time_table[time_idx] = (cur->last_rcvd_ack - cur->init_seq)+1;
       }
-      printf("========================= Cur time:%d! => [Prev Processed Data: %d / Prev time: %d]\n", time, (cur->last_rcvd_ack - cur->init_seq)+1, prev_time);
+      printf("========================= Cur time:%d! => [Prev Processed Data: %d / Prev time: %d]\n", time, (cur->last_rcvd_ack - cur->init_seq)+1, time_idx);
       prev_time = time;
     }
 
