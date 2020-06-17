@@ -359,9 +359,9 @@ sliding_window_sack_handler(vip_message_t *rcv_pkt, session_t* cur)
       printf("--------------------------------------GOAL---------------------------\n");
     }
 
+    int prev_sec_data;
     if (prev_time >= 60)
     {
-      int prev_sec_data;
       printf("================================== Total Data =================================\n");
       for (int i = 1; i <= 60; i++)
       {
@@ -381,7 +381,6 @@ sliding_window_sack_handler(vip_message_t *rcv_pkt, session_t* cur)
 
     if (prev_time >= 65)
     {
-      int prev_sec_data;
       printf("==> Handover Time: %d\n", ho_time);
       for (int i = 61; i <= 65; i++)
       {
