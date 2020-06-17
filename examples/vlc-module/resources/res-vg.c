@@ -65,6 +65,7 @@ static int vr_id_pool[65000];
 
 /* init time for throughput */
 static unsigned long init_time;
+static unsigned long prev_time;
 
 
 /* A simple actuator example. Toggles the red led */
@@ -229,7 +230,7 @@ handler_vsd(vip_message_t *rcv_pkt) {
     {
       /* Trigger for data transfer */
       init_time = clock_seconds();
-      printf("===================init_time:%d\n", init_time);
+      printf("===================> init_time:%d\n", init_time);
       sliding_window_transfer(rcv_pkt, cur);    
     }
 }
@@ -297,13 +298,18 @@ sliding_window_sack_handler(vip_message_t *rcv_pkt, session_t* cur)
     {
       cur->simul_buffer[i] = 2;
     }
-    // index까지 잘받았으니 last_ack를 옮김
-    cur->last_rcvd_ack = cur->init_seq + index;
 
     // last_ack이 옮겨졌으니 throuput 계산
     unsigned long time = (clock_seconds() - init_time) > 0 ? (clock_seconds() - init_time) : 1;
-    printf("[%d] Cur Processed Data: %d / Cur time: %d\n", clock_time(), (cur->last_rcvd_ack- cur->init_seq)+1, time);
+    if(time != prev_time)
+    {
+      printf("[%d] Cur Processed Data: %d / Cur time: %d\n", clock_time(), (cur->last_rcvd_ack - cur->init_seq)+1, prev_time);
+      prev_time = time;
+    }
 
+    // index까지 잘받았으니 last_ack를 옮김
+    cur->last_rcvd_ack = cur->init_seq + index;
+    
     // last data check
     if(rcv_pkt->ack_seq == cur->init_seq + VIP_SIMUL_DATA-1)
     {
