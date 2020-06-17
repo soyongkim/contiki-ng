@@ -327,7 +327,7 @@ sliding_window_sack_handler(vip_message_t *rcv_pkt, session_t* cur)
       {
         if (time_table[i])
         {
-          printf("[%d]sec : %d\n", i, time_table[i]);
+          printf("[%d]sec\t%d\n", i, time_table[i]);
         }
       }
     }
