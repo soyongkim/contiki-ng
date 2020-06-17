@@ -318,13 +318,6 @@ sliding_window_sack_handler(vip_message_t *rcv_pkt, session_t* cur)
     if(rcv_pkt->ack_seq == cur->init_seq + VIP_SIMUL_DATA-1)
     {
       printf("--------------------------------------GOAL---------------------------\n");
-      for(int i=0; i<100; i++)
-      {
-        if(time_table[i])
-        {
-          printf("[%s]sec : %d\n");
-        }
-      }
     }
 
     if (prev_time >= 60)
@@ -334,7 +327,7 @@ sliding_window_sack_handler(vip_message_t *rcv_pkt, session_t* cur)
       {
         if (time_table[i])
         {
-          printf("[%s]sec : %d\n");
+          printf("[%d]sec : %d\n", i, time_table[i]);
         }
       }
     }
