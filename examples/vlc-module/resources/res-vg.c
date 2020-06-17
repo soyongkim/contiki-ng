@@ -335,7 +335,7 @@ sliding_window_sack_handler(vip_message_t *rcv_pkt, session_t* cur)
       {
         time_table[prev_time] = (cur->last_rcvd_ack - cur->init_seq)+1;
       }
-      printf("[%d] Cur Processed Data: %d / Cur time: %d\n", clock_time(), (cur->last_rcvd_ack - cur->init_seq)+1, prev_time);
+      printf("Cur time:%d! => [Prev Processed Data: %d / Prev time: %d]\n", clock_time(), time, (cur->last_rcvd_ack - cur->init_seq)+1, prev_time);
       prev_time = time;
     }
 
