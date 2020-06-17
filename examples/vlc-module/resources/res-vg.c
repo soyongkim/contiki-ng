@@ -66,7 +66,7 @@ static int vr_id_pool[65000];
 /* init time for throughput */
 static unsigned long init_time;
 static unsigned long prev_time;
-
+static unsigned long time_table[100];
 
 /* A simple actuator example. Toggles the red led */
 EVENT_RESOURCE(res_vg,
@@ -303,17 +303,28 @@ sliding_window_sack_handler(vip_message_t *rcv_pkt, session_t* cur)
     unsigned long time = (clock_seconds() - init_time) > 0 ? (clock_seconds() - init_time) : 1;
     if(time != prev_time)
     {
+      if(prev_time < 100)
+      {
+        time_table[prev_time] = (cur->last_rcvd_ack - cur->init_seq)+1;
+      }
       printf("[%d] Cur Processed Data: %d / Cur time: %d\n", clock_time(), (cur->last_rcvd_ack - cur->init_seq)+1, prev_time);
       prev_time = time;
     }
 
     // index까지 잘받았으니 last_ack를 옮김
     cur->last_rcvd_ack = cur->init_seq + index;
-    
+
     // last data check
     if(rcv_pkt->ack_seq == cur->init_seq + VIP_SIMUL_DATA-1)
     {
       printf("--------------------------------------GOAL---------------------------\n");
+      for(int i=0; i<100; i++)
+      {
+        if(time_table[i])
+        {
+          printf("[%s]sec : %d\n");
+        }
+      }
     }
 
 
