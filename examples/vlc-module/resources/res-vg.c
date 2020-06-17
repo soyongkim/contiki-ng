@@ -130,7 +130,7 @@ handler_vrr(vip_message_t *rcv_pkt)
     session_t* cur;
     if((cur = check_session(rcv_pkt->vr_id)))
     {
-      printf("handover vr(%d)! => send to aa(%d) - vt(%d) == Cur time: %d\n", rcv_pkt->vr_id, rcv_pkt->aa_id, rcv_pkt->vt_id. clock_time() - init_time);
+      printf("handover vr(%d)! => send to aa(%d) - vt(%d) == Cur time: %d\n", rcv_pkt->vr_id, rcv_pkt->aa_id, rcv_pkt->vt_id, clock_time() - init_time);
 
       if(VIP_WINDOW_SIZE > 1)
       {
