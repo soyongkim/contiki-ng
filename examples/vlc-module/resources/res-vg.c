@@ -65,6 +65,8 @@ static int vr_id_pool[65000];
 
 /* init time for throughput */
 static unsigned long init_time;
+static int init_msec;
+static int goal_msec;
 static unsigned long prev_time;
 static int ho_time;
 static unsigned long time_table[100];
@@ -259,6 +261,7 @@ handler_vsd(vip_message_t *rcv_pkt) {
     {
       /* Trigger for data transfer */
       init_time = clock_seconds();
+      init_msec = clock_time();
       printf("===================> init_time:%d\n", init_time);
       sliding_window_transfer(rcv_pkt, cur);    
     }
@@ -356,8 +359,16 @@ sliding_window_sack_handler(vip_message_t *rcv_pkt, session_t* cur)
     // last data check
     if(rcv_pkt->ack_seq == cur->init_seq + VIP_SIMUL_DATA-1)
     {
-      printf("--------------------------------------GOAL---------------------------\n");
+      goal_msec = clock_time() - init_msec;
     }
+
+
+    if(goal_msec)
+    {
+      printf("--------------------------------------GOAL---------------------------\n");
+      printf("%d\n", goal_msec);
+    }
+
 
     int prev_sec_data;
     if (prev_time >= 60)
