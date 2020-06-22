@@ -63,7 +63,7 @@ PROCESS_THREAD(vg_process, ev, data)
    */
   coap_activate_resource(&res_vg, VIP_VG_URL);
 
-  etimer_set(&et, VIP_SEND_JITTER);
+  etimer_set(&et, 0);
   /* Define application-specific events here. */
   while (1)
   {
