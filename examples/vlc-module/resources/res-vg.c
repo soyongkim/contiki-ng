@@ -410,7 +410,6 @@ sliding_window_sack_handler(vip_message_t *rcv_pkt, session_t* cur)
 
     // 그리고 여유분 전송
     sliding_window_transfer(rcv_pkt, cur);
-    cur->dup_ack = 0;
   }
   else if(cur->simul_buffer[index] == 2)
   {
@@ -460,6 +459,7 @@ sliding_window_sack_handler(vip_message_t *rcv_pkt, session_t* cur)
       }
       process_post(&vg_process, vg_snd_event, (void *)snd_pkt);
       show_buffer_state(cur);
+      cur->dup_ack = 0;
     }
   }
 }
