@@ -62,6 +62,8 @@ PROCESS_THREAD(vg_process, ev, data)
    * All static variables are the same for each URI path.
    */
   coap_activate_resource(&res_vg, VIP_VG_URL);
+
+  etimer_set(&et, VIP_SEND_JITTER);
   /* Define application-specific events here. */
   while (1)
   {
