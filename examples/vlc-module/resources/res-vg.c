@@ -354,10 +354,10 @@ sliding_window_sack_handler(vip_message_t *rcv_pkt, session_t* cur)
       prev_time = time;
     }
 
+    // 중복 ack 체크 용도
+    cur->dup_ack = cur->last_rcvd_ack;
     // index까지 잘받았으니 last_ack를 옮김. 만약 이게 안옮겨지면, 중복 ack를 받았다는 말임
     cur->last_rcvd_ack = cur->init_seq + index;
-    // 중복 ack 체크
-    cur->dup_ack = cur->last_rcvd_ack;
 
     // last data check
     if(rcv_pkt->ack_seq == cur->init_seq + VIP_SIMUL_DATA-1)
