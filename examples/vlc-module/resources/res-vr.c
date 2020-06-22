@@ -151,7 +151,7 @@ handler_beacon(vip_message_t *rcv_pkt) {
       /* update aa_id, vt_id */
       aa_id = rcv_pkt->aa_id;
       vt_id = rcv_pkt->vt_id;
-      send_after_aa_latency();
+      send_after_aa_latency(NULL);
     }
   }
 }
