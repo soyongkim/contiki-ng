@@ -160,6 +160,7 @@ handler_vrr(vip_message_t *rcv_pkt)
         vip_init_message(ack_pkt, VIP_TYPE_VSD, rcv_pkt->aa_id, rcv_pkt->vt_id, rcv_pkt->vr_id);
         vip_set_field_vsd(ack_pkt, cur->session_id, cur->last_sent_seq - 1, (void *)payload, 100);
         vip_serialize_message(ack_pkt, buffer);
+        vip_set_dest_ep_cooja(snd_pkt, dest_addr, rcv_pkt->aa_id, VIP_AA_URL);
         vip_push_snd_buf(snd_pkt);
         vip_push_snd_buf(snd_pkt);
       }
