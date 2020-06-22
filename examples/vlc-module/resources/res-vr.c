@@ -26,10 +26,14 @@ static void handler_sec(vip_message_t *rcv_pkt);
 static void handler_vsd(vip_message_t *rcv_pkt);
 
 /* Trigger for simul */
-static struct ctimer ct;
+static struct ctimer ct, aa_latency;
 static void trigger_ser(void* data);
 static void trigger_vsd(void* data);
 static void timer_init(int flag);
+
+static void send_after_aa_latency(void* data);
+static void wait_aa_latency();
+
 
 LIST(session_info);
 static void add_new_session(int session_id, int vr_seq);
@@ -39,6 +43,17 @@ static session_t* check_session(int session_id);
 
 /* for debug */
 static void show_session_info();
+
+/* vip algorithm */
+void retransmit_on();
+void retransmit_off();
+static bool is_my_vip_pkt(vip_message_t* rcv_pkt);
+
+void sliding_window_handler(vip_message_t* rcv_pkt);
+void sliding_window_loss_search();
+void sliding_window_send_ack();
+
+
 
 static vip_message_t snd_pkt[1];
 static uint8_t buffer[VIP_MAX_PKT_SIZE];
@@ -68,16 +83,6 @@ static int consecutive_cnt;
 static int simul_buffer[VIP_SIMUL_DATA];
 static int gap_num;
 static uint32_t gap_list[VIP_SIMUL_DATA];
-
-
-/* vip algorithm */
-void retransmit_on();
-void retransmit_off();
-static bool is_my_vip_pkt(vip_message_t* rcv_pkt);
-
-void sliding_window_handler(vip_message_t* rcv_pkt);
-void sliding_window_loss_search();
-void sliding_window_send_ack();
 
 /* A simple actuator example. Toggles the red led */
 EVENT_RESOURCE(res_vr,
@@ -128,25 +133,26 @@ res_post_handler(coap_message_t *request, coap_message_t *response, uint8_t *buf
 static void
 handler_beacon(vip_message_t *rcv_pkt) {
   /* check handover and loss */
-  if(aa_id != rcv_pkt->aa_id || vt_id != rcv_pkt->vt_id) {
+  if (aa_id != rcv_pkt->aa_id || vt_id != rcv_pkt->vt_id)
+  {
     ho_init_time = clock_time();
     printf("aa(%d) => new aa(%d) | vt(%d) => new vt(%d)\n", aa_id, rcv_pkt->aa_id, vt_id, rcv_pkt->vt_id);
-    /* update aa_id, vt_id */
-    aa_id = rcv_pkt->aa_id;
-    vt_id = rcv_pkt->vt_id;
 
     /* Recent Received vt-id, aa-id */
-    vip_init_message(snd_pkt, VIP_TYPE_VRR, aa_id, vt_id, vr_id);
-    vip_set_field_vrr(snd_pkt, 0);
-    vip_serialize_message(snd_pkt, buffer);
-    vip_set_dest_ep_cooja(snd_pkt, dest_addr, aa_id, VIP_AA_URL);
-
-    vip_init_query(snd_pkt, query);
-    vip_make_query_src(query, strlen(query), node_id);
-    vip_set_query(snd_pkt, query);
-
-    vip_push_snd_buf(snd_pkt);
-    process_post(&vr_process, vr_snd_event, (void *)snd_pkt);
+    if (aa_id != rcv_pkt->aa_id)
+    {
+      /* update aa_id, vt_id */
+      aa_id = rcv_pkt->aa_id;
+      vt_id = rcv_pkt->vt_id;
+      wait_aa_latency();
+    }
+    else
+    {
+      /* update aa_id, vt_id */
+      aa_id = rcv_pkt->aa_id;
+      vt_id = rcv_pkt->vt_id;
+      send_after_aa_latency();
+    }
   }
 }
 
@@ -447,6 +453,27 @@ static void timer_init(int flag)
     break;
   }
 }
+
+static void send_after_aa_latency(void *data)
+{
+  vip_init_message(snd_pkt, VIP_TYPE_VRR, aa_id, vt_id, vr_id);
+  vip_set_field_vrr(snd_pkt, 0);
+  vip_serialize_message(snd_pkt, buffer);
+  vip_set_dest_ep_cooja(snd_pkt, dest_addr, aa_id, VIP_AA_URL);
+
+  vip_init_query(snd_pkt, query);
+  vip_make_query_src(query, strlen(query), node_id);
+  vip_set_query(snd_pkt, query);
+
+  vip_push_snd_buf(snd_pkt);
+  process_post(&vr_process, vr_snd_event, (void *)snd_pkt);
+}
+
+static void wait_aa_latency()
+{
+  ctimer_set(&aa_latency, VIP_AA_HO_LATENCY, send_after_aa_latency, NULL);
+}
+
 
 static bool is_my_vip_pkt(vip_message_t* rcv_pkt)
 {
