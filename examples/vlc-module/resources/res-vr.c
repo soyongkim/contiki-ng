@@ -54,6 +54,7 @@ static int simul_end;
 static int session_id;
 static int vr_seq;
 int data;
+static unsigned long ho_init_time;
 
 static int cumul_ack;
 static int init_seq;
@@ -128,7 +129,7 @@ static void
 handler_beacon(vip_message_t *rcv_pkt) {
   /* check handover and loss */
   if(aa_id != rcv_pkt->aa_id || vt_id != rcv_pkt->vt_id) {
-
+    ho_init_time = clock_time();
     printf("aa(%d) => new aa(%d) | vt(%d) => new vt(%d)\n", aa_id, rcv_pkt->aa_id, vt_id, rcv_pkt->vt_id);
     /* update aa_id, vt_id */
     aa_id = rcv_pkt->aa_id;
@@ -256,6 +257,11 @@ sliding_window_handler(vip_message_t* rcv_pkt)
     if(cumul_ack + 1 == rcv_pkt->seq)
     {
       // 기대했던 패킷이 왔음
+      if(ho_init_time)
+      {
+        printf("--------------------------------> Handover Complete: %d\n", clock_time() - ho_init_time);
+      }
+
       if (VIP_WINDOW_SIZE == 1)
       {
         // window size가 1일 경우, 기다리지않고 바로 ack를 보냄
