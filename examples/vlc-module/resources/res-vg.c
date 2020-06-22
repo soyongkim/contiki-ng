@@ -154,14 +154,13 @@ handler_vrr(vip_message_t *rcv_pkt)
       else
       {
         // window = 1일 경우, 개선안된 HO 시나리오 수행
-        // 일부러 중복 데이터를 2번 보내서 재전송을 유도함
+        // HO completion을 init-seq-1을 보내는 것으로 약속
         printf("Existing Scheme => last_ack:%d\n", cur->last_rcvd_ack - 1);
         char payload[100];
         vip_init_message(ack_pkt, VIP_TYPE_VSD, rcv_pkt->aa_id, rcv_pkt->vt_id, rcv_pkt->vr_id);
-        vip_set_field_vsd(ack_pkt, cur->session_id, cur->last_rcvd_ack - 1, (void *)payload, 100);
+        vip_set_field_vsd(ack_pkt, cur->session_id, cur->init_seq - 1, (void *)payload, 100);
         vip_serialize_message(ack_pkt, buffer);
         vip_set_dest_ep_cooja(snd_pkt, dest_addr, rcv_pkt->aa_id, VIP_AA_URL);
-        vip_push_snd_buf(snd_pkt);
         vip_push_snd_buf(snd_pkt);
       }
 
@@ -460,8 +459,6 @@ sliding_window_sack_handler(vip_message_t *rcv_pkt, session_t* cur)
       cur->dup_ack = rcv_pkt->ack_seq;
     }
   }
-
-  cur->dup_ack = 0;
 }
 
 void

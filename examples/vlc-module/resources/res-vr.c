@@ -236,8 +236,19 @@ handler_vsd(vip_message_t *rcv_pkt) {
 
   retransmit_on();
   ctimer_restart(&ct);
-  sliding_window_handler(rcv_pkt);
 
+  if (rcv_pkt->seq == init_seq - 1)
+  {
+    // HO completion case
+    // 일부러 중복 sack를 보냄으로써 재전송을 유도함
+    vip_push_snd_buf(snd_pkt);
+    vip_push_snd_buf(snd_pkt);
+    process_post(&vr_process, vr_snd_event, (void *)snd_pkt);
+  }
+  else
+  {
+    sliding_window_handler(rcv_pkt); 
+  }
 }
 
 /* -------------------------- sliding window ---------------------------*/
@@ -304,9 +315,8 @@ sliding_window_handler(vip_message_t* rcv_pkt)
     }
   }
 
-      
-    if(ack_flag)
-      sliding_window_send_ack();
+  if (ack_flag)
+    sliding_window_send_ack();
 }
 
 void
