@@ -153,6 +153,9 @@ handler_beacon(vip_message_t *rcv_pkt) {
       vt_id = rcv_pkt->vt_id;
       send_after_aa_latency(NULL);
     }
+
+    // if HO case, turn off the timer
+    retransmit_off();
   }
 }
 
