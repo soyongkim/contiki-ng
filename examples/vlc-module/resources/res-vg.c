@@ -435,7 +435,7 @@ sliding_window_sack_handler(vip_message_t *rcv_pkt, session_t* cur)
   {
     // 갭이 없고 같은 중복 Ack를 받은 경우, Fast Retransmission
     // 또한 이 케이스는 Receiver가 받은 패킷까지는 갭이 없지만 Sender가 보낸 최신 데이터에 loss가 발생한 케이스를 해결하기 위한 솔루션이기도 함
-    if (rcv_pkt->ack_seq == cur->last_rcvd_ack)
+    if (rcv_pkt->ack_seq == cur->dup_ack)
     {
       // 만약 중복 Ack이 원래 전송하고자하는 데이터의 마지막 Ack였다면, 재전송안함
       if(rcv_pkt->ack_seq == cur->init_seq + VIP_SIMUL_DATA -1)
