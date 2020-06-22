@@ -302,10 +302,11 @@ sliding_window_handler(vip_message_t* rcv_pkt)
       // 기대한 것보다 작음 = 중복 패킷임
        out_of_order_flag = 1;
     }
-    
+  }
+
+      
     if(ack_flag)
       sliding_window_send_ack();
-  }
 }
 
 void
