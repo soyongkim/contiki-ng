@@ -242,9 +242,9 @@ handler_vsd(vip_message_t *rcv_pkt) {
     // HO completion case
     // 일부러 중복 sack를 보냄으로써 재전송을 유도함
     printf("======================= HO COMPLETE ===============================\n");
-    rcv_pkt->seq++;
-    sliding_window_send_ack();
-    sliding_window_send_ack();
+    // rcv_pkt->seq++;
+    // sliding_window_send_ack();
+    // sliding_window_send_ack();
   }
   else
   {
