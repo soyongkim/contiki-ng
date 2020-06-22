@@ -260,6 +260,7 @@ sliding_window_handler(vip_message_t* rcv_pkt)
       if(ho_init_time)
       {
         printf("--------------------------------> Handover Complete: %d\n", clock_time() - ho_init_time);
+        ho_init_time = 0;
       }
 
       if (VIP_WINDOW_SIZE == 1)
