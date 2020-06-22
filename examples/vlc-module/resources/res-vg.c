@@ -322,7 +322,7 @@ sliding_window_sack_handler(vip_message_t *rcv_pkt, session_t* cur)
 {
   int index = rcv_pkt->ack_seq - cur->init_seq;
   printf("last_ack:%d rcvd_ack:%d index:%d\n", cur->last_rcvd_ack, rcv_pkt->ack_seq, index);
-  if(cur->last_rcvd_ack != rcv_pkt->ack_seq)
+  if(cur->last_rcvd_ack == rcv_pkt->ack_seq)
   {
     cur->dup_ack = 1;
   }
