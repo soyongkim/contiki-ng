@@ -353,9 +353,6 @@ sliding_window_sack_handler(vip_message_t *rcv_pkt, session_t* cur)
       printf("========================= Cur time:%d! => [Prev Processed Data: %d / Prev time: %d]\n", time, (cur->last_rcvd_ack - cur->init_seq)+1, time_idx);
       prev_time = time;
     }
-
-    // 중복 ack 체크 용도
-    cur->dup_ack = cur->last_rcvd_ack;
     // index까지 잘받았으니 last_ack를 옮김. 만약 이게 안옮겨지면, 중복 ack를 받았다는 말임
     cur->last_rcvd_ack = cur->init_seq + index;
 
@@ -413,6 +410,12 @@ sliding_window_sack_handler(vip_message_t *rcv_pkt, session_t* cur)
 
     // 그리고 여유분 전송
     sliding_window_transfer(rcv_pkt, cur);
+    cur->dup_ack = 0;
+  }
+  else if(cur->simul_buffer[index] == 2)
+  {
+    // 중복 ack 체크
+    cur->dup_ack = 1;
   }
  
 
@@ -437,7 +440,7 @@ sliding_window_sack_handler(vip_message_t *rcv_pkt, session_t* cur)
   {
     // 갭이 없고 같은 중복 Ack를 받은 경우, Fast Retransmission
     // 또한 이 케이스는 Receiver가 받은 패킷까지는 갭이 없지만 Sender가 보낸 최신 데이터에 loss가 발생한 케이스를 해결하기 위한 솔루션이기도 함
-    if (cur->last_rcvd_ack == cur->dup_ack)
+    if (cur->dup_ack)
     {
       // 만약 중복 Ack이 원래 전송하고자하는 데이터의 마지막 Ack였다면, 재전송안함
       if(rcv_pkt->ack_seq == cur->init_seq + VIP_SIMUL_DATA -1)
