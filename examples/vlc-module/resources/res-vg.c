@@ -322,6 +322,11 @@ sliding_window_sack_handler(vip_message_t *rcv_pkt, session_t* cur)
 {
   int index = rcv_pkt->ack_seq - cur->init_seq;
   printf("last_ack:%d rcvd_ack:%d index:%d\n", cur->last_rcvd_ack, rcv_pkt->ack_seq, index);
+  if(cur->last_rcvd_ack != rcv_pkt->ack_seq)
+  {
+    cur->dup_ack = 1;
+  }
+
   if(index >= 0 && cur->simul_buffer[index] == 1)
   {
     printf("Cumulative Ack: %d\n", rcv_pkt->ack_seq);
@@ -411,11 +416,6 @@ sliding_window_sack_handler(vip_message_t *rcv_pkt, session_t* cur)
     // 그리고 여유분 전송
     sliding_window_transfer(rcv_pkt, cur);
   }
-  else if(cur->simul_buffer[index] == 2)
-  {
-    // 중복 ack 체크
-    cur->dup_ack = 1;
-  }
  
 
   // 갭확인
@@ -459,9 +459,10 @@ sliding_window_sack_handler(vip_message_t *rcv_pkt, session_t* cur)
       }
       process_post(&vg_process, vg_snd_event, (void *)snd_pkt);
       show_buffer_state(cur);
-      cur->dup_ack = 0;
     }
   }
+
+  cur->dup_ack = 0;
 }
 
 void
