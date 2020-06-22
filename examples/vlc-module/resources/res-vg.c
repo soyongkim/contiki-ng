@@ -432,32 +432,32 @@ sliding_window_sack_handler(vip_message_t *rcv_pkt, session_t* cur)
   }
   else
   {
-    // 갭이 없고 같은 중복 Ack를 받은 경우, Fast Retransmission
-    // 또한 이 케이스는 Receiver가 받은 패킷까지는 갭이 없지만 Sender가 보낸 최신 데이터에 loss가 발생한 케이스를 해결하기 위한 솔루션이기도 함
-    if (rcv_pkt->ack_seq == cur->dup_ack)
-    {
-      // 만약 중복 Ack이 원래 전송하고자하는 데이터의 마지막 Ack였다면, 재전송안함
-      if(rcv_pkt->ack_seq == cur->init_seq + VIP_SIMUL_DATA -1)
-        return;
-      // 중복 Ack를 받았다면, cumul_ack + 1 ~ last_sent_ack까지 재전송
-      int start = (cur->last_rcvd_ack + 1) - cur->init_seq;
-      int end = (cur->last_sent_seq) - cur->init_seq;
-      printf("Dup case! => last_ack:%d start:%d\n", cur->last_rcvd_ack, start);
-      for (int i = start; i <= end; i++)
-      {
-        char payload[100];
-        vip_init_message(snd_pkt, VIP_TYPE_VSD, rcv_pkt->aa_id, rcv_pkt->vt_id, rcv_pkt->vr_id);
-        vip_set_field_vsd(snd_pkt, cur->session_id, cur->init_seq + i, payload, 100);
-        vip_serialize_message(snd_pkt, buffer);
-        vip_set_dest_ep_cooja(snd_pkt, dest_addr, rcv_pkt->aa_id, VIP_AA_URL);
-        vip_push_snd_buf(snd_pkt);
-      }
-      process_post(&vg_process, vg_snd_event, (void *)snd_pkt);
-      show_buffer_state(cur);
-    }
-    else{
-      cur->dup_ack = rcv_pkt->ack_seq;
-    }
+    // // 갭이 없고 같은 중복 Ack를 받은 경우, Fast Retransmission
+    // // 또한 이 케이스는 Receiver가 받은 패킷까지는 갭이 없지만 Sender가 보낸 최신 데이터에 loss가 발생한 케이스를 해결하기 위한 솔루션이기도 함
+    // if (rcv_pkt->ack_seq == cur->dup_ack)
+    // {
+    //   // 만약 중복 Ack이 원래 전송하고자하는 데이터의 마지막 Ack였다면, 재전송안함
+    //   if(rcv_pkt->ack_seq == cur->init_seq + VIP_SIMUL_DATA -1)
+    //     return;
+    //   // 중복 Ack를 받았다면, cumul_ack + 1 ~ last_sent_ack까지 재전송
+    //   int start = (cur->last_rcvd_ack + 1) - cur->init_seq;
+    //   int end = (cur->last_sent_seq) - cur->init_seq;
+    //   printf("Dup case! => last_ack:%d start:%d\n", cur->last_rcvd_ack, start);
+    //   for (int i = start; i <= end; i++)
+    //   {
+    //     char payload[100];
+    //     vip_init_message(snd_pkt, VIP_TYPE_VSD, rcv_pkt->aa_id, rcv_pkt->vt_id, rcv_pkt->vr_id);
+    //     vip_set_field_vsd(snd_pkt, cur->session_id, cur->init_seq + i, payload, 100);
+    //     vip_serialize_message(snd_pkt, buffer);
+    //     vip_set_dest_ep_cooja(snd_pkt, dest_addr, rcv_pkt->aa_id, VIP_AA_URL);
+    //     vip_push_snd_buf(snd_pkt);
+    //   }
+    //   process_post(&vg_process, vg_snd_event, (void *)snd_pkt);
+    //   show_buffer_state(cur);
+    // }
+    // else{
+    //   cur->dup_ack = rcv_pkt->ack_seq;
+    // }
   }
 }
 
