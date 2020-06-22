@@ -454,7 +454,7 @@ static void timer_init(int flag)
   }
 }
 
-static void send_after_aa_latency(void *data)
+static void send_after_aa_latency(void* data)
 {
   vip_init_message(snd_pkt, VIP_TYPE_VRR, aa_id, vt_id, vr_id);
   vip_set_field_vrr(snd_pkt, 0);
