@@ -241,9 +241,9 @@ handler_vsd(vip_message_t *rcv_pkt) {
   {
     // HO completion case
     // 일부러 중복 sack를 보냄으로써 재전송을 유도함
-    vip_push_snd_buf(snd_pkt);
-    vip_push_snd_buf(snd_pkt);
-    process_post(&vr_process, vr_snd_event, (void *)snd_pkt);
+    rcv_pkt->seq++;
+    sliding_window_handler(rcv_pkt);
+    sliding_window_handler(rcv_pkt);
   }
   else
   {
